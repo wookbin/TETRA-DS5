@@ -33,15 +33,10 @@
     <!--<param name="controller_frequency" value="5.0" /> -->
     <!--<param name="controller_patiente" value="15.0"/> --> 
 
-    <!-- add-->
     <param name="global_costmap/global_frame" value="$(arg global_frame_id)"/>
     <param name="global_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
     <param name="local_costmap/global_frame" value="$(arg odom_frame_id)"/>
     <param name="local_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
-    <!--
-    <param name="global_costmap/static_map/map_topic" value="/map"/>
-    <param name="local_costmap/static_map/map_topic" value="/map"/>
-     -->
 
   </node>
   
