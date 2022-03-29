@@ -24,8 +24,8 @@
 
  <!-- 2D LiDAR  SICK TIM571-->
   <node name="sick_tim571_2050101" pkg="sick_tim" type="sick_tim551_2050001" respawn="false" output="screen">
-      <param name="min_ang" type="double" value="-1.6057" /> <!--92deg-->
-      <param name="max_ang" type="double" value="1.6057" />  <!--92deg-->
+      <param name="min_ang" type="double" value="-2.16421" /> <!--124deg-->
+      <param name="max_ang" type="double" value="2.16421" />  <!--124deg-->
       <param name="intensity" type="bool" value="True" />
       <param name="skip" type="int" value="0" />
       <param name="frame_id" type="str" value="$(optenv ROS_NAMESPACE)/laser" />
@@ -85,11 +85,10 @@
 	<remap from="camera_info"           to="$(arg cam_info_topic)" />
     </node>
 
-<!--realsense_Point Cloud data
+<!--realsense_Point Cloud data -->
   <include file = "$(find realsense2_camera)/launch/rs_pointcloud_r.launch"/>
   <include file = "$(find tetraDS_2dnav)/launch/timed_rgbd.launch"/>
   <include file="$(find tetraDS_2dnav)/launch/DepthimageToScan.launch"/>
--->
 
 <!--
 <node pkg="fkie_master_discovery" type="master_discovery" name="master_discovery"></node>
