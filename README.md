@@ -1,7 +1,7 @@
 # TETRA-DS5
 TETRA-DS5_(beta version)
 # 아직 완성되지 않은 베타버전의 TETRA-DS5 ROS Package입니다. (가제보 X)
-# 정식 버전 업데이트 및 상세 설명은 시간을 가지고 천천히 할 계획입니다.... :)
+# 종족성 패키지들이 많이 있습니다...(정리중...)
 
 - tetraDS : TETRA구동 보드와의 Serial통신을 통하여 Motor의 구동을 담당하는 패키지
 - tetraDS_description: TETRA-DS5의 URDF가 포함된 패키지.
