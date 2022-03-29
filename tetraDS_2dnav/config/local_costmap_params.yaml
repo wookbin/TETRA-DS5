@@ -14,6 +14,10 @@ local_costmap:
   plugins:
     - name: obstacle_layer
       type: "costmap_2d::VoxelLayer"
+    - name: rgbd_obstacle_layer1   
+      type: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"
+    - name: rgbd_obstacle_layer2
+      type: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"
     - name: sonar_obstacle_layer_DL
       type: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"
     - name: sonar_obstacle_layer_DR
