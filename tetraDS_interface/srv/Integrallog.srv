@@ -1,0 +1,7 @@
+#This message is used to send command to tetra
+#Integral Log command
+
+int32 value_index
+---
+bool command_Result
+

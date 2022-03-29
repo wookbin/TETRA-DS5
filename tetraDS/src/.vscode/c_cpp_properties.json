@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/wbjin/catkin_ws/devel/include/**",
+                "/opt/ros/melodic/include/**",
+                "/home/wbjin/catkin_ws/src/Joy_tetra/include/**",
+                "/home/wbjin/catkin_ws/src/depthimage_to_laserscan/include/**",
+                "/home/wbjin/catkin_ws/src/tetra/include/**",
+                "/home/wbjin/catkin_ws/src/tetraDS4/include/**",
+                "/home/wbjin/catkin_ws/src/usb_cam-develop/include/**",
+                "/usr/include/**"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++14"
+        }
+    ],
+    "version": 4
+}

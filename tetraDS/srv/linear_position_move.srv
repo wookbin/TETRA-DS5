@@ -1,0 +1,7 @@
+#This message is used to send command to tetra
+#Linear Position Mode command
+
+int32 linear_position
+---
+bool command_Result
+

@@ -1,0 +1,35 @@
+#Configuation for robot odometry EKF
+frequency: 60
+two_d_mode: true
+publish_tf: true
+
+#map_frame: map
+odom_frame: odom
+base_link_frame: base_footprint
+world_frame: odom
+
+transform_time_offset: 0.0
+transform_timeout : 0.1
+
+# Complete the odom0 configuration
+odom0: odom
+odom0_config: [true,  true,  false,
+               false, false, false,
+               false, false, false,
+               false, false, false,
+               false, false, false]
+
+odom0_differential: true
+ 
+# Complete the imu0 configuration
+imu0: imu/data
+imu0_config: [false, false, false,
+              false, false, false,
+              false, false, false,
+              false, false, true,
+              false, false, false]
+
+imu0_differential: false
+
+imu0_linear_acceleration_rejection_threshold: 0.8
+imu0_remove_gravitational_acceleration: true

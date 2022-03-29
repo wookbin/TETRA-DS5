@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+
+    <include file="$(find timed_roslaunch)/launch/timed_roslaunch.launch">
+        <arg name="time" value="2" />
+        <arg name="pkg" value="realsense2_camera" />
+        <arg name="file" value="rs_pointcloud_l.launch" />
+        <arg name="value" value="" />
+        <arg name="node_name" value="" /> <!-- This is optional argument -->
+ </include>
+
+
+</launch>

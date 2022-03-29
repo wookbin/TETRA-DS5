@@ -1,0 +1,8 @@
+#This message is used to send command to tetra
+#Parameter read command
+
+int32 num
+---
+int32 data
+bool command_Result
+

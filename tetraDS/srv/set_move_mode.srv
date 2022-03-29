@@ -1,0 +1,7 @@
+#This message is used to send command to tetra
+#Set Move Mode command
+
+int32 mode
+---
+bool command_Result
+

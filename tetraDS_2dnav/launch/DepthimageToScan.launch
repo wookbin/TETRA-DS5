@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+ 
+<!--realsense_Point Cloud data 
+  <include file = "$(find realsense2_camera)/launch/rs_pointcloud.launch"/>-->
+<!-- realsense_Point Cloud data2 (use timed launch)
+  <include file="$(find tetraDS_2dnav)/launch/timed_rgbd.launch"/>-->
+
+  <node name="depthimage_to_laserscan1" pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" args="image:=/$(optenv ROS_NAMESPACE)/camera1/aligned_depth_to_color/image_raw">
+   <remap from="scan" to="pcl_1" />
+   <param name="output_frame_id" value="$(optenv ROS_NAMESPACE)/camera1_link"/>
+   <param name="range_min"    type="double" value="0.01" />
+   <param name="range_max"    type="double" value="2.5" /> <!-- scan_height_-->
+  </node>
+
+  <node name="depthimage_to_laserscan2" pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" args="image:=/$(optenv ROS_NAMESPACE)/camera2/aligned_depth_to_color/image_raw">
+   <remap from="scan" to="pcl_2" />
+   <param name="output_frame_id" value="$(optenv ROS_NAMESPACE)/camera2_link"/>
+   <param name="range_min"    type="double" value="0.01" />
+   <param name="range_max"    type="double" value="2.5" /> <!-- scan_height_-->
+  </node>
+
+</launch>

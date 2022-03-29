@@ -1,0 +1,7 @@
+#This message is used to send command to tetra
+#Conveyor Manual Movement Control command
+
+int32 mode
+---
+bool command_Result
+
