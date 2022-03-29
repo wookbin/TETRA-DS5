@@ -11,8 +11,8 @@ obstacle_layer:
   inf_is_valid: false
 
   laser_scan_sensor:
-    obstacle_range: 15.0 #20.0 #15.0 #10.0
-    raytrace_range: 16.0 #21.5 #16.5 #11.5
+    obstacle_range: 20.0
+    raytrace_range: 21.5
     inflation_radius: 0.25 
     data_type: LaserScan
     topic: scan
