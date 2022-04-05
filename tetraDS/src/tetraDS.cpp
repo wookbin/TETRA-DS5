@@ -100,8 +100,8 @@ class TETRA
         odom_publisher = pnh.advertise<nav_msgs::Odometry>("odom", 30);
         printf("Create TETRA Class\n");
 
-        current_time=ros::Time::now();
-        last_time=ros::Time::now();
+        current_time=ros::Time(); //ros::Time::now();
+        last_time=ros::Time(); //ros::Time::now();
         for(int i=0;i<3;i++)
 		{
             prev_coordinates[i] = 0;
@@ -118,13 +118,13 @@ class TETRA
 
 				if(first) 
 				{
-					current_time=ros::Time::now();
+					current_time=ros::Time(); //ros::Time::now();
 					last_time=current_time;
 					first=false;
 				}
 				else 
 				{
-					current_time=ros::Time::now();
+					current_time=ros::Time(); //ros::Time::now();
 					pub();
 				}
 
@@ -192,7 +192,7 @@ class TETRA
         odom.twist.twist.linear.x = velocity[0];
         odom.twist.twist.linear.y = velocity[1];
         odom.twist.twist.linear.z = 0.0;
-		odom.twist.twist.angular.z = velocity[2];
+	odom.twist.twist.angular.z = velocity[2];
         odom_publisher.publish(odom);
 
         last_time=current_time;
