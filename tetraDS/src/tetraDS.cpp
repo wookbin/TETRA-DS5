@@ -549,11 +549,11 @@ int main(int argc, char * argv[])
 		//linear_velocity
 		if(input_linear > control_linear)
 		{
-			control_linear = min(input_linear, control_linear + 0.005);  //5mm++
+			control_linear = min(input_linear, control_linear + 0.008);  //8mm++
 		}
 		else if(input_linear < control_linear)
 		{
-			control_linear = max(input_linear, control_linear - 0.015);  //15mm --
+			control_linear = max(input_linear, control_linear - 0.025);  //25mm --
 		}
 		else
 		{
