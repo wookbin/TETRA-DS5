@@ -97,11 +97,11 @@ class TETRA
     TETRA()
 	{
         first=true;
-        odom_publisher = pnh.advertise<nav_msgs::Odometry>("odom", 30);
+        odom_publisher = pnh.advertise<nav_msgs::Odometry>("odom", 50);
         printf("Create TETRA Class\n");
 
-        current_time=ros::Time(); //ros::Time::now();
-        last_time=ros::Time(); //ros::Time::now();
+        current_time=ros::Time::now();
+        last_time=ros::Time::now();
         for(int i=0;i<3;i++)
 		{
             prev_coordinates[i] = 0;
@@ -118,13 +118,13 @@ class TETRA
 
 				if(first) 
 				{
-					current_time=ros::Time(); //ros::Time::now();
+					current_time=ros::Time::now();
 					last_time=current_time;
 					first=false;
 				}
 				else 
 				{
-					current_time=ros::Time(); //ros::Time::now();
+					current_time=ros::Time::now();
 					pub();
 				}
 
