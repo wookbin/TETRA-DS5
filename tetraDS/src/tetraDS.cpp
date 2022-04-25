@@ -307,6 +307,17 @@ void ServoONCallback(const std_msgs::Int32::ConstPtr& msg)
 	}
 }
 
+void Power_statusCallback(const std_msgs::Int32::ConstPtr& msg)
+{
+	int m_idata = msg->data;
+	if(m_idata < 0)
+	{
+		dssp_rs232_drv_module_set_servo(0); //Servo Off
+		printf("[Error]: Power Board Error !!! \n");
+	}
+
+}
+
 bool Parameter_Read_Command(tetraDS::parameter_read::Request  &req, 
 							tetraDS::parameter_read::Response &res)
 {
@@ -481,6 +492,8 @@ int main(int argc, char * argv[])
 	ros::Subscriber PoseReset = nReset.subscribe<std_msgs::Int32>("PoseRest",10, PoseResetCallback);
 	//Servo ON && OFF//
 	ros::Subscriber Servo_ON = nReset.subscribe<std_msgs::Int32>("Servo_ON",10, ServoONCallback);
+	//Power Board Error Check//
+	ros::Subscriber Power_status = nReset.subscribe<std_msgs::Int32>("power_status",1, Power_statusCallback);
 	//Bumper 
 	ros::Publisher bumper_publisher;
 	bumper_publisher = nbumper.advertise<std_msgs::Int32>("bumper_data", 10);
