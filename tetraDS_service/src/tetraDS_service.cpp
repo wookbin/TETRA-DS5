@@ -140,6 +140,8 @@ double m_dTeb_Pose_head_Angle[1024] = {0.0, };
 //patrol...//
 int  m_patrol_location_cnt = 0;
 string arr_patrol_location[255] = {"", };
+//reset Timer count../
+int  m_iTimer_cnt = 0;
 
 typedef struct HOME_POSE
 {
@@ -3855,7 +3857,7 @@ int main (int argc, char** argv)
     Conveyor_cmd_client = client_h.serviceClient<tetraDS_service::conveyor_auto_movement>("Auto_Move_cmd");
 
     //IMU Service Client//
-
+    euler_angle_init_cmd_client = client_h.serviceClient<tetraDS_service::euler_angle_init>("euler_angle_init_cmd");
 
 
     //Infomation_subscriber//
@@ -3967,14 +3969,35 @@ int main (int argc, char** argv)
     while(ros::ok())
     {
         ros::spinOnce();
-        
-
+	    
         if(_pFlag_Value.m_bFlag_Obstacle_Center)
             Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity / 2.5);
         else
         {
             if(!_pFlag_Value.m_bTebMarker_reconfigure_flag)
                 Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
+        }
+
+        //IMU Reset Loop//
+        if(m_iTimer_cnt >= 20000) //11 min_polling
+        {
+            m_iTimer_cnt = 0;
+            euler_angle_init_cmd_client.call(euler_angle_init_srv); //imu reset//
+            //costmap clear call//
+            clear_costmap_client.call(m_request);
+            ROS_INFO("IMU Reset Call !");
+
+        }
+        else
+        {
+            if(_pRobot_Status.m_iCallback_Charging_status == 1 || _pRobot_Status.m_iCallback_Charging_status == 11 || _pRobot_Status.m_iCallback_Charging_status == 12)
+            {
+                m_iTimer_cnt = 0;
+            }
+            else
+            {
+                m_iTimer_cnt ++;
+            }
         }
         
         loop_rate.sleep();
