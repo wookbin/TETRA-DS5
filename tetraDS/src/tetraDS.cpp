@@ -310,7 +310,7 @@ void ServoONCallback(const std_msgs::Int32::ConstPtr& msg)
 void Power_statusCallback(const std_msgs::Int32::ConstPtr& msg)
 {
 	int m_idata = msg->data;
-	if(m_idata < 0)
+	if(m_idata == -10)
 	{
 		dssp_rs232_drv_module_set_servo(0); //Servo Off
 		printf("[Error]: Power Board Error !!! \n");
