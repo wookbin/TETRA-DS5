@@ -1,12 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(tetraDS_TCP)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
-
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED
   roscpp
   std_msgs
@@ -22,10 +16,40 @@ find_package(catkin REQUIRED
   dynamic_reconfigure
 )
 
-generate_messages(
-  DEPENDENCIES
- # std_msgs  
+add_service_files(
+  FILES
+  gotolocation.srv
+  gotolocation2.srv
+  getlocation.srv
+  setlocation.srv
+  setsavemap.srv
+  getinformation.srv
+  dockingcontrol.srv
+  getlocationlist.srv
+  getlandmarklist.srv
+  deletelocation.srv
+  deletelandmark.srv
+  deletemap.srv
+  runmapping.srv
+  runnavigation.srv
+  rosnodekill.srv
+  getmaplist.srv
+  gotocancel.srv
+  setmaxspeed.srv
+  servo.srv
+  virtual_obstacle.srv
+  setinitpose.srv
+  patrol.srv
+  deletedataall.srv
+  sendmsg.srv
 )
+
+generate_messages(   
+  DEPENDENCIES  
+  std_msgs
+  std_srvs
+  geometry_msgs
+) 
 
 catkin_package(
   LIBRARIES ros_server
