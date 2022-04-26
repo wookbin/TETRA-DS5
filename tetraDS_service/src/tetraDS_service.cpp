@@ -4014,22 +4014,22 @@ int main (int argc, char** argv)
         {
             listener.waitForTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), ros::Duration(1.0));
             listener.lookupTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), transform);
+		
+	    geometry_msgs::TransformStamped ts_msg;
+            tf::transformStampedTFToMsg(transform, ts_msg);
+
+	    _pTF_pose.poseTFx = ts_msg.transform.translation.x;
+	    _pTF_pose.poseTFy = ts_msg.transform.translation.y;
+	    _pTF_pose.poseTFz = ts_msg.transform.translation.z;
+	    _pTF_pose.poseTFqx = ts_msg.transform.rotation.x;
+	    _pTF_pose.poseTFqy = ts_msg.transform.rotation.y;
+	    _pTF_pose.poseTFqz = ts_msg.transform.rotation.z;
+	    _pTF_pose.poseTFqw = ts_msg.transform.rotation.w;
         }
         catch (tf::TransformException ex)
         {
             ROS_ERROR("[TF_Transform_Error]: %s", ex.what());
         }
-
-        geometry_msgs::TransformStamped ts_msg;
-        tf::transformStampedTFToMsg(transform, ts_msg);
-
-        _pTF_pose.poseTFx = ts_msg.transform.translation.x;
-        _pTF_pose.poseTFy = ts_msg.transform.translation.y;
-        _pTF_pose.poseTFz = ts_msg.transform.translation.z;
-        _pTF_pose.poseTFqx = ts_msg.transform.rotation.x;
-        _pTF_pose.poseTFqy = ts_msg.transform.rotation.y;
-        _pTF_pose.poseTFqz = ts_msg.transform.rotation.z;
-        _pTF_pose.poseTFqw = ts_msg.transform.rotation.w;
 
         //printf("[tf_xyz]: %f, %f, %f \n", ts_msg.transform.translation.x, ts_msg.transform.translation.y, ts_msg.transform.translation.z);
         //printf("[tf_xyzw]: %f, %f, %f, %f \n", ts_msg.transform.rotation.x, ts_msg.transform.rotation.y, ts_msg.transform.rotation.z, ts_msg.transform.rotation.w);
