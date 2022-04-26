@@ -152,7 +152,7 @@ typedef struct HOME_POSE
     double HOME_dPOSITION_Y = 0.0;
     double HOME_dPOSITION_Z = 0.0;
     double HOME_dQUATERNION_X = 0.0;
-	double HOME_dQUATERNION_Y = 0.0;
+    double HOME_dQUATERNION_Y = 0.0;
     double HOME_dQUATERNION_Z = 0.0;
     double HOME_dQUATERNION_W = 1.0;
 
@@ -3833,8 +3833,8 @@ int main (int argc, char** argv)
 
     //Command Service//
     ros::NodeHandle service_h;
-	getlocation_service = service_h.advertiseService("getlocation_cmd", GetLocation_Command);
-	goto_service = service_h.advertiseService("goto_cmd", Goto_Command);
+    getlocation_service = service_h.advertiseService("getlocation_cmd", GetLocation_Command);
+    goto_service = service_h.advertiseService("goto_cmd", Goto_Command);
     goto_service2 = service_h.advertiseService("goto_cmd2", Goto_Command2);
     setlocation_service = service_h.advertiseService("setlocation_cmd", SetLocation_Command);
     save_map_service = service_h.advertiseService("savemap_cmd", SetSavemap_Command);
