@@ -1,0 +1,6 @@
+#This message is used to send command to tetra
+# Send Message Command
+
+string strMessage
+---
+bool command_Result

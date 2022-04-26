@@ -1,0 +1,8 @@
+#This message is used to send command to tetra
+# Get landmark List Command
+
+
+---
+int32 list_num
+string[] landmark_name
+bool command_Result

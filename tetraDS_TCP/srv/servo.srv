@@ -1,0 +1,7 @@
+#This message is used to send command to tetra
+#Servo Motor On/Off Control command
+
+int32 data
+---
+bool command_Result
+
