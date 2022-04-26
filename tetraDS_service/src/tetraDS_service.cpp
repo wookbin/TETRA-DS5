@@ -2,6 +2,7 @@
 #include <ros/ros.h>
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
+#include <tf/transform_listener.h>
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Pose2D.h>
@@ -118,6 +119,7 @@
 #define MAX_RETRY_CNT 3
 #define BUF_LEN 4096
 using namespace std;
+std::string tf_prefix_;
 string m_strRobotIP = "";
 int m_iRotation_Mode = 0; //Docking Rotation Mode Select
 int m_iReset_flag = 0;
@@ -228,6 +230,20 @@ typedef struct AMCL_POSE
 
 }AMCL_POSE;
 AMCL_POSE _pAMCL_pose;
+
+//tf_Pose.(map->base_footprint TF)..
+typedef struct TF_POSE
+{
+    double poseTFx = 0.0;
+    double poseTFy = 0.0;
+    double poseTFz = 0.0;
+    double poseTFqx = 0.0;
+    double poseTFqy = 0.0;
+    double poseTFqz = 0.0;
+    double poseTFqw = 1.0;
+
+}TF_POSE;
+TF_POSE _pTF_pose;
 
 //goal_pose...
 typedef struct GOAL_POSE
@@ -1068,12 +1084,19 @@ bool GetLocation_Command(tetraDS_service::getlocation::Request  &req,
 	bool bResult = false;
 
     //Get POSE
-    res.poseAMCLx = _pAMCL_pose.poseAMCLx;
-    res.poseAMCLy = _pAMCL_pose.poseAMCLy;
-    res.poseAMCLqx = _pAMCL_pose.poseAMCLqx;
-    res.poseAMCLqy = _pAMCL_pose.poseAMCLqy;
-    res.poseAMCLqz = _pAMCL_pose.poseAMCLqz;
-    res.poseAMCLqw = _pAMCL_pose.poseAMCLqw;
+    // res.poseAMCLx = _pAMCL_pose.poseAMCLx;
+    // res.poseAMCLy = _pAMCL_pose.poseAMCLy;
+    // res.poseAMCLqx = _pAMCL_pose.poseAMCLqx;
+    // res.poseAMCLqy = _pAMCL_pose.poseAMCLqy;
+    // res.poseAMCLqz = _pAMCL_pose.poseAMCLqz;
+    // res.poseAMCLqw = _pAMCL_pose.poseAMCLqw;
+
+    res.poseAMCLx = _pTF_pose.poseTFx;
+    res.poseAMCLy = _pTF_pose.poseTFy;
+    res.poseAMCLqx = _pTF_pose.poseTFqx;
+    res.poseAMCLqy = _pTF_pose.poseTFqy;
+    res.poseAMCLqz = _pTF_pose.poseTFqz;
+    res.poseAMCLqw = _pTF_pose.poseTFqw;
 	/*
     ---
     bool   command_Result
@@ -1277,6 +1300,7 @@ bool SetLocation_Command(tetraDS_service::setlocation::Request  &req,
     }
     else
     {
+        /*
         res.command_Result = SaveLocation(req.Location, 
                                         _pAMCL_pose.poseAMCLx, _pAMCL_pose.poseAMCLy,
                                         _pAMCL_pose.poseAMCLqx, _pAMCL_pose.poseAMCLqy, _pAMCL_pose.poseAMCLqz, _pAMCL_pose.poseAMCLqw);
@@ -1287,6 +1311,18 @@ bool SetLocation_Command(tetraDS_service::setlocation::Request  &req,
         res.goal_quarterY  = _pAMCL_pose.poseAMCLqy;
         res.goal_quarterZ  = _pAMCL_pose.poseAMCLqz;
         res.goal_quarterW  = _pAMCL_pose.poseAMCLqw;
+        */
+
+        res.command_Result = SaveLocation(req.Location, 
+                                _pTF_pose.poseTFx,_pTF_pose.poseTFy,
+                                _pTF_pose.poseTFqx,_pTF_pose.poseTFqy,_pTF_pose.poseTFqz,_pTF_pose.poseTFqw);
+        
+        res.goal_positionX = _pTF_pose.poseTFx;
+        res.goal_positionY = _pTF_pose.poseTFy;
+        res.goal_quarterX  = _pTF_pose.poseTFqx;
+        res.goal_quarterY  = _pTF_pose.poseTFqy;
+        res.goal_quarterZ  = _pTF_pose.poseTFqz;
+        res.goal_quarterW  = _pTF_pose.poseTFqw;
     }
 
     /*
@@ -3787,6 +3823,8 @@ int main (int argc, char** argv)
     //Read Max_linear_Velocity
     nh.getParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
     printf("##max_vel_x: %f \n", _pDynamic_param.MAX_Linear_velocity);
+	
+    ros::param::get("tf_prefix", tf_prefix_);
 
     //add GUI...
     ros::NodeHandle nTest;
@@ -3969,6 +4007,34 @@ int main (int argc, char** argv)
     while(ros::ok())
     {
         ros::spinOnce();
+	//map to base_footprint TF Pose////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        tf::StampedTransform transform;
+
+        try
+        {
+            listener.waitForTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), ros::Duration(1.0));
+            listener.lookupTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), transform);
+        }
+        catch (tf::TransformException ex)
+        {
+            ROS_ERROR("[TF_Transform_Error]: %s", ex.what());
+        }
+
+        geometry_msgs::TransformStamped ts_msg;
+        tf::transformStampedTFToMsg(transform, ts_msg);
+
+        _pTF_pose.poseTFx = ts_msg.transform.translation.x;
+        _pTF_pose.poseTFy = ts_msg.transform.translation.y;
+        _pTF_pose.poseTFz = ts_msg.transform.translation.z;
+        _pTF_pose.poseTFqx = ts_msg.transform.rotation.x;
+        _pTF_pose.poseTFqy = ts_msg.transform.rotation.y;
+        _pTF_pose.poseTFqz = ts_msg.transform.rotation.z;
+        _pTF_pose.poseTFqw = ts_msg.transform.rotation.w;
+
+        //printf("[tf_xyz]: %f, %f, %f \n", ts_msg.transform.translation.x, ts_msg.transform.translation.y, ts_msg.transform.translation.z);
+        //printf("[tf_xyzw]: %f, %f, %f, %f \n", ts_msg.transform.rotation.x, ts_msg.transform.rotation.y, ts_msg.transform.rotation.z, ts_msg.transform.rotation.w);
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
 	    
         if(_pFlag_Value.m_bFlag_Obstacle_Center)
             Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity / 2.5);
