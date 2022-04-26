@@ -3982,9 +3982,10 @@ int main (int argc, char** argv)
         if(m_iTimer_cnt >= 20000) //11 min_polling
         {
             m_iTimer_cnt = 0;
-            euler_angle_init_cmd_client.call(euler_angle_init_srv); //imu reset//
-            //costmap clear call//
-            clear_costmap_client.call(m_request);
+            // euler_angle_init_cmd_client.call(euler_angle_init_srv); //imu reset//
+            // //costmap clear call//
+            // clear_costmap_client.call(m_request);
+            Reset_Robot_Pose();
             ROS_INFO("IMU Reset Call !");
 
         }
