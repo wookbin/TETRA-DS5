@@ -8,6 +8,7 @@
   <param name="conveyor_option" type="bool" value="false" />
   <param name="ekf_option" type="bool" value="true" /> <!--false-->
   <arg   name="ekf_option_flag" default="1"/>
+  <param name="active_map" type="bool" value="false" />
 
 <group if="$(eval arg('ekf_option_flag')==1)">
 <!-- ekf_localization -->
