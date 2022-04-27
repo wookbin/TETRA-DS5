@@ -17,10 +17,8 @@ global_costmap:
   plugins:
     - name: static_map
       type: "costmap_2d::StaticLayer"
-    #- name: restricted_layer # Pen virtual wall add...
-    #  type: "restrict_area::RestrictedLayer" # Pen virtual wall add...
-    #- name: obstacle_layer
-    #  type: "costmap_2d::VoxelLayer"
+    - name: obstacle_layer
+      type: "costmap_2d::VoxelLayer"
     - name: virtual_layer
       type: "virtual_costmap_layer::VirtualLayer"
     - name: inflation_layer
