@@ -144,6 +144,8 @@ int  m_patrol_location_cnt = 0;
 string arr_patrol_location[255] = {"", };
 //reset Timer count../
 int  m_iTimer_cnt = 0;
+// Active map Check //
+bool m_bActive_map_check = false;
 
 typedef struct HOME_POSE
 {
@@ -4007,34 +4009,38 @@ int main (int argc, char** argv)
     while(ros::ok())
     {
         ros::spinOnce();
-	//map to base_footprint TF Pose////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        tf::StampedTransform transform;
-
-        try
+	
+        //Get Active map param..//
+        nh.getParam("active_map", m_bActive_map_check);
+        if(m_bActive_map_check)
         {
-            listener.waitForTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), ros::Duration(1.0));
-            listener.lookupTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), transform);
-		
-	    geometry_msgs::TransformStamped ts_msg;
-            tf::transformStampedTFToMsg(transform, ts_msg);
+            //map to base_footprint TF Pose////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            tf::StampedTransform transform;
+            try
+            {
+                listener.waitForTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), ros::Duration(1.0));
+                listener.lookupTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), transform);
 
-	    _pTF_pose.poseTFx = ts_msg.transform.translation.x;
-	    _pTF_pose.poseTFy = ts_msg.transform.translation.y;
-	    _pTF_pose.poseTFz = ts_msg.transform.translation.z;
-	    _pTF_pose.poseTFqx = ts_msg.transform.rotation.x;
-	    _pTF_pose.poseTFqy = ts_msg.transform.rotation.y;
-	    _pTF_pose.poseTFqz = ts_msg.transform.rotation.z;
-	    _pTF_pose.poseTFqw = ts_msg.transform.rotation.w;
-        }
-        catch (tf::TransformException ex)
-        {
-            ROS_ERROR("[TF_Transform_Error]: %s", ex.what());
-        }
+                geometry_msgs::TransformStamped ts_msg;
+                tf::transformStampedTFToMsg(transform, ts_msg);
 
-        //printf("[tf_xyz]: %f, %f, %f \n", ts_msg.transform.translation.x, ts_msg.transform.translation.y, ts_msg.transform.translation.z);
-        //printf("[tf_xyzw]: %f, %f, %f, %f \n", ts_msg.transform.rotation.x, ts_msg.transform.rotation.y, ts_msg.transform.rotation.z, ts_msg.transform.rotation.w);
+                _pTF_pose.poseTFx = ts_msg.transform.translation.x;
+                _pTF_pose.poseTFy = ts_msg.transform.translation.y;
+                _pTF_pose.poseTFz = ts_msg.transform.translation.z;
+                _pTF_pose.poseTFqx = ts_msg.transform.rotation.x;
+                _pTF_pose.poseTFqy = ts_msg.transform.rotation.y;
+                _pTF_pose.poseTFqz = ts_msg.transform.rotation.z;
+                _pTF_pose.poseTFqw = ts_msg.transform.rotation.w;
+
+                //printf("[tf_xyz]: %f, %f, %f \n", ts_msg.transform.translation.x, ts_msg.transform.translation.y, ts_msg.transform.translation.z);
+                //printf("[tf_xyzw]: %f, %f, %f, %f \n", ts_msg.transform.rotation.x, ts_msg.transform.rotation.y, ts_msg.transform.rotation.z, ts_msg.transform.rotation.w);
+            }
+            catch (tf::TransformException ex)
+            {
+                ROS_ERROR("[TF_Transform_Error]: %s", ex.what());
+            }
+        }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
 	    
         if(_pFlag_Value.m_bFlag_Obstacle_Center)
             Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity / 2.5);
