@@ -3,7 +3,7 @@
   <arg name="tf_prefix" default="$(env ROS_NAMESPACE)"/> 
   <arg name="robot_name" default="$(env ROS_NAMESPACE)"/>
   <arg name="map_name" default="office"/>
-
+  <param name="active_map" type="bool" value="true" />
 
   <include file="$(find tetraDS_2dnav)/launch/teb_move_base.launch">
    <arg name="namespace" default="$(arg tf_prefix)"/> 
