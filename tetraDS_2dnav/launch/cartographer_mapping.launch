@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <launch>
   <env name="robot_name" value="$(optenv ROS_NAMESPACE)"/>
-
+  <param name="active_map" type="bool" value="false" />
+	
   <!--Cartographer_2D Mapping -->
   <node name="cartographer_node" pkg="cartographer_ros"
       type="cartographer_node" args="
