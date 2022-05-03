@@ -1413,7 +1413,8 @@ bool Docking_Command(tetraDS_service::dockingcontrol::Request  &req,
 					 tetraDS_service::dockingcontrol::Response &res)
 {
 	bool bResult = false;
-    _pAR_tag_pose.m_iSelect_AR_tag_id = req.id;
+    //_pAR_tag_pose.m_iSelect_AR_tag_id = req.id;
+    _pRobot_Status.HOME_ID = _pAR_tag_pose.m_iSelect_AR_tag_id = req.id;
     ex_iDocking_CommandMode = req.mode;
 
     /*
