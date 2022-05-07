@@ -5,11 +5,12 @@ local_costmap:
   publish_frequency: 5.0
 
   rolling_window: true
-  width: 10.0 #8.0
-  height: 10.0 #8.0
+  width: 15.0
+  height: 15.0
   resolution: 0.05
   transform_tolerance: 0.5
   footprint_padding: 0.0
+  unknown_cost_value: 254 #add..
 
   plugins:
     - name: obstacle_layer
