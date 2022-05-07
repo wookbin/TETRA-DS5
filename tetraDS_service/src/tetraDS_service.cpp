@@ -1869,7 +1869,7 @@ void Reset_Robot_Pose()
         //tetra odometry Reset//
         tetra_PoseRest.data = m_iReset_flag;
         PoseReset_pub.publish(tetra_PoseRest);
-        sleep(1);
+        usleep(300000);
     }
 
     Marker_Reset_Robot_Pose();
