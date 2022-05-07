@@ -1780,26 +1780,22 @@ bool Patrol_Conveyor_Command(tetraDS_service::patrol_conveyor::Request &req,
 
 void Reset_EKF_SetPose()
 {
-    if(m_bActive_map_check)
-    {
-        //robot_localization::SetPose ekf_reset;
-        setpose_srv.request.pose.header.frame_id = tf_prefix_ + "/odom";
-        setpose_srv.request.pose.header.stamp = ros::Time::now();
-        setpose_srv.request.pose.pose.pose.position.x = 0.0; //_pTF_pose.poseTFx;
-        setpose_srv.request.pose.pose.pose.position.y = 0.0; //_pTF_pose.poseTFy;
-        setpose_srv.request.pose.pose.pose.position.z = 0.0; //_pTF_pose.poseTFz;
-        setpose_srv.request.pose.pose.pose.orientation.x = 0.0;
-        setpose_srv.request.pose.pose.pose.orientation.y = 0.0;
-        setpose_srv.request.pose.pose.pose.orientation.z = 0.0; //_pTF_pose.poseTFqz;
-        setpose_srv.request.pose.pose.pose.orientation.w = 1.0; //_pTF_pose.poseTFqw;
-        setpose_srv.request.pose.pose.covariance[0] = 0.25;
-        setpose_srv.request.pose.pose.covariance[6 * 1 + 1] = 0.25;
-        setpose_srv.request.pose.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
+	//robot_localization::SetPose ekf_reset;
+	setpose_srv.request.pose.header.frame_id = tf_prefix_ + "/odom";
+	setpose_srv.request.pose.header.stamp = ros::Time::now();
+	setpose_srv.request.pose.pose.pose.position.x = 0.0; //_pTF_pose.poseTFx;
+	setpose_srv.request.pose.pose.pose.position.y = 0.0; //_pTF_pose.poseTFy;
+	setpose_srv.request.pose.pose.pose.position.z = 0.0; //_pTF_pose.poseTFz;
+	setpose_srv.request.pose.pose.pose.orientation.x = 0.0;
+	setpose_srv.request.pose.pose.pose.orientation.y = 0.0;
+	setpose_srv.request.pose.pose.pose.orientation.z = 0.0; //_pTF_pose.poseTFqz;
+	setpose_srv.request.pose.pose.pose.orientation.w = 1.0; //_pTF_pose.poseTFqw;
+	setpose_srv.request.pose.pose.covariance[0] = 0.25;
+	setpose_srv.request.pose.pose.covariance[6 * 1 + 1] = 0.25;
+	setpose_srv.request.pose.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
 
-        SetPose_cmd_client.call(setpose_srv); //Set_pose call//
-        printf("##Set_Pose(EKF)! \n");
-
-    }
+	SetPose_cmd_client.call(setpose_srv); //Set_pose call//
+	printf("##Set_Pose(EKF)! \n");
 }
 
 bool Marker_Reset_Robot_Pose()
