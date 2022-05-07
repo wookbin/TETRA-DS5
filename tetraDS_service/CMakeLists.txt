@@ -59,6 +59,7 @@ add_service_files(
   euler_angle_reset.srv
   pose_velocity_reset.srv
   reboot_sensor.srv
+  SetPose.srv
 )
 
 generate_messages(   
