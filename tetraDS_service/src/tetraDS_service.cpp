@@ -113,6 +113,8 @@
 #include "tetraDS_service/euler_angle_reset.h"
 #include "tetraDS_service/pose_velocity_reset.h"
 #include "tetraDS_service/reboot_sensor.h"
+//robot_localization//
+#include "tetraDS_service/SetPose.h"
 
 
 #define LOW_BATTERY 40
@@ -450,6 +452,11 @@ tetraDS_service::toggleon turnon_srv;
 actionlib_msgs::GoalID goto_goal_id;
 //Clear costmap Service Client//
 ros::ServiceClient clear_costmap_client;
+
+//robot_localization Service Client//
+ros::ServiceClient SetPose_cmd_client;
+tetraDS_service::SetPose setpose_srv;
+geometry_msgs::PoseWithCovarianceStamped set_pose;
 
 //Bumper_data to Pointcloud2_data//
 ros::Publisher  pointcloud_pub_;
@@ -1770,6 +1777,31 @@ bool Patrol_Conveyor_Command(tetraDS_service::patrol_conveyor::Request &req,
 	return true;
 }
 
+
+void Reset_EKF_SetPose()
+{
+    if(m_bActive_map_check)
+    {
+        //robot_localization::SetPose ekf_reset;
+        setpose_srv.request.pose.header.frame_id = tf_prefix_ + "/odom";
+        setpose_srv.request.pose.header.stamp = ros::Time::now();
+        setpose_srv.request.pose.pose.pose.position.x = 0.0; //_pTF_pose.poseTFx;
+        setpose_srv.request.pose.pose.pose.position.y = 0.0; //_pTF_pose.poseTFy;
+        setpose_srv.request.pose.pose.pose.position.z = 0.0; //_pTF_pose.poseTFz;
+        setpose_srv.request.pose.pose.pose.orientation.x = 0.0;
+        setpose_srv.request.pose.pose.pose.orientation.y = 0.0;
+        setpose_srv.request.pose.pose.pose.orientation.z = 0.0; //_pTF_pose.poseTFqz;
+        setpose_srv.request.pose.pose.pose.orientation.w = 1.0; //_pTF_pose.poseTFqw;
+        setpose_srv.request.pose.pose.covariance[0] = 0.25;
+        setpose_srv.request.pose.pose.covariance[6 * 1 + 1] = 0.25;
+        setpose_srv.request.pose.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
+
+        SetPose_cmd_client.call(setpose_srv); //Set_pose call//
+        printf("##Set_Pose(EKF)! \n");
+
+    }
+}
+
 bool Marker_Reset_Robot_Pose()
 {
     bool bResult = false;
@@ -1866,10 +1898,12 @@ void Reset_Robot_Pose()
         //IMU reset//
         euler_angle_reset_cmd_client.call(euler_angle_reset_srv);
         usleep(100000);
+	printf("## IMU Reset ! \n");
         //tetra odometry Reset//
         tetra_PoseRest.data = m_iReset_flag;
         PoseReset_pub.publish(tetra_PoseRest);
         usleep(300000);
+	Reset_EKF_SetPose();
     }
 
     Marker_Reset_Robot_Pose();
@@ -3899,7 +3933,9 @@ int main (int argc, char** argv)
 
     //IMU Service Client//
     euler_angle_init_cmd_client = client_h.serviceClient<tetraDS_service::euler_angle_init>("euler_angle_init_cmd");
-
+	
+    //robot_localization Service Client//
+    SetPose_cmd_client = client_h.serviceClient<tetraDS_service::SetPose>("set_pose");
 
     //Infomation_subscriber//
     ros::NodeHandle nInfo;
