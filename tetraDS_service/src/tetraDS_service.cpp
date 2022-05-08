@@ -4087,7 +4087,7 @@ int main (int argc, char** argv)
         }
 
         //IMU Reset Loop//
-        if(m_iTimer_cnt >= 20000) //11 min_polling
+        if(m_iTimer_cnt >= 1800) //1 min_polling
         {
             m_iTimer_cnt = 0;
             // euler_angle_init_cmd_client.call(euler_angle_init_srv); //imu reset//
