@@ -1,8 +1,8 @@
 global_costmap:
   global_frame: map
   robot_base_frame: base_footprint
-  update_frequency: 3.0 #1.0
-  publish_frequency: 3.0 #0.5 
+  update_frequency: 20.0 #3.0
+  publish_frequency: 20.0 #3.0
   rolling_window : false
   width: 20.0
   height: 20.0
