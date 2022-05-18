@@ -1856,32 +1856,31 @@ bool Marker_Reset_Robot_Pose()
             }
         }
         fclose(fp);
-    }
-    else
-    {
-        bResult = false;
-    }
+	    initPose_.header.stamp = ros::Time::now(); 
+	    initPose_.header.frame_id = "map";
+	    //position
+	    initPose_.pose.pose.position.x = _pLandMarkPose.init_position_x;
+	    initPose_.pose.pose.position.y = _pLandMarkPose.init_position_y;
+	    initPose_.pose.pose.position.z = _pLandMarkPose.init_position_z;
+	    //orientation
+	    initPose_.pose.pose.orientation.x = 0.0;
+	    initPose_.pose.pose.orientation.y = 0.0;
+	    initPose_.pose.pose.orientation.z = _pLandMarkPose.init_orientation_z;
+	    initPose_.pose.pose.orientation.w = _pLandMarkPose.init_orientation_w;
 
-    initPose_.header.stamp = ros::Time::now(); 
-    initPose_.header.frame_id = "map";
-    //position
-    initPose_.pose.pose.position.x = _pLandMarkPose.init_position_x;
-    initPose_.pose.pose.position.y = _pLandMarkPose.init_position_y;
-    initPose_.pose.pose.position.z = _pLandMarkPose.init_position_z;
-    //orientation
-    initPose_.pose.pose.orientation.x = 0.0;
-    initPose_.pose.pose.orientation.y = 0.0;
-    initPose_.pose.pose.orientation.z = _pLandMarkPose.init_orientation_z;
-    initPose_.pose.pose.orientation.w = _pLandMarkPose.init_orientation_w;
-    
-    initPose_.pose.covariance[0] = 0.25;
-    initPose_.pose.covariance[6 * 1 + 1] = 0.25;
-    initPose_.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
+	    initPose_.pose.covariance[0] = 0.25;
+	    initPose_.pose.covariance[6 * 1 + 1] = 0.25;
+	    initPose_.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
 
     //publish msg
     initialpose_pub.publish(initPose_);
 
     printf("$$$$ init_position_x: %f , init_position_y: %f \n", _pLandMarkPose.init_position_x, _pLandMarkPose.init_position_y);
+    }
+    else
+    {
+        bResult = false;
+    }
 
     return bResult;
 }
