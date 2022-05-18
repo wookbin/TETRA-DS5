@@ -6,17 +6,17 @@ TebLocalPlannerROS:
  teb_autosize: true
  dt_ref: 0.3
  dt_hysteresis: 0.03
- min_samples: 5 #3
+ min_samples: 5
  max_samples: 100
  global_plan_overwrite_orientation: true
  global_plan_viapoint_sep: 0.5
  max_global_plan_lookahead_dist: 5.0
  force_reinit_new_goal_dist: 1.0
  feasibility_check_no_poses: 3
- publish_feedback: false #true --> debug...
+ publish_feedback: false
  shrink_horizon_backup: true
- allow_init_with_backwards_motion: true #false
- exact_arc_length: false #true -->Need to CPU speed up
+ allow_init_with_backwards_motion: true
+ exact_arc_length: false
  shrink_horizon_min_duration: 10.0 
 
  # Robot
@@ -44,15 +44,15 @@ TebLocalPlannerROS:
  include_costmap_obstacles: true
  costmap_obstacles_behind_robot_dist: 3.0
  obstacle_poses_affected: 30
- inflation_dist: 0.4 #0.5
- include_dynamic_obstacles: false #true
+ inflation_dist: 0.4
+ include_dynamic_obstacles: false
  dynamic_obstacle_inflation_dist: 0.4
  legacy_obstacle_association: false
  obstacle_association_force_inclusion_factor: 1.5
  obstacle_association_cutoff_factor: 5
  costmap_converter_plugin: ""
  costmap_converter_spin_thread: true
- costmap_converter_rate: 3.0 #5.0 #10.0
+ costmap_converter_rate: 3.0
 
  # Optimization
  no_inner_iterations: 5
@@ -65,40 +65,40 @@ TebLocalPlannerROS:
  weight_acc_lim_y: 0.0 
  weight_acc_lim_theta: 0.0 #1.0
  weight_kinematics_nh: 1000.0
- weight_kinematics_forward_drive: 600.0 #900
+ weight_kinematics_forward_drive: 600.0
  weight_kinematics_turning_radius: 1.0
  weight_optimaltime: 1.0
  weight_obstacle: 50.0
- weight_viapoint: 1.0 #1.0
+ weight_viapoint: 1.0
  weight_inflation: 0.1
  weight_dynamic_obstacle: 1.0
  weight_dynamic_obstacle_inflation: 1.0
 
  # Homotopy Class Planner
- enable_homotopy_class_planning: false # true #0713
+ enable_homotopy_class_planning: false
  enable_multithreading: true
  simple_exploration: false
- max_number_classes: 10 #10 #suggest value 2??  #3 #0709
+ max_number_classes: 10
  selection_cost_hysteresis: 1.0
- selection_obst_cost_scale: 1.0 #100.0
- selection_viapoint_cost_scale: 1.0 #ver0.4 New 
+ selection_obst_cost_scale: 1.0
+ selection_viapoint_cost_scale: 1.0
  selection_alternative_time_cost: false
- roadmap_graph_no_samples: 15 #0713
- roadmap_graph_area_width: 5 #0713
- h_signature_prescaler: 0.5 #0713
- h_signature_threshold: 0.1 #0713
- obstacle_keypoint_offset: 0.1 #0713
- obstacle_heading_threshold: 0.45 #0713
- visualize_hc_graph: False #0713
+ roadmap_graph_no_samples: 15
+ roadmap_graph_area_width: 5
+ h_signature_prescaler: 0.5
+ h_signature_threshold: 0.1
+ obstacle_keypoint_offset: 0.1
+ obstacle_heading_threshold: 0.45
+ visualize_hc_graph: False
 
  roadmap_graph_no_samples: 15
- roadmap_graph_area_width: 6 #5
+ roadmap_graph_area_width: 6
  h_signature_prescaler: 1.0
  h_signature_threshold: 0.1
  obstacle_keypoint_offset: 0.1
- obstacle_heading_threshold: 0.45 # 0.1
+ obstacle_heading_threshold: 0.45
  visualize_hc_graph: false
- viapoints_all_candidates: true #ver0.4 New
+ viapoints_all_candidates: true
  switching_blocking_period: 0.0
 
 
