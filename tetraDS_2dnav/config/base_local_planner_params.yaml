@@ -3,15 +3,15 @@ controller_frequency: 5.0
 TrajectoryPlannerROS:
 
 # Robot Configuration Parameters
-  max_vel_x: 0.5
+  max_vel_x: 0.8
   min_vel_x: 0.1 
 
   max_vel_y: 0.0
   min_vel_y: 0.0
 
-  max_vel_theta:  0.2 # 1.0
+  max_vel_theta:  0.15
   min_vel_theta:  0.05
-  min_in_place_vel_theta: 0.05 # 0.4
+  min_in_place_vel_theta: 0.05
 
   acc_lim_x: 1.0
   acc_lim_y: 0.0 
@@ -26,13 +26,12 @@ TrajectoryPlannerROS:
 
 # Forward Simulation Parameters
   sim_time: 4.0
-  vx_samples: 20 #3
+  vx_samples: 20
   vy_samples: 0
-  vtheta_samples: 40 #10 #40
-  sim_granularity: 0.045 #0.1 #0.045
-  angular_sim_granularity: 0.045 #0706 add
+  vtheta_samples: 40
+  sim_granularity: 0.045
+  angular_sim_granularity: 0.045
 
-  # scoring (0706 add)
   meter_scoring: true
   pdist_scale: 8.0
   gdist_scale: 12.0
