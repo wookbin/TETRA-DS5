@@ -20,7 +20,7 @@ TebLocalPlannerROS:
  shrink_horizon_min_duration: 10.0 
 
  # Robot
- max_vel_x: 0.55
+ max_vel_x: 0.8
  max_vel_y: 0.0
  max_vel_x_backwards: 0.15
  max_vel_theta: 0.15
@@ -35,8 +35,8 @@ TebLocalPlannerROS:
    vertices: [[0.202,0.245], [-0.439,0.245], [-0.439,-0.245], [0.202,-0.245]]
     
  # GoalTolerance
- xy_goal_tolerance: 0.1
- yaw_goal_tolerance: 0.1
+ xy_goal_tolerance: 0.05 #0.1
+ yaw_goal_tolerance: 0.02 #0.1
  free_goal_vel: false
 
  # Obstacles
