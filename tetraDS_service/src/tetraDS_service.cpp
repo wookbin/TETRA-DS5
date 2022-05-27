@@ -3927,7 +3927,7 @@ int main (int argc, char** argv)
     Conveyor_cmd_client = client_h.serviceClient<tetraDS_service::conveyor_auto_movement>("Auto_Move_cmd");
 
     //IMU Service Client//
-    euler_angle_init_cmd_client = client_h.serviceClient<tetraDS_service::euler_angle_init>("euler_angle_init_cmd");
+    euler_angle_reset_cmd_client = client_h.serviceClient<tetraDS_service::euler_angle_reset>("euler_angle_reset_cmd");
 	
     //robot_localization Service Client//
     SetPose_cmd_client = client_h.serviceClient<tetraDS_service::SetPose>("set_pose");
