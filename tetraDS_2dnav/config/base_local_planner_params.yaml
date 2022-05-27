@@ -18,8 +18,8 @@ TrajectoryPlannerROS:
   acc_lim_theta: 1.0
 
 # Goal Tolerance Parameters
-  xy_goal_tolerance: 0.1
-  yaw_goal_tolerance: 0.1
+  xy_goal_tolerance: 0.05
+  yaw_goal_tolerance: 0.0174533
 
 # Differential-drive robot configuration
   holonomic_robot: false
