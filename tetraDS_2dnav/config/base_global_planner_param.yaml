@@ -1,6 +1,3 @@
-# Planner selection
-# base_global_planner: "global_planner/GlobalPlanner"
-# base_local_planner: "teb_local_planner/TebLocalPlannerROS"
 GlobalPlanner:
   old_navfn_behavior: false
   use_quadratic: true 
