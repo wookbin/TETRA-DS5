@@ -19,3 +19,8 @@ global_costmap:
       type: "virtual_costmap_layer::VirtualLayer"
     - name: inflation_layer
       type: "costmap_2d::InflationLayer"
+
+  inflation_layer:
+    inflation_radius: 1.75
+    cost_scaling_factor: 2.58
+    inflate_unknown: true
