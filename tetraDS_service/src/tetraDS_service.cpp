@@ -2673,6 +2673,18 @@ bool ChargingStation_Yaw_tracking()
         cmd->angular.z = -1.0 * _pAR_tag_pose.m_target_yaw * 1.6;
         cmdpub_.publish(cmd);
         sleep(2);
+	    
+	if(m_fdistance > 1.0)
+        {
+            printf("[Error] Marker too far away !! \n");
+            cmd->angular.z = 0.0;
+            cmd->linear.x = 0.0;
+            cmdpub_.publish(cmd);
+
+            ex_iDocking_CommandMode = 9;
+            bResult = false;
+            return bResult;
+        }
 
         while(m_iback_cnt < 30)
         {
@@ -2706,6 +2718,18 @@ bool ChargingStation_Yaw_tracking()
         cmd->angular.z = -1.0 * _pAR_tag_pose.m_target_yaw * 1.6;
         cmdpub_.publish(cmd);
         sleep(2);
+	    
+	if(m_fdistance > 1.0)
+        {
+            printf("[Error] Marker too far away !! \n");
+            cmd->angular.z = 0.0;
+            cmd->linear.x = 0.0;
+            cmdpub_.publish(cmd);
+
+            ex_iDocking_CommandMode = 9;
+            bResult = false;
+            return bResult;
+        }
 
         while(m_iback_cnt < 30)
         {
@@ -2915,6 +2939,18 @@ bool ConveyorStation_Yaw_tracking()
         cmd->angular.z = -1.0 * _pAR_tag_pose.m_target_yaw * 1.6;
         cmdpub_.publish(cmd);
         sleep(2);
+	    
+	if(m_fdistance > 1.0)
+        {
+            printf("[Error] Marker too far away !! \n");
+            cmd->angular.z = 0.0;
+            cmd->linear.x = 0.0;
+            cmdpub_.publish(cmd);
+
+            ex_iDocking_CommandMode = 9;
+            bResult = false;
+            return bResult;
+        }
 
         while(m_iback_cnt < 30)
         {
@@ -2947,6 +2983,18 @@ bool ConveyorStation_Yaw_tracking()
         cmd->angular.z = -1.0 * _pAR_tag_pose.m_target_yaw * 1.6;
         cmdpub_.publish(cmd);
         sleep(2);
+	    
+	if(m_fdistance > 1.0)
+        {
+            printf("[Error] Marker too far away !! \n");
+            cmd->angular.z = 0.0;
+            cmd->linear.x = 0.0;
+            cmdpub_.publish(cmd);
+
+            ex_iDocking_CommandMode = 9;
+            bResult = false;
+            return bResult;
+        }
 
         while(m_iback_cnt < 30)
         {
