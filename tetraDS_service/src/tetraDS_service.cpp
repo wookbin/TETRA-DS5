@@ -2674,7 +2674,7 @@ bool ChargingStation_Yaw_tracking()
         cmdpub_.publish(cmd);
         sleep(2);
 	    
-	if(m_fdistance > 1.0)
+	if(m_fdistance > 1.0 || m_fdistance < -1.0)
         {
             printf("[Error] Marker too far away !! \n");
             cmd->angular.z = 0.0;
@@ -2719,7 +2719,7 @@ bool ChargingStation_Yaw_tracking()
         cmdpub_.publish(cmd);
         sleep(2);
 	    
-	if(m_fdistance > 1.0)
+	if(m_fdistance > 1.0 || m_fdistance < -1.0)
         {
             printf("[Error] Marker too far away !! \n");
             cmd->angular.z = 0.0;
@@ -2940,7 +2940,7 @@ bool ConveyorStation_Yaw_tracking()
         cmdpub_.publish(cmd);
         sleep(2);
 	    
-	if(m_fdistance > 1.0)
+	if(m_fdistance > 1.0 || m_fdistance < -1.0)
         {
             printf("[Error] Marker too far away !! \n");
             cmd->angular.z = 0.0;
@@ -2984,7 +2984,7 @@ bool ConveyorStation_Yaw_tracking()
         cmdpub_.publish(cmd);
         sleep(2);
 	    
-	if(m_fdistance > 1.0)
+	if(m_fdistance > 1.0 || m_fdistance < -1.0)
         {
             printf("[Error] Marker too far away !! \n");
             cmd->angular.z = 0.0;
