@@ -615,7 +615,9 @@ int main(int argc, char * argv[])
 			if(m_bflag_emg)
 			{
 				dssp_rs232_drv_module_set_servo(0); //Servo Off
-				m_bCheck_emg = true;
+				usleep(1000);
+				dssp_rs232_drv_module_set_drive_err_reset();
+				usleep(1000);
 				m_bflag_emg = false;
 			}
 		}
@@ -623,12 +625,6 @@ int main(int argc, char * argv[])
 		{
 			if(!m_bflag_emg)
 			{
-				if(m_bCheck_emg)
-				{
-					dssp_rs232_drv_module_set_drive_err_reset();
-					usleep(10000);
-					m_bCheck_emg = false;
-				}
 				dssp_rs232_drv_module_set_servo(1); //Servo On
 				m_bflag_emg = true;
 			}
