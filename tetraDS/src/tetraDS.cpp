@@ -54,7 +54,7 @@ int m_iPOS_Y = 0;
 int m_iPOS_Theta = 0;
 bool bPosition_mode_flag = false;
 //emg one time check flag
-bool m_bCheck_emg = false;
+bool m_bCheck_emg = true;
 //tf_prefix add
 std::string tf_prefix_;
 bool has_prefix;
