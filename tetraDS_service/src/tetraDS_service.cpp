@@ -4146,13 +4146,13 @@ int main (int argc, char** argv)
         }
         else
         {
-            if(_pRobot_Status.m_iCallback_Charging_status != 3 || _pRobot_Status.m_iCallback_Charging_status != 6)
+            if(_pRobot_Status.m_iCallback_Charging_status == 3 || _pRobot_Status.m_iCallback_Charging_status == 6 || _pRobot_Status.m_iCallback_Charging_status == 2)
             {
-                m_iTimer_cnt = 0;
+                m_iTimer_cnt ++;
             }
             else
             {
-                m_iTimer_cnt ++;
+                m_iTimer_cnt = 0;
             }
         }
         
