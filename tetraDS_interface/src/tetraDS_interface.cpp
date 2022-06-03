@@ -166,7 +166,7 @@ bool Log_Command(tetraDS_interface::Integrallog::Request  &req,
 	---
 	bool command_Result
     */
-    bResult = true;
+    	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -183,7 +183,7 @@ bool LEDcontrol_Command(tetraDS_interface::ledcontrol::Request  &req,
     ---
     bool command_Result
     */
-    bResult = true;
+    	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -221,7 +221,7 @@ bool TurnOn_Command(tetraDS_interface::toggleon::Request  &req,
     ---
     bool command_Result
     */
-    bResult = true;
+    	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -256,7 +256,7 @@ bool OutputOnOff(tetraDS_interface::setOutput::Request  &req,
 	---
 	bool command_Result
     */
-    bResult = true;
+    	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -288,7 +288,7 @@ bool Conveyor_Auto_Move_Command(tetraDS_interface::conveyor_auto_movement::Reque
     ---
     bool command_Result
     */
-    bResult = true;
+    	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -304,7 +304,7 @@ bool Conveyor_Manual_Move_Command(tetraDS_interface::conveyor_manual_movement::R
     ---
     bool command_Result
     */
-    bResult = true;
+    	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -423,9 +423,9 @@ void RangeToCloud_D_R(const sensor_msgs::Range::ConstPtr& range_msg)
 int limit_time = 0;
 int main(int argc, char * argv[])
 {
-    ros::init(argc, argv, "tetraDS_interface");
-    ros::NodeHandle n;
-    ros::Publisher tetra_battery_publisher;
+    	ros::init(argc, argv, "tetraDS_interface");
+    	ros::NodeHandle n;
+    	ros::Publisher tetra_battery_publisher;
 	ros::Publisher docking_status_publisher;
 	ros::Publisher battery_voltage_publisher;
 	ros::Publisher battery_current_publisher;
@@ -433,19 +433,21 @@ int main(int argc, char * argv[])
 	ros::Publisher conveyor_sensor_publisher; //conveyor sensor *2ea
 	ros::Publisher conveyor_movement_publisher; //conveyor movement
 	ros::Publisher power_error_publisher;
+	ros::Publisher servo_pub;
+	std_msgs::Int32 servo;
 
 	ros::NodeHandle private_node_handle("~");
-    private_node_handle.param<double>("time_offset_in_seconds", time_offset_in_seconds, 0.0);
+    	private_node_handle.param<double>("time_offset_in_seconds", time_offset_in_seconds, 0.0);
 	has_prefix=ros::param::get("tf_prefix", tf_prefix_); //tf_prefix add
 
 	//I/O Control Service
-    ros::NodeHandle IOS_h;
-    led_service = IOS_h.advertiseService("led_cmd", LEDcontrol_Command);
-    ledtoggle_service = IOS_h.advertiseService("ledtoggle_cmd", LEDtoggle_Command);
+    	ros::NodeHandle IOS_h;
+    	led_service = IOS_h.advertiseService("led_cmd", LEDcontrol_Command);
+    	ledtoggle_service = IOS_h.advertiseService("ledtoggle_cmd", LEDtoggle_Command);
 	turnon_service = IOS_h.advertiseService("turnon_cmd", TurnOn_Command);
 	// Charging Port Control Services
-    chargeport_service_on  = IOS_h.advertiseService("charging_port_on", ChargingPortOn);
-    chargeport_service_off = IOS_h.advertiseService("charging_port_off", ChargingPortOff);
+    	chargeport_service_on  = IOS_h.advertiseService("charging_port_on", ChargingPortOn);
+    	chargeport_service_off = IOS_h.advertiseService("charging_port_off", ChargingPortOff);
 	//GPIO_Output service
 	output_service = IOS_h.advertiseService("output_cmd", OutputOnOff);
 	//Loadcell service
@@ -461,10 +463,10 @@ int main(int argc, char * argv[])
 	log_service = log_h.advertiseService("log_cmd", Log_Command);
 
 	//Ultrasonic//
-    ros::Publisher Ultrasonic1_pub = n.advertise<sensor_msgs::Range>("Ultrasonic_D_L", 10);
-    ros::Publisher Ultrasonic2_pub = n.advertise<sensor_msgs::Range>("Ultrasonic_R_L", 10);
-    ros::Publisher Ultrasonic3_pub = n.advertise<sensor_msgs::Range>("Ultrasonic_R_R", 10);
-    ros::Publisher Ultrasonic4_pub = n.advertise<sensor_msgs::Range>("Ultrasonic_D_R", 10);
+    	ros::Publisher Ultrasonic1_pub = n.advertise<sensor_msgs::Range>("Ultrasonic_D_L", 10);
+    	ros::Publisher Ultrasonic2_pub = n.advertise<sensor_msgs::Range>("Ultrasonic_R_L", 10);
+    	ros::Publisher Ultrasonic3_pub = n.advertise<sensor_msgs::Range>("Ultrasonic_R_R", 10);
+    	ros::Publisher Ultrasonic4_pub = n.advertise<sensor_msgs::Range>("Ultrasonic_D_R", 10);
 
 	//battery & status
 	tetra_battery_publisher = n.advertise<std_msgs::Int32>("tetra_battery", 1);
@@ -491,39 +493,42 @@ int main(int argc, char * argv[])
 	std_msgs::Int32 conveyor_sensor;
 	conveyor_movement_publisher = n.advertise<std_msgs::Int32>("conveyor_movement", 1);
 	std_msgs::Int32 conveyor_movement;
+	
+	//Servo On/Off publish
+    	servo_pub = n.advertise<std_msgs::Int32>("Servo_ON",10);
 
 	//Read Conveyor Option Param Read//
-    n.getParam("conveyor_option", m_bConveyor_option);
-    printf("##conveyor_option: %d \n", m_bConveyor_option);
+    	n.getParam("conveyor_option", m_bConveyor_option);
+    	printf("##conveyor_option: %d \n", m_bConveyor_option);
 
 	 //Ultrasonic Paramter Setting//////////////////////////////////
-    char frameid1[] = "/Ultrasonic_Down_Left";
-    range_msg1.header.frame_id = frameid1;
-    range_msg1.radiation_type = 0; //Ultrasonic
-    range_msg1.field_of_view = (60.0/180.0) * M_PI; //
-    range_msg1.min_range = Ultrasonic_MIN_range; 
-    range_msg1.max_range = Ultrasonic_MAX_range; 
+    	char frameid1[] = "/Ultrasonic_Down_Left";
+    	range_msg1.header.frame_id = frameid1;
+    	range_msg1.radiation_type = 0; //Ultrasonic
+    	range_msg1.field_of_view = (60.0/180.0) * M_PI; //
+    	range_msg1.min_range = Ultrasonic_MIN_range; 
+    	range_msg1.max_range = Ultrasonic_MAX_range; 
 
-    char frameid2[] = "/Ultrasonic_Rear_Left";
-    range_msg2.header.frame_id = frameid2;
-    range_msg2.radiation_type = 0; //Ultrasonic
-    range_msg2.field_of_view = (60.0/180.0) * M_PI; //
-    range_msg2.min_range = Ultrasonic_MIN_range;
-    range_msg2.max_range = Ultrasonic_MAX_range;
+    	char frameid2[] = "/Ultrasonic_Rear_Left";
+    	range_msg2.header.frame_id = frameid2;
+    	range_msg2.radiation_type = 0; //Ultrasonic
+    	range_msg2.field_of_view = (60.0/180.0) * M_PI; //
+    	range_msg2.min_range = Ultrasonic_MIN_range;
+    	range_msg2.max_range = Ultrasonic_MAX_range;
 
-    char frameid3[] = "/Ultrasonic_Rear_Right";
-    range_msg3.header.frame_id = frameid3;
-    range_msg3.radiation_type = 0; //Ultrasonic
-    range_msg3.field_of_view = (60.0/180.0) * M_PI; //
-    range_msg3.min_range = Ultrasonic_MIN_range;
-    range_msg3.max_range = Ultrasonic_MAX_range;
+    	char frameid3[] = "/Ultrasonic_Rear_Right";
+    	range_msg3.header.frame_id = frameid3;
+    	range_msg3.radiation_type = 0; //Ultrasonic
+    	range_msg3.field_of_view = (60.0/180.0) * M_PI; //
+    	range_msg3.min_range = Ultrasonic_MIN_range;
+    	range_msg3.max_range = Ultrasonic_MAX_range;
 
-    char frameid4[] = "/Ultrasonic_Down_Right";
-    range_msg4.header.frame_id = frameid4;
-    range_msg4.radiation_type = 0; //Ultrasonic
-    range_msg4.field_of_view = (60.0/180.0) * M_PI; //
-    range_msg4.min_range = Ultrasonic_MIN_range;
-    range_msg4.max_range = Ultrasonic_MAX_range;
+    	char frameid4[] = "/Ultrasonic_Down_Right";
+    	range_msg4.header.frame_id = frameid4;
+    	range_msg4.radiation_type = 0; //Ultrasonic
+    	range_msg4.field_of_view = (60.0/180.0) * M_PI; //
+    	range_msg4.min_range = Ultrasonic_MIN_range;
+    	range_msg4.max_range = Ultrasonic_MAX_range;
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	////sonar range to pointcloud//
@@ -537,7 +542,7 @@ int main(int argc, char * argv[])
 	ros::Subscriber sonar2_sub = n.subscribe<sensor_msgs::Range>("Ultrasonic_R_R",10,RangeToCloud_R_R);
 	ros::Subscriber sonar3_sub = n.subscribe<sensor_msgs::Range>("Ultrasonic_D_R",10,RangeToCloud_D_R);
 
-    ros::Rate loop_rate(30.0); //30Hz Loop
+    	ros::Rate loop_rate(30.0); //30Hz Loop
 	sprintf(port, "/dev/ttyS1");
 	
 	//RS232 Connect
@@ -556,9 +561,9 @@ int main(int argc, char * argv[])
 	//Ultrasonic On//
 	dssp_rs232_power_module_set_Ultrasonic(1);
 
-    while(ros::ok())
+    	while(ros::ok())
 	{
-        ros::spinOnce();
+        	ros::spinOnce();
 		// calculate measurement time
 		ros::Time measurement_time = ros::Time(0) + ros::Duration(time_offset_in_seconds);
 		m_iPowerCheck = dssp_rs232_power_module_read_battery(&m_dbattery, &m_dVoltage, &m_dCurrent, &m_imode_status, m_iInput, m_iOutput);
@@ -583,6 +588,12 @@ int main(int argc, char * argv[])
 		//docking_status_publisher
 		docking_status.data = m_imode_status;
 		docking_status_publisher.publish(docking_status);
+		if(m_imode_status == 0)
+		{
+			servo.data = 2;
+			servo_pub.publish(servo);
+			printf("[ERROR] docking_status_publisher == 0 !!!!!!");
+		}
 		//GPIO_status////////////////////////////////////////////
 		//Input data
 		gpio_msg.Input0 = m_iInput[0];
