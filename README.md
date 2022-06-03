@@ -1,5 +1,5 @@
 # TETRA-DS5
-TETRA-DS5_(beta version)
+TETRA-DS5_(beta version) _ ROS1-melodic
 # 아직 완성되지 않은 베타버전의 TETRA-DS5 ROS Package입니다. (가제보 X)
 # 종족성 패키지들이 많이 있습니다...(정리중...)
 
