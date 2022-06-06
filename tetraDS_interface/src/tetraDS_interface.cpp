@@ -52,6 +52,8 @@ double m_dVoltage = 0.0;
 double m_dCurrent = 0.0;
 int m_imode_status = 0;
 int m_iPowerCheck = 0;
+int m_iPowerCheckCount = 0;
+
 //Ultrasonic data//
 double m_dUltrasonic[8] = {0.0, };  //Max Ultrasonic: 8ea (TETRA-DS5 used 4ea)
 sensor_msgs::Range range_msg1; //Ultrasonic_1
@@ -590,9 +592,22 @@ int main(int argc, char * argv[])
 		docking_status_publisher.publish(docking_status);
 		if(m_imode_status == 0)
 		{
-			servo.data = 2;
-			servo_pub.publish(servo);
-			printf("[ERROR] docking_status_publisher == 0 !!!!!!");
+			if(m_iPowerCheckCount>5)
+			{
+				servo.data = 2;
+				servo_pub.publish(servo);
+				printf("[ERROR] docking_status_publisher == 0 !!!!!!");
+				m_iPowerCheckCount = 0;
+
+				//add...LED
+				dssp_rs232_power_module_set_light_toggle(1, 10,100,10,100);
+				dssp_rs232_power_module_toggle_on(18);
+
+			}
+			else
+			{
+				m_iPowerCheckCount++;
+			}
 		}
 		//GPIO_status////////////////////////////////////////////
 		//Input data
