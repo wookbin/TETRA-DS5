@@ -510,7 +510,7 @@ int main(int argc, char * argv[])
 	linear_position_move_service = param.advertiseService("linear_move_cmd", Linear_Move_Command);
 	angular_position_move_service = param.advertiseService("angular_move_cmd", Angular_Move_Command);
 
-    ros::Rate loop_rate(60.0); //default: 60HZ
+    ros::Rate loop_rate(30.0); //default: 30HZ
 
 	sprintf(port, "/dev/ttyS0");
 	//RS232 Connect
