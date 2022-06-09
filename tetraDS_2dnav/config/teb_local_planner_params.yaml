@@ -6,7 +6,7 @@ TebLocalPlannerROS:
  teb_autosize: true
  dt_ref: 0.3
  dt_hysteresis: 0.03
- min_samples: 5
+ min_samples: 3 #5
  max_samples: 100
  global_plan_overwrite_orientation: true
  global_plan_viapoint_sep: 0.5
