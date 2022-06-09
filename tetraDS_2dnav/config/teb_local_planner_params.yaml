@@ -16,7 +16,7 @@ TebLocalPlannerROS:
  publish_feedback: false
  shrink_horizon_backup: true
  allow_init_with_backwards_motion: true
- exact_arc_length: false
+ exact_arc_length: true #false
  shrink_horizon_min_duration: 10.0 
 
  # Robot
