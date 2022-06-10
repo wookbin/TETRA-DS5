@@ -681,7 +681,7 @@ string GetWIFI_IPAddress()
     fd = socket(AF_INET, SOCK_DGRAM, 0);
      
     ifr.ifr_addr.sa_family = AF_INET;
-    strncpy(ifr.ifr_name, "enp3s0", IFNAMSIZ -1); //Ehernet device name Check
+    strncpy(ifr.ifr_name, "enp2s0", IFNAMSIZ -1); //Ehernet device name Check
     
     ioctl(fd, SIOCGIFADDR, &ifr);
     close(fd);
