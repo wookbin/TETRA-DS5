@@ -152,7 +152,7 @@ bool m_bActive_map_check = false;
 typedef struct HOME_POSE
 {
     string HOME_strLOCATION = "HOME";
-    double HOME_dPOSITION_X = 0.5;
+    double HOME_dPOSITION_X = 0.6;
     double HOME_dPOSITION_Y = 0.0;
     double HOME_dPOSITION_Z = 0.0;
     double HOME_dQUATERNION_X = 0.0;
