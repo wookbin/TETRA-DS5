@@ -21,7 +21,7 @@
 #include "tetraDS_interface/loadcell_callibration.h" //SRV
 #include "tetraDS_interface/conveyor_auto_movement.h" //SRV
 #include "tetraDS_interface/conveyor_manual_movement.h" //SRV
-#include <tetraDS_interface/get_gpio_status.h> //SRV
+#include "tetraDS_interface/get_gpio_status.h" //SRV
 
 
 
