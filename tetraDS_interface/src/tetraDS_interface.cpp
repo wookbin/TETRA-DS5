@@ -21,6 +21,7 @@
 #include "tetraDS_interface/loadcell_callibration.h" //SRV
 #include "tetraDS_interface/conveyor_auto_movement.h" //SRV
 #include "tetraDS_interface/conveyor_manual_movement.h" //SRV
+#include <tetraDS_interface/get_gpio_status.h> //SRV
 
 
 
@@ -83,6 +84,8 @@ tetraDS_interface::Integrallog log_cmd;
 //GPIO_service
 ros::ServiceServer output_service;
 tetraDS_interface::setOutput output_cmd;
+ros::ServiceServer get_gpio_service;
+tetraDS_interface::get_gpio_status gpio_status_cmd;
 
 //GPIO msg
 tetraDS_interface::GPIO gpio_msg;
@@ -259,6 +262,55 @@ bool OutputOnOff(tetraDS_interface::setOutput::Request  &req,
 	bool command_Result
     */
     	bResult = true;
+	res.command_Result = bResult;
+	return true;
+}
+
+bool GetGPIO(tetraDS_interface::get_gpio_status::Request  &req, 
+			 tetraDS_interface::get_gpio_status::Response &res)
+{
+	bool bResult = false;
+    
+	//Input data
+	res.Input0 = gpio_msg.Input0;
+	res.Input1 = gpio_msg.Input1;
+	res.Input2 = gpio_msg.Input2;
+	res.Input3 = gpio_msg.Input3;
+	res.Input4 = gpio_msg.Input4;
+	res.Input5 = gpio_msg.Input5;
+	res.Input6 = gpio_msg.Input6;
+	res.Input7 = gpio_msg.Input7;
+	//Output data
+	res.Output0 = gpio_msg.Output0;
+	res.Output1 = gpio_msg.Output1;
+	res.Output2 = gpio_msg.Output2;
+	res.Output3 = gpio_msg.Output3;
+	res.Output4 = gpio_msg.Output4;
+	res.Output5 = gpio_msg.Output5;
+	res.Output6 = gpio_msg.Output6;
+	res.Output7 = gpio_msg.Output7;
+	
+    /*
+	uint8  Input0
+	uint8  Input1
+	uint8  Input2
+	uint8  Input3
+	uint8  Input4
+	uint8  Input5
+	uint8  Input6
+	uint8  Input7
+	uint8  Output0
+	uint8  Output1
+	uint8  Output2
+	uint8  Output3
+	uint8  Output4
+	uint8  Output5
+	uint8  Output6
+	uint8  Output7
+	bool   command_Result
+    */
+
+    bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -452,6 +504,8 @@ int main(int argc, char * argv[])
     	chargeport_service_off = IOS_h.advertiseService("charging_port_off", ChargingPortOff);
 	//GPIO_Output service
 	output_service = IOS_h.advertiseService("output_cmd", OutputOnOff);
+	//GPIO Check service
+	get_gpio_service = IOS_h.advertiseService("gpio_status_cmd", GetGPIO);
 	//Loadcell service
 	ros::NodeHandle CONVEYOR_h;
 	loadcell_callibration_service = CONVEYOR_h.advertiseService("CAL_cmd", Loadcell_Callibration_Command);
