@@ -33,6 +33,7 @@ add_service_files(
   loadcell_callibration.srv
   conveyor_manual_movement.srv
   conveyor_auto_movement.srv
+  get_gpio_status.srv
 )
 
 ## Generate added messages and services with any dependencies listed here
