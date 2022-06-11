@@ -1,4 +1,4 @@
-
+#include <ros/ros.h>
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
 #include <nav_msgs/Odometry.h>
@@ -198,7 +198,6 @@ typedef struct ROBOT_STATUS
 
 }ROBOT_STATUS;
 ROBOT_STATUS _pRobot_Status;
-
 
 //***************************************************************************************************************************************/
 //Callback Function///
@@ -470,7 +469,6 @@ bool Set_Output(int Output0, int Output1, int Output2, int Output3, int Output4,
     return bResult;
 
 }
-
 bool Get_GPIO_Status()
 {
     bool bResult = false;
@@ -674,63 +672,69 @@ bool DoParsing(char* data)
     return bResult;
 }
 
-void *AutoThread_function(void *data)
+
+bool Get_GPIO_Status()
 {
-    while(1)
-    {
-        if(m_bflag_thread)
-        {
-            msg_size = read(client_fd, buffer, BUF_LEN);
-            if(msg_size < 1)
-            {
-                m_bflag_thread = false;
-            }
-            else
-            {
-                printf("[DATA] = %s [msg_size] = %d \n",buffer, msg_size);
-                memset(&Send_buffer, 0x00, sizeof(Send_buffer)); //clear Send_buffer
-                DoParsing(buffer);
-                memset(&buffer, 0x00, sizeof(buffer)); //clear buffer
-            }
+    bool bResult = false;
 
-        }
+    gpio_status_cmd_client.call(gpio_status_cmd_service);
 
-        usleep(100000); //10ms
-    }
-    pthread_cancel(p_auto_thread); //Thread kill
+    sprintf(Send_buffer, "DS,17,GPIO,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,XX", 
+            gpio_status_cmd_service.response.Input0,gpio_status_cmd_service.response.Input1,gpio_status_cmd_service.response.Input2,
+            gpio_status_cmd_service.response.Input3,gpio_status_cmd_service.response.Input4,gpio_status_cmd_service.response.Input5,
+            gpio_status_cmd_service.response.Input6,gpio_status_cmd_service.response.Input7,
+            gpio_status_cmd_service.response.Output0,gpio_status_cmd_service.response.Output1,gpio_status_cmd_service.response.Output2,
+            gpio_status_cmd_service.response.Output3,gpio_status_cmd_service.response.Output4,gpio_status_cmd_service.response.Output5,
+            gpio_status_cmd_service.response.Output6,gpio_status_cmd_service.response.Output7);
+
+    bResult = true;
+    return bResult;
+
 }
 
-void *SocketCheck_Thread_function(void *data)
+bool MappingMode_ON()
 {
-    while(1)
-    {
-        
-        client_fd = accept(server_fd, (sockaddr *)&client_addr, (socklen_t*)&len);
-        if(client_fd < 0)
-        {
-            printf("Server: accept failed.\n");
-            m_bflag_thread = false;
-            exit(0);
-        }
+    bool bResult = false;
 
-        inet_ntop(AF_INET, &client_addr.sin_addr.s_addr, temp, sizeof(temp));
-        printf("Server : %s client connected.\n", temp);
-        m_bflag_thread = true;
-        
+    mapping_cmd_client.call(mapping_cmd_service);
 
-        usleep(1000000); //100ms
-    }
-    pthread_cancel(p_auto_thread2); //Thread kill
+    bResult = true;
+    return bResult;
 }
 
-//add _ GUI Button callback fuction...
-void TESTCallback(const sensor_msgs::Joy::ConstPtr& joy)
+bool NodeKill()
 {
-    if(joy->buttons[5] == 1) //HOME goto...
-    {
-        _pRobot_Status.iMovebase_Result = 10;
-    }
+    bool bResult = false;
 
+    nodekill_cmd_client.call(nodekill_cmd_service);
+
+    bResult = true;
+    return bResult;
+}
+
+bool Map_Save(string strMapName)
+{
+    bool bResult = false;
+
+    mapsave_cmd_service.request.map_name = strMapName;
+    mapsave_cmd_client.call(mapsave_cmd_service);
+
+    bResult = true;
+    return bResult;
+}
+
+bool Dcoking_Control(int iMarkerID, int iMode)
+{
+    bool bResult = false;
+
+    //int32 id
+    //int32 mode
+    dockingcontrol_cmd_service.request.id = iMarkerID;
+    dockingcontrol_cmd_service.request.mode = iMode;
+    dockingcontrol_cmd_client.call(dockingcontrol_cmd_service);
+
+    bResult = true;
+    return bResult;
 }
 
 
@@ -870,63 +874,4 @@ bool DoParsing(char* data)
 
 
     return bResult;
-}
-
-void *AutoThread_function(void *data)
-{
-    while(1)
-    {
-        if(m_bflag_thread)
-        {
-            msg_size = read(client_fd, buffer, BUF_LEN);
-            if(msg_size < 1)
-            {
-                m_bflag_thread = false;
-            }
-            else
-            {
-                printf("[DATA] = %s [msg_size] = %d \n",buffer, msg_size);
-                memset(&Send_buffer, 0x00, sizeof(Send_buffer)); //clear Send_buffer
-                DoParsing(buffer);
-                memset(&buffer, 0x00, sizeof(buffer)); //clear buffer
-            }
-
-        }
-
-        usleep(100000); //10ms
-    }
-    pthread_cancel(p_auto_thread); //Thread kill
-}
-
-void *SocketCheck_Thread_function(void *data)
-{
-    while(1)
-    {
-        
-        client_fd = accept(server_fd, (sockaddr *)&client_addr, (socklen_t*)&len);
-        if(client_fd < 0)
-        {
-            printf("Server: accept failed.\n");
-            m_bflag_thread = false;
-            exit(0);
-        }
-
-        inet_ntop(AF_INET, &client_addr.sin_addr.s_addr, temp, sizeof(temp));
-        printf("Server : %s client connected.\n", temp);
-        m_bflag_thread = true;
-        
-
-        usleep(1000000); //100ms
-    }
-    pthread_cancel(p_auto_thread2); //Thread kill
-}
-
-//add _ GUI Button callback fuction...
-void TESTCallback(const sensor_msgs::Joy::ConstPtr& joy)
-{
-    if(joy->buttons[5] == 1) //HOME goto...
-    {
-        _pRobot_Status.iMovebase_Result = 10;
-    }
-
 }
