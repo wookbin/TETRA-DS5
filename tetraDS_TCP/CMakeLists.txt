@@ -23,25 +23,17 @@ add_service_files(
   getlocation.srv
   setlocation.srv
   setsavemap.srv
-  getinformation.srv
   dockingcontrol.srv
   getlocationlist.srv
-  getlandmarklist.srv
   deletelocation.srv
-  deletelandmark.srv
-  deletemap.srv
   runmapping.srv
   runnavigation.srv
   rosnodekill.srv
   getmaplist.srv
   gotocancel.srv
   setmaxspeed.srv
-  servo.srv
-  virtual_obstacle.srv
-  setinitpose.srv
-  patrol.srv
-  deletedataall.srv
-  sendmsg.srv
+  setOutput.srv
+  get_gpio_status.srv
 )
 
 generate_messages(   
@@ -73,4 +65,3 @@ add_executable(tetraDS_TCP src/tetraDS_TCP.cpp)
 
 add_dependencies(tetraDS_TCP ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(tetraDS_TCP ${catkin_LIBRARIES})
-
