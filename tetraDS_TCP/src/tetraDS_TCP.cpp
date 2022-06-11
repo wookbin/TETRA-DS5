@@ -1,4 +1,4 @@
-#include <ros/ros.h>
+
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
 #include <nav_msgs/Odometry.h>
@@ -55,21 +55,16 @@
 #include "tetraDS_TCP/getlocation.h" //SRV
 #include "tetraDS_TCP/setlocation.h" //SRV
 #include "tetraDS_TCP/setsavemap.h" //SRV
-#include "tetraDS_TCP/getinformation.h" //SRV
 #include "tetraDS_TCP/getlocationlist.h" //SRV
-#include "tetraDS_TCP/getlandmarklist.h" //SRV
 #include "tetraDS_TCP/deletelocation.h" //SRV
-#include "tetraDS_TCP/deletelandmark.h" //SRV
 #include "tetraDS_TCP/runmapping.h" //SRV
 #include "tetraDS_TCP/runnavigation.h" //SRV
 #include "tetraDS_TCP/rosnodekill.h" //SRV
 #include "tetraDS_TCP/getmaplist.h" //SRV
-#include "tetraDS_TCP/deletemap.h" //SRV
 #include "tetraDS_TCP/setmaxspeed.h" //SRV
-#include "tetraDS_TCP/servo.h" //SRV
-#include "tetraDS_TCP/setinitpose.h" //SRV
-#include "tetraDS_TCP/patrol.h" //SRV
-#include "tetraDS_TCP/deletedataall.h" //SRV
+#include "tetraDS_TCP/dockingcontrol.h" //SRV
+#include "tetraDS_TCP/setOutput.h" //SRV
+#include "tetraDS_TCP/get_gpio_status.h" //SRV
 
 #define BUF_LEN 4096
 using namespace std;
@@ -114,7 +109,6 @@ ros::ServiceClient gotocancel_cmd_client;
 tetraDS_TCP::gotocancel gotocancel_cmd_service;
 ros::ServiceClient setlocation_cmd_client;
 tetraDS_TCP::setlocation setlocation_cmd_service;
-
 ros::ServiceClient getlocation_cmd_client;
 tetraDS_TCP::getlocation getlocation_cmd_service;
 ros::ServiceClient locationlist_cmd_client;
@@ -123,11 +117,22 @@ ros::ServiceClient maplist_cmd_client;
 tetraDS_TCP::getmaplist maplist_cmd_service;
 ros::ServiceClient setspeed_cmd_client;
 tetraDS_TCP::setmaxspeed setspeed_cmd_service;
-
-
 ros::ServiceClient navigation_cmd_client;
 tetraDS_TCP::runnavigation navigation_cmd_service;
-
+ros::ServiceClient mapping_cmd_client;
+tetraDS_TCP::runmapping mapping_cmd_service;
+ros::ServiceClient mapsave_cmd_client;
+tetraDS_TCP::setsavemap mapsave_cmd_service;
+ros::ServiceClient nodekill_cmd_client;
+tetraDS_TCP::rosnodekill nodekill_cmd_service;
+ros::ServiceClient deletelocation_cmd_client;
+tetraDS_TCP::deletelocation deletelocation_cmd_service;
+ros::ServiceClient dockingcontrol_cmd_client;
+tetraDS_TCP::dockingcontrol dockingcontrol_cmd_service;
+ros::ServiceClient output_cmd_client;
+tetraDS_TCP::setOutput output_cmd_service;
+ros::ServiceClient gpio_status_cmd_client;
+tetraDS_TCP::get_gpio_status gpio_status_cmd_service;
 
 
 //***************************************************************************************************************************************/
@@ -193,6 +198,7 @@ typedef struct ROBOT_STATUS
 
 }ROBOT_STATUS;
 ROBOT_STATUS _pRobot_Status;
+
 
 //***************************************************************************************************************************************/
 //Callback Function///
@@ -427,7 +433,7 @@ bool Set_Robot_MaxSpeed(double dSpeed)
     setspeed_cmd_service.request.speed = dSpeed;
     setspeed_cmd_client.call(setspeed_cmd_service);
 
-    sprintf(Send_buffer,"DS,1,SPEED,%.3f,XX", setspeed_cmd_service.response.set_vel);
+    sprintf(Send_buffer,"DS,2,SPEED,%.3f,XX", setspeed_cmd_service.response.set_vel);
 
     bResult = true;
     return bResult;
@@ -445,6 +451,90 @@ bool Set_Location(string strLocationName)
     bResult = true;
     return bResult;
 }
+
+bool Set_Output(int Output0, int Output1, int Output2, int Output3, int Output4, int Output5, int Output6, int Output7)
+{
+    bool bResult = false;
+
+    output_cmd_service.request.Output0 = Output0;
+    output_cmd_service.request.Output1 = Output1;
+    output_cmd_service.request.Output2 = Output2;
+    output_cmd_service.request.Output3 = Output3;
+    output_cmd_service.request.Output4 = Output4;
+    output_cmd_service.request.Output5 = Output5;
+    output_cmd_service.request.Output6 = Output6;
+    output_cmd_service.request.Output7 = Output7;
+    output_cmd_client.call(output_cmd_service);
+
+    bResult = true;
+    return bResult;
+
+}
+
+bool Get_GPIO_Status()
+{
+    bool bResult = false;
+
+    gpio_status_cmd_client.call(gpio_status_cmd_service);
+
+    sprintf(Send_buffer, "DS,17,GPIO,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,XX", 
+            gpio_status_cmd_service.response.Input0,gpio_status_cmd_service.response.Input1,gpio_status_cmd_service.response.Input2,
+            gpio_status_cmd_service.response.Input3,gpio_status_cmd_service.response.Input4,gpio_status_cmd_service.response.Input5,
+            gpio_status_cmd_service.response.Input6,gpio_status_cmd_service.response.Input7,
+            gpio_status_cmd_service.response.Output0,gpio_status_cmd_service.response.Output1,gpio_status_cmd_service.response.Output2,
+            gpio_status_cmd_service.response.Output3,gpio_status_cmd_service.response.Output4,gpio_status_cmd_service.response.Output5,
+            gpio_status_cmd_service.response.Output6,gpio_status_cmd_service.response.Output7);
+
+    bResult = true;
+    return bResult;
+
+}
+
+bool MappingMode_ON()
+{
+    bool bResult = false;
+
+    mapping_cmd_client.call(mapping_cmd_service);
+
+    bResult = true;
+    return bResult;
+}
+
+bool NodeKill()
+{
+    bool bResult = false;
+
+    nodekill_cmd_client.call(nodekill_cmd_service);
+
+    bResult = true;
+    return bResult;
+}
+
+bool Map_Save(string strMapName)
+{
+    bool bResult = false;
+
+    mapsave_cmd_service.request.map_name = strMapName;
+    mapsave_cmd_client.call(mapsave_cmd_service);
+
+    bResult = true;
+    return bResult;
+}
+
+bool Dcoking_Control(int iMarkerID, int iMode)
+{
+    bool bResult = false;
+
+    //int32 id
+    //int32 mode
+    dockingcontrol_cmd_service.request.id = iMarkerID;
+    dockingcontrol_cmd_service.request.mode = iMode;
+    dockingcontrol_cmd_client.call(dockingcontrol_cmd_service);
+
+    bResult = true;
+    return bResult;
+}
+
 
 //***************************************************************************************************************************************/
 
@@ -507,7 +597,7 @@ bool DoParsing(char* data)
                     _pOdometry.dTwist_linear, _pOdometry.dTwist_angular);
                 }
                 break;
-            case HashCode("AMCL"): //AMCL Robot Pose data
+            case HashCode("AMCL"): //Robot Pose data
                 Getlocation();
                 break;
             case HashCode("STATUS"): //TETRA Status data
@@ -524,16 +614,16 @@ bool DoParsing(char* data)
                 NavigationMode_ON(m_cPARAM[0]);
                 break;
             case HashCode("SLAM"): //Cartographer Mode Service Call
+                MappingMode_ON();
                 break;
             case HashCode("MSV"): // Map file Save Service Call
+                Map_Save(m_cPARAM[0]);
                 break;
             case HashCode("KILL"): //Mapping Mode or Navigation Mode Kill Service Call
+                NodeKill();
                 break;
-            case HashCode("DEL"): // Map file & WayPoint file & Landmark file Delete
-                break;
-            case HashCode("JOY"): // Manual Move _ jotstick mode control command
-                break;
-            case HashCode("TSV"): // Save to Landmark data
+            case HashCode("DOC"): // Docking command
+                Dcoking_Control(atoi(m_cPARAM[0]), atoi(m_cPARAM[1]));
                 break;
             case HashCode("GO1"): // Move to saved location 
                 _pRobot_Status.iMovebase_Result = 0;
@@ -552,22 +642,14 @@ bool DoParsing(char* data)
             case HashCode("LSV"): // Save to Location data
                 Set_Location(m_cPARAM[0]);
                 break;
-            case HashCode("DOC"): // Docking command
-            
+            case HashCode("OUT"): // GPIO_Output command
+                Set_Output(atoi(m_cPARAM[0]),atoi(m_cPARAM[1]),atoi(m_cPARAM[2]),atoi(m_cPARAM[3]),
+                            atoi(m_cPARAM[4]),atoi(m_cPARAM[5]),atoi(m_cPARAM[6]),atoi(m_cPARAM[7]));
                 break;
-            case HashCode("DOCCXL"): // Docking command Cancel
-            
+            case HashCode("GPIO"): // GPIO Status Check command
+                Get_GPIO_Status();
                 break;
-            case HashCode("CDOC"): // Conveyor docking command 
-            
-                break;
-            case HashCode("CDOCCXL"): // Conveyor docking command Cancel
-            
-                break;
-            case HashCode("SOV"): // Wheel Motor Servo Enable/Disable
-            
-                break;
-            case HashCode("DATA"): // AMCL Pose & Robot Status Dada all...
+            case HashCode("DATA"): // AMCL Pose & Robot Status Data all...
                 GetDataAll();
                 break;
 
@@ -651,118 +733,200 @@ void TESTCallback(const sensor_msgs::Joy::ConstPtr& joy)
 
 }
 
-int main(int argc, char* argv[])
+
+//***************************************************************************************************************************************/
+
+void my_handler(sig_atomic_t s)
 {
-    signal(SIGINT,my_handler);
+    printf("Caught signal %d\n",s);
+    exit(1); 
+}
 
-    ros::init(argc,argv, "tetraDS_TCP", ros::init_options::NoSigintHandler);
-    ////Subscriber//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //ROS msg_subscriber//
-    ros::NodeHandle nh;
-    ros::Subscriber odom_sub = nh.subscribe("odom", 100, OdometryCallback);
-    ros::Subscriber result_sub = nh.subscribe<move_base_msgs::MoveBaseActionResult>("move_base/result", 10, resultCallback);
-    //Infomation_subscriber//
-    ros::NodeHandle nInfo;
-    ros::Subscriber tetra_battery = nInfo.subscribe<std_msgs::Int32>("tetra_battery", 1, BatteryCallback);
-    ros::Subscriber emg_state = nInfo.subscribe<std_msgs::Int32>("emg_state", 1, EMGCallback);
-    ros::Subscriber bumper_data = nInfo.subscribe<std_msgs::Int32>("bumper_data", 1, BumperCallback);
-    ros::Subscriber docking_status = nInfo.subscribe<std_msgs::Int32>("docking_status", 1, ChargingCallback);
+constexpr unsigned int HashCode(const char* str)
+{
+    return str[0] ? static_cast<unsigned int>(str[0]) + 0xEDB8832Full * HashCode(str + 1) : 8603;
+}
 
-    //add GUI...
-    ros::NodeHandle nTest;
-    ros::Subscriber Test_sub = nTest.subscribe("/rviz_visual_tools_gui", 10, TESTCallback);
+bool DoParsing(char* data) 
+{
+    bool bResult = false;
 
-    ////tetraDS ServiceClient///////////////////////////////////////////////////////////////////////////////////
-    ros::NodeHandle client_h;
-    goto_cmd_client  = client_h.serviceClient<tetraDS_TCP::gotolocation>("goto_cmd");
-    goto_cmd_client2 = client_h.serviceClient<tetraDS_TCP::gotolocation2>("goto_cmd2");
-    gotocancel_cmd_client = client_h.serviceClient<tetraDS_TCP::gotocancel>("gotocancel_cmd");
-    getlocation_cmd_client = client_h.serviceClient<tetraDS_TCP::getlocation>("getlocation_cmd");
-    locationlist_cmd_client = client_h.serviceClient<tetraDS_TCP::getlocationlist>("locationlist_cmd");
-    maplist_cmd_client = client_h.serviceClient<tetraDS_TCP::getmaplist>("maplist_cmd");
-    setspeed_cmd_client = client_h.serviceClient<tetraDS_TCP::setmaxspeed>("setspeed_cmd");
-    setlocation_cmd_client = client_h.serviceClient<tetraDS_TCP::setlocation>("setlocation_cmd");
-    navigation_cmd_client = client_h.serviceClient<tetraDS_TCP::runnavigation>("navigation_cmd");
+    char* token;
+    char parsing[16][16];
+    int iIndex = 0;
+    int iCnt = 0;
 
-
-    //***************************************************************************************************************************************/
-    //TCP/IP Socket Loop...///
-    if(argc != 2)
+    token = strtok(data, m_cCOMMA);
+    while (token != NULL)
     {
-        printf("usage : %s [port]\n", argv[0]);
-        exit(0);
+        strcpy(parsing[iIndex++], token);
+        token = strtok(NULL, m_cCOMMA);
     }
- 
-    if((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-    {// 소켓 생성
-        printf("Server : Can't open stream socket\n");
-        exit(0);
+
+    //Packet Sorting.../////////////////////////////////////////////////////
+    m_cSTX = parsing[0];
+    m_cLEN = parsing[1];
+    m_cMOD = parsing[2];
+    m_cCMD = parsing[3];
+    for(int i=0; i < (atoi(m_cLEN)-2); i++)
+    {
+        m_cPARAM[i] = parsing[4+i];
+        iCnt++;
     }
+    m_cETX = parsing[4+iCnt];
     
-    int option = 1;
-    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
-    memset(&server_addr, 0x00, sizeof(server_addr));
-    //server_Addr 을 NULL로 초기화
- 
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    server_addr.sin_port = htons(atoi(argv[1]));
-    //server_addr 셋팅
- 
-    if(bind(server_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) <0)
-    {//bind() 호출
-        printf("Server : Can't bind local address.\n");
-        exit(0);
-    }
- 
-    if(listen(server_fd, 5) < 0)
-    {//소켓을 수동 대기모드로 설정
-        printf("Server : Can't listening connect.\n");
-        exit(0);
-    }
- 
-    memset(buffer, 0x00, sizeof(buffer)); //Send_buffer
-    printf("Server : wating connection request.\n");
-    m_bflag_thread = false;
-    len = sizeof(client_addr);
-
-    //***************************************************************************************************************************************/
-
-
-    /*Thread Create...*/
-    int auto_thread_id;
-    int a = 1;
-    auto_thread_id = pthread_create(&p_auto_thread, NULL, AutoThread_function, (void *)&a);
-    if (auto_thread_id < 0)
+    ///ACK or NAK TEST////////////////////////////////////////
+    if(!strcmp(cSTX, m_cSTX) && !strcmp(cETX, m_cETX))
     {
-        printf("auto thread create error !!");
-        exit(0);
-    }  
+        switch(HashCode(m_cCMD))
+        {
+            case HashCode("ODOM"): //Odometry data
+                if(m_cPARAM[0] == "1") //TETRA origin Odometry
+                {
+                    //printf("m_cPARAM 1 \n");
+                    sprintf(Send_buffer, "DS,8,ODOM,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,XX", 
+                    _pOdometry.dOdom_position_x, _pOdometry.dOdom_position_y, _pOdometry.dOdom_position_z,
+                    _pOdometry.dOdom_quaternion_x,_pOdometry.dOdom_quaternion_y,_pOdometry.dOdom_quaternion_z,_pOdometry.dOdom_quaternion_w);
+                }
+                else // Twist_velocity
+                {
+                    //printf("m_cPARAM 2 \n");
+                    sprintf(Send_buffer, "DS,3,ODOM,%.3f,%.3f,XX", 
+                    _pOdometry.dTwist_linear, _pOdometry.dTwist_angular);
+                }
+                break;
+            case HashCode("AMCL"): //Robot Pose data
+                Getlocation();
+                break;
+            case HashCode("STATUS"): //TETRA Status data
+                sprintf(Send_buffer, "DS,6,STATUS,%d,%d,%d,%d,%d,XX", 
+                _pRobot_Status.iCallback_Battery, _pRobot_Status.iCallback_EMG, _pRobot_Status.iCallback_Bumper, _pRobot_Status.iCallback_Charging_status, _pRobot_Status.iMovebase_Result);
+                break;
+            case HashCode("MAPLIST"): //Save Map file List data
+                GetMap_List();
+                break;
+            case HashCode("LOCLIST"): //Save WayPoint file List data
+                GetLocation_List();
+                break;
+            case HashCode("NAV"): //Move_base(navigation) Mode Service Call
+                NavigationMode_ON(m_cPARAM[0]);
+                break;
+            case HashCode("SLAM"): //Cartographer Mode Service Call
+                MappingMode_ON();
+                break;
+            case HashCode("MSV"): // Map file Save Service Call
+                Map_Save(m_cPARAM[0]);
+                break;
+            case HashCode("KILL"): //Mapping Mode or Navigation Mode Kill Service Call
+                NodeKill();
+                break;
+            case HashCode("DOC"): // Docking command
+                Dcoking_Control(atoi(m_cPARAM[0]), atoi(m_cPARAM[1]));
+                break;
+            case HashCode("GO1"): // Move to saved location 
+                _pRobot_Status.iMovebase_Result = 0;
+                GotoLocation(m_cPARAM[0]);
+                break;
+            case HashCode("GO2"): // Move to location coordinates
+                _pRobot_Status.iMovebase_Result = 0;
+                GotoLocation2(atof(m_cPARAM[0]), atof(m_cPARAM[1]), atof(m_cPARAM[2]), atof(m_cPARAM[3]), atof(m_cPARAM[4]), atof(m_cPARAM[5]));
+                break;
+            case HashCode("GOCXL"): // Move to saved location || Move to location coordinates Cancel
+                GotoCancel();
+                break;
+            case HashCode("SPEED"): // TETRA Navigation Move Speed Set
+                Set_Robot_MaxSpeed(atof(m_cPARAM[0]));
+                break;
+            case HashCode("LSV"): // Save to Location data
+                Set_Location(m_cPARAM[0]);
+                break;
+            case HashCode("OUT"): // GPIO_Output command
+                Set_Output(atoi(m_cPARAM[0]),atoi(m_cPARAM[1]),atoi(m_cPARAM[2]),atoi(m_cPARAM[3]),
+                            atoi(m_cPARAM[4]),atoi(m_cPARAM[5]),atoi(m_cPARAM[6]),atoi(m_cPARAM[7]));
+                break;
+            case HashCode("GPIO"): // GPIO Status Check command
+                Get_GPIO_Status();
+                break;
+            case HashCode("DATA"): // AMCL Pose & Robot Status Data all...
+                GetDataAll();
+                break;
 
-    /* SocketCheck Thread Create...*/
-    int SocketCheck_thread_id;
-    int a2 = 1;
-    SocketCheck_thread_id = pthread_create(&p_auto_thread2, NULL, SocketCheck_Thread_function, (void *)&a2);
-    if (SocketCheck_thread_id < 0)
-    {
-        printf("SocketCheck_thread create error !!");
-        exit(0);
-    } 
+        }
 
-    ros::Rate loop_rate(30); // 30Hz
 
-    while(ros::ok())
-    { 
-        ros::spinOnce(); 
 
-        
-        loop_rate.sleep();
+        bResult = true;
+        //printf("ACK \n");
+        // sprintf(Send_buffer, "ACK");
+        write(client_fd, Send_buffer, sizeof(Send_buffer));
     }
+    else
+    {
+        bResult = false;
+        printf("NAK \n");
+        sprintf(Send_buffer, "NAK");
+        write(client_fd, Send_buffer, sizeof(Send_buffer));
+    }    
 
+
+    return bResult;
+}
+
+void *AutoThread_function(void *data)
+{
+    while(1)
+    {
+        if(m_bflag_thread)
+        {
+            msg_size = read(client_fd, buffer, BUF_LEN);
+            if(msg_size < 1)
+            {
+                m_bflag_thread = false;
+            }
+            else
+            {
+                printf("[DATA] = %s [msg_size] = %d \n",buffer, msg_size);
+                memset(&Send_buffer, 0x00, sizeof(Send_buffer)); //clear Send_buffer
+                DoParsing(buffer);
+                memset(&buffer, 0x00, sizeof(buffer)); //clear buffer
+            }
+
+        }
+
+        usleep(100000); //10ms
+    }
     pthread_cancel(p_auto_thread); //Thread kill
+}
+
+void *SocketCheck_Thread_function(void *data)
+{
+    while(1)
+    {
+        
+        client_fd = accept(server_fd, (sockaddr *)&client_addr, (socklen_t*)&len);
+        if(client_fd < 0)
+        {
+            printf("Server: accept failed.\n");
+            m_bflag_thread = false;
+            exit(0);
+        }
+
+        inet_ntop(AF_INET, &client_addr.sin_addr.s_addr, temp, sizeof(temp));
+        printf("Server : %s client connected.\n", temp);
+        m_bflag_thread = true;
+        
+
+        usleep(1000000); //100ms
+    }
     pthread_cancel(p_auto_thread2); //Thread kill
-    close(server_fd);
-    
-    printf("---server_fd Close--.\n");
-    return 0;
+}
+
+//add _ GUI Button callback fuction...
+void TESTCallback(const sensor_msgs::Joy::ConstPtr& joy)
+{
+    if(joy->buttons[5] == 1) //HOME goto...
+    {
+        _pRobot_Status.iMovebase_Result = 10;
+    }
+
 }
