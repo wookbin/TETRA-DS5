@@ -15,7 +15,7 @@ TebLocalPlannerROS:
  feasibility_check_no_poses: 3
  publish_feedback: false
  shrink_horizon_backup: true
- allow_init_with_backwards_motion: true
+ allow_init_with_backwards_motion: false #true
  exact_arc_length: false
  shrink_horizon_min_duration: 10.0
 
