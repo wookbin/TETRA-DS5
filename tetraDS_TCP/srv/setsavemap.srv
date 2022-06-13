@@ -1,0 +1,6 @@
+#This message is used to send command to tetra
+# Set Save Map Command
+
+string map_name
+---
+bool command_Result

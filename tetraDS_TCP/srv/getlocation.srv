@@ -1,0 +1,12 @@
+#This message is used to send command to tetra
+# Get location Command
+
+string IP_address
+---
+bool command_Result
+float64 poseAMCLx
+float64 poseAMCLy
+float64 poseAMCLqx
+float64 poseAMCLqy
+float64 poseAMCLqz
+float64 poseAMCLqw

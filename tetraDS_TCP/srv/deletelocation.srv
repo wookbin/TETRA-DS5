@@ -1,0 +1,6 @@
+#This message is used to send command to tetra
+# Set delete location Command
+
+string Location
+---
+bool command_Result
