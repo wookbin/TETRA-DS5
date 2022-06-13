@@ -1,0 +1,6 @@
+#This message is used to send command to tetra
+#Loadcell Callibration Control command
+
+---
+bool command_Result
+

@@ -1,0 +1,7 @@
+#This message is used to send command to tetra
+#PowerSensor SONAR Start and Stop command
+
+int32 start
+---
+bool command_Result
+
