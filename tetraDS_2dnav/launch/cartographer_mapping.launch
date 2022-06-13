@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<launch>
+  <env name="robot_name" value="$(optenv ROS_NAMESPACE)"/>
+  <param name="active_map" type="bool" value="false" />
+	
+  <!--Cartographer_2D Mapping -->
+  <node name="cartographer_node" pkg="cartographer_ros"
+      type="cartographer_node" args="
+          -configuration_directory $(find cartographer_ros)/configuration_files
+          -configuration_basename backpack_2d.lua"
+       output="screen">
+
+    <remap from="echoes" to="scan"/>
+    <remap from="$(optenv ROS_NAMESPACE)/odom" to="$(optenv ROS_NAMESPACE)/odometry/filtered" />
+  </node>
+
+<node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
+      type="cartographer_occupancy_grid_node" args="-resolution 0.05" /> <!--args="-resolution 0.05"-->
+
+
+<!-- add Landmark save node-->
+ <node pkg="tetraDS_landmark" type="tetraDS_landmark_save" name="tetraDS_landmark_save" output="screen" />
+
+<!--add Map to AR_marker node-->
+    <arg name="marker_size2"          default="10.0" />
+    <arg name="max_new_marker_error2" default="0.05" />
+    <arg name="max_track_error2"      default="0.05" />
+    <arg name="max_frequency2"        default="30.0" />
+    <arg name="cam_image_topic2"      default="usb_cam/image_raw" />
+    <arg name="cam_info_topic2"       default="usb_cam/camera_info" />
+    <arg name="output_frame2"         default="/map"/>
+
+    <node name="ar_track_alvar2" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
+	<param name="marker_size"           type="double" value="$(arg marker_size2)" />
+	<param name="max_new_marker_error"  type="double" value="$(arg max_new_marker_error2)" />
+	<param name="max_track_error"       type="double" value="$(arg max_track_error2)" />
+	<param name="max_frequency"         type="double" value="$(arg max_frequency2)" />
+	<param name="output_frame"          type="string" value="$(arg output_frame2)" />
+	<remap from="camera_image"          to="$(arg cam_image_topic2)" />
+	<remap from="camera_info"           to="$(arg cam_info_topic2)" />
+	<remap from="ar_pose_marker"        to="map_to_marker_pose" />
+    </node>
+
+
+  <node name="rviz" pkg="rviz" type="rviz" required="true"
+      args="-d $(find cartographer_ros)/configuration_files/demo_2d.rviz" /> 
+</launch>

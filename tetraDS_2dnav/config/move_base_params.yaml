@@ -1,0 +1,34 @@
+shutdown_costmaps: false
+
+controller_frequency: 5.0
+controller_patience: 5.0 
+
+planner_frequency: 0.0 #5.0
+planner_patience: 0.0 #5.0
+
+oscillation_timeout: 1.0
+oscillation_distance: 0.5
+
+max_planning_retries: 3
+
+recovery_behavior_enabled: true
+clearing_rotation_allowed: true
+conservative_reset_dist: 2.0
+
+recovery_behaviors:
+  - name: conservative_reset
+    type: clear_costmap_recovery/ClearCostmapRecovery
+  - name: "rotate_recovery"
+    type: "rotate_recovery/RotateRecovery"
+  - name: aggresive_reset
+    type: clear_costmap_recovery/ClearCostmapRecovery
+
+conservative_reset:
+  reset_distance: 10.0
+
+rotate_recovery:
+  frequency: 10.0
+  sim_granularity: 0.05
+
+aggresive_reset:
+  reset_distance: 0.5

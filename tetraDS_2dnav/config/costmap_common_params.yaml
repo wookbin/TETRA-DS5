@@ -1,0 +1,308 @@
+footprint: [[0.202,0.245], [-0.3957,0.245], [-0.3957,-0.245], [0.202,-0.245]]
+
+obstacle_layer:
+  enabled: true
+  combination_method: 1
+  observation_sources: laser_scan_sensor bumper_sensor
+  track_unknown_space: true
+  observation_persistence: 0.0
+  inf_is_valid: false
+
+  laser_scan_sensor:
+    obstacle_range: 20.0
+    raytrace_range: 21.5
+    inflation_radius: 0.25 
+    data_type: LaserScan
+    topic: scan
+    marking: true
+    clearing: true
+
+  bumper_sensor:
+    obstacle_range: 0.05
+    raytrace_range: 0.15
+    inflation_radius: 0.3 
+    data_type: PointCloud2
+    topic: bumper_pointcloud
+    marking: true
+    clearing: true
+
+rgbd_obstacle_layer1:
+  enabled:                  true
+  voxel_decay:              1    # seconds if linear, e^n if exponential
+  decay_model:              0     # 0=linear, 1=exponential, -1=persistent
+  voxel_size:               0.05  # meters
+  track_unknown_space:      true  # default space is known
+  max_obstacle_height:      2.0   # meters
+  unknown_threshold:        20    # voxel height
+  mark_threshold:           3 #4     # voxel height
+  update_footprint_enabled: true
+  combination_method:       1     # 1=max, 0=override
+  obstacle_range:           1.5   # meters #default:0.8
+  origin_z:                 0.0 #0.1   # meters
+  publish_voxel_map:        false # default off
+  transform_tolerance:      0.1 #1.0   # seconds default_1.0
+  mapping_mode:             false # default off, saves map not for navigation
+  map_save_duration:        60    # default 60s, how often to autosave
+  observation_sources:      rgbd1_mark rgbd1_clear
+  rgbd1_mark:
+    data_type: PointCloud2
+    topic: camera1/depth/color/points
+    marking: true
+    clearing: false
+    min_obstacle_height: 0.05 #0.03     # default 0, meters
+    max_obstacle_height: 2.0     # default 3, meters
+    expected_update_rate: 0.0    # default 0, if not updating at this rate at least, remove from buffer
+    observation_persistence: 0.0 # default 0, use all measurements taken during now-value, 0=latest
+    inf_is_valid: false          # default false, for laser scans
+    voxel_filter: false          # default off, apply voxel filter to sensor, recommend on
+    voxel_min_points: 0          # default 0, minimum points per voxel for voxel filter
+    clear_after_reading: true    # default false, clear the buffer after the layer gets readings from it
+  rgbd1_clear:
+    data_type: PointCloud2
+    topic: camera1/depth/color/points
+    marking: false
+    clearing: true
+    max_z: 7.0                  # default 0, meters
+    min_z: 0.1                  # default 10, meters
+    vertical_fov_angle: 0.7  # default 0.7, radians
+    horizontal_fov_angle: 1.20428 # default 1.04, radians
+    decay_acceleration: 1.0     # default 0, 1/s^2. If laser scanner MUST be 0
+    model_type: 0                # default 0, model type for frustum. 0=depth camera, 1=3d lidar like VLP16 or similar
+
+rgbd_obstacle_layer2:
+  enabled:                  true
+  voxel_decay:              1    # seconds if linear, e^n if exponential
+  decay_model:              0     # 0=linear, 1=exponential, -1=persistent
+  voxel_size:               0.05  # meters
+  track_unknown_space:      true  # default space is known
+  max_obstacle_height:      2.0   # meters
+  unknown_threshold:        20    # voxel height
+  mark_threshold:           3 #4     # voxel height
+  update_footprint_enabled: true
+  combination_method:       1     # 1=max, 0=override
+  obstacle_range:           1.5   # meters #default:0.8
+  origin_z:                 0.0 #0.1   # meters
+  publish_voxel_map:        false # default off
+  transform_tolerance:      0.1 #1.0   # seconds default_1.0
+  mapping_mode:             false # default off, saves map not for navigation
+  map_save_duration:        60    # default 60s, how often to autosave
+  observation_sources:      rgbd2_mark rgbd2_clear
+  rgbd2_mark:
+    data_type: PointCloud2
+    topic: camera2/depth/color/points
+    marking: true
+    clearing: false
+    min_obstacle_height: 0.05 #0.03     # default 0, meters
+    max_obstacle_height: 2.0     # default 3, meters
+    expected_update_rate: 0.0    # default 0, if not updating at this rate at least, remove from buffer
+    observation_persistence: 0.0 # default 0, use all measurements taken during now-value, 0=latest
+    inf_is_valid: false          # default false, for laser scans
+    voxel_filter: false          # default off, apply voxel filter to sensor, recommend on
+    voxel_min_points: 0          # default 0, minimum points per voxel for voxel filter
+    clear_after_reading: true    # default false, clear the buffer after the layer gets readings from it
+  rgbd2_clear:
+    data_type: PointCloud2
+    topic: camera2/depth/color/points
+    marking: false
+    clearing: true
+    max_z: 7.0                  # default 0, meters
+    min_z: 0.1                  # default 10, meters
+    vertical_fov_angle: 0.7  # default 0.7, radians
+    horizontal_fov_angle: 1.20428 # default 1.04, radians
+    decay_acceleration: 1.0     # default 0, 1/s^2. If laser scanner MUST be 0
+    model_type: 0                # default 0, model type for frustum. 0=depth camera, 1=3d lidar like VLP16 or similar
+
+sonar_obstacle_layer_DL:
+  enabled:                  true
+  voxel_decay:              1    # seconds if linear, e^n if exponential
+  decay_model:              0     # 0=linear, 1=exponential, -1=persistent
+  voxel_size:               0.03  # meters
+  track_unknown_space:      true  # default space is known
+  max_obstacle_height:      1.0   # meters
+  unknown_threshold:        1    # voxel height
+  mark_threshold:           1     # voxel height
+  update_footprint_enabled: true
+  combination_method:       1     # 1=max, 0=override
+  obstacle_range:           0.2   #0.5   # meters #default:0.8
+  origin_z:                 0.1   # meters
+  publish_voxel_map:        false # default off
+  transform_tolerance:      1.0   # seconds default_1.0
+  mapping_mode:             false # default off, saves map not for navigation
+  map_save_duration:        60    # default 60s, how often to autosave
+  observation_sources:      sonar1_mark sonar1_clear
+  sonar1_mark:
+    data_type: PointCloud2
+    topic: range_points_DL
+    marking: true
+    clearing: false
+    min_obstacle_height: 0.0     # default 0, meters
+    max_obstacle_height: 0.5
+    expected_update_rate: 0.0    # default 0, if not updating at this rate at least, remove from buffer
+    observation_persistence: 0.0 # default 0, use all measurements taken during now-value, 0=latest
+    inf_is_valid: false          # default false, for laser scans
+    voxel_filter: false          # default off, apply voxel filter to sensor, recommend on
+    voxel_min_points: 0          # default 0, minimum points per voxel for voxel filter
+    clear_after_reading: true    # default false, clear the buffer after the layer gets readings from it
+  sonar1_clear:
+    data_type: PointCloud2
+    topic: range_points_DL
+    marking: false
+    clearing: true
+    max_z: 0.5                  # default 0, meters
+    min_z: 0.3                  # default 10, meters
+    vertical_fov_angle: 0.7  # default 0.7, radians
+    horizontal_fov_angle: 1.04 # default 1.04, radians
+    decay_acceleration: 1.0     # default 0, 1/s^2. If laser scanner MUST be 0
+    model_type: 0
+
+sonar_obstacle_layer_RL:
+  enabled:                  true
+  voxel_decay:              1    # seconds if linear, e^n if exponential
+  decay_model:              0     # 0=linear, 1=exponential, -1=persistent
+  voxel_size:               0.05  # meters
+  track_unknown_space:      true  # default space is known
+  max_obstacle_height:      1.0   # meters
+  unknown_threshold:        1    # voxel height
+  mark_threshold:           1     # voxel height
+  update_footprint_enabled: true
+  combination_method:       1     # 1=max, 0=override
+  obstacle_range:           0.2   #0.5   # meters #default:0.8
+  origin_z:                 0.1   # meters
+  publish_voxel_map:        false # default off
+  transform_tolerance:      5.0   # seconds default_1.0
+  mapping_mode:             false # default off, saves map not for navigation
+  map_save_duration:        60    # default 60s, how often to autosave
+  observation_sources:      sonar2_mark sonar2_clear
+  sonar2_mark:
+    data_type: PointCloud2
+    topic: range_points_RL
+    marking: true
+    clearing: false
+    min_obstacle_height: 0.0     # default 0, meters
+    max_obstacle_height: 0.5
+    expected_update_rate: 0.0    # default 0, if not updating at this rate at least, remove from buffer
+    observation_persistence: 0.0 # default 0, use all measurements taken during now-value, 0=latest
+    inf_is_valid: false          # default false, for laser scans
+    voxel_filter: false          # default off, apply voxel filter to sensor, recommend on
+    voxel_min_points: 0          # default 0, minimum points per voxel for voxel filter
+    clear_after_reading: true    # default false, clear the buffer after the layer gets readings from it
+  sonar2_clear:
+    data_type: PointCloud2
+    topic: range_points_RL
+    marking: false
+    clearing: true
+    max_z: 0.5                  # default 0, meters
+    min_z: 0.3                  # default 10, meters
+    vertical_fov_angle: 0.7  # default 0.7, radians
+    horizontal_fov_angle: 1.04 # default 1.04, radians
+    decay_acceleration: 1.0     # default 0, 1/s^2. If laser scanner MUST be 0
+    model_type: 0
+
+sonar_obstacle_layer_RR:
+  enabled:                  true
+  voxel_decay:              1    # seconds if linear, e^n if exponential
+  decay_model:              0     # 0=linear, 1=exponential, -1=persistent
+  voxel_size:               0.05  # meters
+  track_unknown_space:      true  # default space is known
+  max_obstacle_height:      1.0   # meters
+  unknown_threshold:        1    # voxel height
+  mark_threshold:           1     # voxel height
+  update_footprint_enabled: true
+  combination_method:       1     # 1=max, 0=override
+  obstacle_range:           0.2   #0.5   # meters #default:0.8
+  origin_z:                 0.1   # meters
+  publish_voxel_map:        false # default off
+  transform_tolerance:      5.0   # seconds default_1.0
+  mapping_mode:             false # default off, saves map not for navigation
+  map_save_duration:        60    # default 60s, how often to autosave
+  observation_sources:      sonar3_mark sonar3_clear
+  sonar3_mark:
+    data_type: PointCloud2
+    topic: range_points_RR
+    marking: true
+    clearing: false
+    min_obstacle_height: 0.0     # default 0, meters
+    max_obstacle_height: 0.5
+    expected_update_rate: 0.0    # default 0, if not updating at this rate at least, remove from buffer
+    observation_persistence: 0.0 # default 0, use all measurements taken during now-value, 0=latest
+    inf_is_valid: false          # default false, for laser scans
+    voxel_filter: false          # default off, apply voxel filter to sensor, recommend on
+    voxel_min_points: 0          # default 0, minimum points per voxel for voxel filter
+    clear_after_reading: true    # default false, clear the buffer after the layer gets readings from it
+  sonar3_clear:
+    data_type: PointCloud2
+    topic: range_points_RR
+    marking: false
+    clearing: true
+    max_z: 0.5                  # default 0, meters
+    min_z: 0.3                  # default 10, meters
+    vertical_fov_angle: 0.7  # default 0.7, radians
+    horizontal_fov_angle: 1.04 # default 1.04, radians
+    decay_acceleration: 1.0     # default 0, 1/s^2. If laser scanner MUST be 0
+    model_type: 0
+
+sonar_obstacle_layer_DR:
+  enabled:                  true
+  voxel_decay:              1    # seconds if linear, e^n if exponential
+  decay_model:              0     # 0=linear, 1=exponential, -1=persistent
+  voxel_size:               0.05  # meters
+  track_unknown_space:      true  # default space is known
+  max_obstacle_height:      1.0   # meters
+  unknown_threshold:        1    # voxel height
+  mark_threshold:           1     # voxel height
+  update_footprint_enabled: true
+  combination_method:       1     # 1=max, 0=override
+  obstacle_range:           0.2   #0.5   # meters #default:0.8
+  origin_z:                 0.1   # meters
+  publish_voxel_map:        false # default off
+  transform_tolerance:      5.0   # seconds default_1.0
+  mapping_mode:             false # default off, saves map not for navigation
+  map_save_duration:        60    # default 60s, how often to autosave
+  observation_sources:      sonar4_mark sonar4_clear
+  sonar4_mark:
+    data_type: PointCloud2
+    topic: range_points_DR
+    marking: true
+    clearing: false
+    min_obstacle_height: 0.0     # default 0, meters
+    max_obstacle_height: 0.5
+    expected_update_rate: 0.0    # default 0, if not updating at this rate at least, remove from buffer
+    observation_persistence: 0.0 # default 0, use all measurements taken during now-value, 0=latest
+    inf_is_valid: false          # default false, for laser scans
+    voxel_filter: false          # default off, apply voxel filter to sensor, recommend on
+    voxel_min_points: 0          # default 0, minimum points per voxel for voxel filter
+    clear_after_reading: true    # default false, clear the buffer after the layer gets readings from it
+  sonar4_clear:
+    data_type: PointCloud2
+    topic: range_points_DR
+    marking: false
+    clearing: true
+    max_z: 0.5                  # default 0, meters
+    min_z: 0.3                  # default 10, meters
+    vertical_fov_angle: 0.7  # default 0.7, radians
+    horizontal_fov_angle: 1.04 # default 1.04, radians
+    decay_acceleration: 1.0     # default 0, 1/s^2. If laser scanner MUST be 0
+    model_type: 0
+
+virtual_layer:
+  enabled:              true
+  zone_topics:          [virtual_costamp_layer/zone]
+  obstacle_topics:      [virtual_costamp_layer/obsctacles]
+  one_zone:             true     
+  forms:    
+     - [0.4, 0.0]
+     - [[0.4, 0.0]]
+     - [[-0.4, 0.0],[0.0, 0.4]]
+     - [[5, 5],[-5, 5],[-5, -5],[5, -5]]
+
+virtual_layer2:
+  enabled:              true
+  zone_topics:          [virtual_costamp_layer2/zone]
+  obstacle_topics:      [virtual_costamp_layer2/obsctacles]
+  one_zone:             true     
+  forms:    
+     - [0.4, 0.0]
+     - [[0.4, 0.0]]
+     - [[-0.4, 0.0],[0.0, 0.4]]
+     - [[5, 5],[-5, 5],[-5, -5],[5, -5]]
+

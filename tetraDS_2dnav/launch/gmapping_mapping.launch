@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<launch>
+  <env name="robot_name" value="$(optenv ROS_NAMESPACE)"/>
+  <param name="active_map" type="bool" value="false" />
+
+<!--Gmapping -->
+  <arg name="scan_topic"  default="/$(optenv ROS_NAMESPACE)/scan" />
+  <arg name="base_frame"  default="$(optenv ROS_NAMESPACE)/base_footprint"/>
+  <arg name="odom_frame"  default="$(optenv ROS_NAMESPACE)/odom"/>
+  <arg name="set_map_frame"  default="/map"/>
+
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen" respawn="true" >
+    <remap from="$(optenv ROS_NAMESPACE)/odom" to="$(optenv ROS_NAMESPACE)/odometry/filtered"/>
+    <param name="base_frame" value="$(arg base_frame)"/>
+    <param name="odom_frame" value="$(arg odom_frame)"/>
+    <param name="map_frame"  value="$(arg set_map_frame)"/>
+    <param name="map_update_interval" value="5.0"/>
+    <param name="maxUrange" value="80.0"/>
+    <param name="maxRange" value="20.0"/>
+    <param name="sigma" value="0.05"/>
+    <param name="kernelSize" value="1"/>
+    <param name="lstep" value="0.05"/>
+    <param name="astep" value="0.05"/>
+    <param name="iterations" value="5"/>
+    <param name="lsigma" value="0.075"/>
+    <param name="ogain" value="3.0"/>
+    <param name="lskip" value="0"/>
+    <param name="minimumScore" value="0"/>
+    <param name="srr" value="0.1"/>
+    <param name="srt" value="0.2"/>
+    <param name="str" value="0.1"/>
+    <param name="stt" value="0.2"/>
+    <param name="linearUpdate" value="1.0"/>
+    <param name="angularUpdate" value="0.5"/>
+    <param name="temporalUpdate" value="-1.0"/>
+    <param name="resampleThreshold" value="0.5"/>
+    <param name="particles" value="30"/>
+
+    <param name="xmin" value="-1.0"/>
+    <param name="ymin" value="-1.0"/>
+    <param name="xmax" value="1.0"/>
+    <param name="ymax" value="1.0"/>
+
+    <param name="delta" value="0.05"/> <!--"0.05" -->
+    <param name="llsamplerange" value="0.01"/>
+    <param name="llsamplestep" value="0.01"/>
+    <param name="lasamplerange" value="0.005"/>
+    <param name="lasamplestep" value="0.005"/>
+    <remap from="scan" to="$(arg scan_topic)"/>
+  </node>
+
+
+<!-- add Landmark save node-->
+ <node pkg="tetraDS_landmark" type="tetraDS_landmark_save" name="tetraDS_landmark_save" output="screen" />
+
+<!--add Map to AR_marker node-->
+    <arg name="marker_size2"          default="10.0" />
+    <arg name="max_new_marker_error2" default="0.05" />
+    <arg name="max_track_error2"      default="0.05" />
+    <arg name="max_frequency2"        default="30.0" />
+    <arg name="cam_image_topic2"      default="usb_cam/image_raw" />
+    <arg name="cam_info_topic2"       default="usb_cam/camera_info" />
+    <arg name="output_frame2"         default="/map"/>
+
+    <node name="ar_track_alvar2" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
+	<param name="marker_size"           type="double" value="$(arg marker_size2)" />
+	<param name="max_new_marker_error"  type="double" value="$(arg max_new_marker_error2)" />
+	<param name="max_track_error"       type="double" value="$(arg max_track_error2)" />
+	<param name="max_frequency"         type="double" value="$(arg max_frequency2)" />
+	<param name="output_frame"          type="string" value="$(arg output_frame2)" />
+	<remap from="camera_image"          to="$(arg cam_image_topic2)" />
+	<remap from="camera_info"           to="$(arg cam_info_topic2)" />
+	<remap from="ar_pose_marker"        to="map_to_marker_pose" />
+    </node>
+
+
+<node name="rviz" pkg="rviz" type="rviz" required="true" args="-d $(find tetraDS_2dnav)/gmapping.rviz" /> 
+
+</launch>
