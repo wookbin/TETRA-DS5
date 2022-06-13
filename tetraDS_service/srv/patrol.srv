@@ -1,0 +1,7 @@
+#This message is used to send command to patrol On
+
+bool on
+int32  list_count
+string[] location_name
+---
+bool command_Result

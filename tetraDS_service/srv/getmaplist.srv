@@ -1,0 +1,8 @@
+#This message is used to send command to tetra
+# Get map List Command
+
+
+---
+int32 list_num
+string[] map_name
+bool command_Result

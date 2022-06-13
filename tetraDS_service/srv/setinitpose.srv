@@ -1,0 +1,11 @@
+#This message is used to send command to tetra
+# Set InitPose Command
+
+---
+int8 m_iAR_tag_id
+float64 init_position_x
+float64 init_position_y
+float64 init_position_z
+float64 init_orientation_z
+float64 init_orientation_w
+bool command_Result

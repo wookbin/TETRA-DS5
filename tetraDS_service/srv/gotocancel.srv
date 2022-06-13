@@ -1,0 +1,6 @@
+#This message is used to send command to tetra
+# goto cancel Command
+
+string Location_id
+---
+bool command_Result

@@ -1,0 +1,9 @@
+#This message is used to send command to Virtual Obstacle2(Costmap)
+
+int32  list_count
+int32  mode      # 1: point & circle, 2: line, else: polygon
+float64[] form_x
+float64[] form_y
+float64[] form_z
+---
+bool command_Result
