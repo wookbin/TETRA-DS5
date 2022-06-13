@@ -1,6 +1,0 @@
-#This message is used to send command to tetra
-# rosrun cartographer Command
-
-bool flag_mapping
----
-bool command_Result

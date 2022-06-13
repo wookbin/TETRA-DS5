@@ -1,5 +1,0 @@
-#This message is used to send command to tetra
-#Conveyor Unloading Check command
-
----
-bool command_Result
