@@ -45,7 +45,6 @@ add_service_files(
   accelerationslop.srv
   servo.srv
   virtual_obstacle.srv
-  virtual_obstacle2.srv
   setinitpose.srv
   patrol.srv
   gotoconveyor.srv
