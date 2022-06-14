@@ -1752,54 +1752,33 @@ bool DeleteMap_Command(tetraDS_service::deletemap::Request &req,
 bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req, 
 				              tetraDS_service::virtual_obstacle::Response &res)
 {
-	bool bResult = false;
+    bool bResult = false;
     //Global_costmap Loop//
-    virtual_obstacle.list.resize(req.list_count);
-    for(int i=0; i<req.list_count; i++)
+    virtual_obstacle.list.resize(req.list_count.size());
+    for(int i=0; i<req.list_count.size(); i++)
     {
-        virtual_obstacle.list[i].form.resize(req.mode);
-        for(int j=0; j<req.mode; j++)
+        virtual_obstacle.list[i].form.resize(req.list_count[i]);
+        for(int j=0; j<req.list_count[i]; j++)
         {
-            virtual_obstacle.list[i].form[j].x = req.form_x[(i*req.mode) + j];
-            virtual_obstacle.list[i].form[j].y = req.form_y[(i*req.mode) + j];
-            virtual_obstacle.list[i].form[j].z = req.form_z[(i*req.mode) + j];
+            virtual_obstacle.list[i].form[j].x = req.form_x[(i*req.list_count[i]) + j];
+            virtual_obstacle.list[i].form[j].y = req.form_y[(i*req.list_count[i]) + j];
+            virtual_obstacle.list[i].form[j].z = req.form_z[(i*req.list_count[i]) + j];
         }
     }
     
     virtual_obstacle_pub.publish(virtual_obstacle);
-
-    // //calc...
-    // m_dTF_Yaw = Quaternion2Yaw_rad(_pTF_pose2.poseTFqw2, _pTF_pose2.poseTFqx2, _pTF_pose2.poseTFqy2, _pTF_pose2.poseTFqz2);
-    // m_dTF_New_Pose_X = (((_pTF_pose2.poseTFx2 * cos(m_dTF_Yaw)) + (_pTF_pose2.poseTFy2 * sin(m_dTF_Yaw))));
-    // m_dTF_New_Pose_Y = (((_pTF_pose2.poseTFx2 * -sin(m_dTF_Yaw)) + (_pTF_pose2.poseTFy2 * cos(m_dTF_Yaw))));
-
-    // //Local_costmap Loop//
-    // virtual_obstacle2.list.resize(req.list_count);
-    // for(int i=0; i<req.list_count; i++)
-    // {
-    //     virtual_obstacle2.list[i].form.resize(req.mode);
-    //     for(int j=0; j<req.mode; j++)
-    //     {   
-    //         virtual_obstacle2.list[i].form[j].x = (((req.form_x[(i*req.mode) + j] * cos(m_dTF_Yaw)) + (req.form_y[(i*req.mode) + j] * sin(m_dTF_Yaw)))) - m_dTF_New_Pose_X;
-    //         virtual_obstacle2.list[i].form[j].y = (((req.form_x[(i*req.mode) + j] * -sin(m_dTF_Yaw)) + (req.form_y[(i*req.mode) + j] * cos(m_dTF_Yaw)))) - m_dTF_New_Pose_Y;
-    //         virtual_obstacle2.list[i].form[j].z = req.form_z[(i*req.mode) + j];
-    //     }
-    // }
-    
-    // virtual_obstacle2_pub.publish(virtual_obstacle2);
  
-	/*
-    int32  list_count
-	int32  mode
+    /*
+    int32[]  list_count
     float64[] form_x
     float64[] form_y
     float64[] form_z
     ---
     bool command_Result
-	*/
+    */
     bResult = true;
-	res.command_Result = bResult;
-	return true;
+    res.command_Result = bResult;
+    return true;
 }
 
 bool Patrol_Command(tetraDS_service::patrol::Request &req, 
@@ -4226,6 +4205,9 @@ int main (int argc, char** argv)
                 m_dTF_New_Pose_X = (((_pTF_pose2.poseTFx2 * cos(m_dTF_Yaw)) + (_pTF_pose2.poseTFy2 * sin(m_dTF_Yaw))));
                 m_dTF_New_Pose_Y = (((_pTF_pose2.poseTFx2 * -sin(m_dTF_Yaw)) + (_pTF_pose2.poseTFy2 * cos(m_dTF_Yaw))));
 
+		//message copy...
+                virtual_obstacle2 = virtual_obstacle;
+		    
                 m_iList_Count = virtual_obstacle.list.size();
                 if(m_iList_Count > 0)
                 {
