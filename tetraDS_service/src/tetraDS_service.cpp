@@ -83,7 +83,6 @@
 #include "ar_track_alvar_msgs/AlvarMarkers.h" //MSG AR_TAG
 #include "tetraDS_service/setinitpose.h" //SRV
 #include "tetraDS_service/virtual_obstacle.h" //SRV
-#include "tetraDS_service/virtual_obstacle2.h" //SRV
 #include "tetraDS_service/pose_estimate.h" //SRV
 //Conveyor Service
 #include "tetraDS_service/gotoconveyor.h" //SRV
