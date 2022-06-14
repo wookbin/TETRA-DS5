@@ -1768,9 +1768,6 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req,
     }
     
     virtual_obstacle_pub.publish(virtual_obstacle);
-	
-    //Topic copy...
-    virtual_obstacle2 = virtual_obstacle;
 
     // //calc...
     // m_dTF_Yaw = Quaternion2Yaw_rad(_pTF_pose2.poseTFqw2, _pTF_pose2.poseTFqx2, _pTF_pose2.poseTFqy2, _pTF_pose2.poseTFqz2);
