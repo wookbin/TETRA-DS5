@@ -7,7 +7,7 @@ TebLocalPlannerROS:
  dt_ref: 0.3
  dt_hysteresis: 0.03
  min_samples: 5
- max_samples: 100
+ max_samples: 50
  global_plan_overwrite_orientation: true
  global_plan_viapoint_sep: 0.5
  max_global_plan_lookahead_dist: 5.0
