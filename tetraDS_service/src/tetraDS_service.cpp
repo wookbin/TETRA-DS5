@@ -3919,6 +3919,11 @@ void TESTCallback(const sensor_msgs::Joy::ConstPtr& joy)
 
 }
 
+void Virtual_Callback(const custom_msgs::Obstacles::ConstPtr& msgObstacles)
+{
+    virtual_obstacle = *msgObstacles;
+}
+
 /////*******************************************************************************//////
 
 int main (int argc, char** argv)
@@ -4101,6 +4106,9 @@ int main (int argc, char** argv)
     ros::NodeHandle virtual_nh;
     virtual_obstacle_pub = virtual_nh.advertise<custom_msgs::Obstacles>("virtual_costamp_layer/obsctacles", 100);
     virtual_obstacle2_pub = virtual_nh.advertise<custom_msgs::Obstacles>("virtual_costamp_layer2/obsctacles", 100);
+    //virtual costmap_sub
+    ros::NodeHandle virtual_sub_h;
+    ros::Subscriber virtual_sub = virtual_sub_h.subscribe<custom_msgs::Obstacles>("virtual_costamp_layer/obsctacles", 1000, Virtual_Callback);
 
     //Docking Loop 
     ros::NodeHandle docking_nh;
