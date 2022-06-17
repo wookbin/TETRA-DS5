@@ -154,6 +154,8 @@ double m_dTF_New_Pose_X = 0.0;
 double m_dTF_New_Pose_Y = 0.0;
 int m_iList_Count = 0;
 int m_iMode_Count = 0;
+//Teb Via Point...
+int m_iViaPoint_Index = 0;
 
 
 typedef struct HOME_POSE
@@ -958,12 +960,11 @@ void Particle_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
 
 void TebMarkers_Callback(const visualization_msgs::Marker::ConstPtr& msg)
 {
-    int m_iIndex = 0;
     float m_point_vector = 0.0;
     if(msg->ns == "ViaPoints")
     {
-        m_iIndex = msg->points.size();
-        if(m_iIndex <= 3)
+        m_iViaPoint_Index = msg->points.size();
+        if(m_iViaPoint_Index <= 3)
         {
             if(!_pFlag_Value.m_bTebMarker_reconfigure_flag)
             {
@@ -4251,6 +4252,16 @@ int main (int argc, char** argv)
         {
             if(!_pFlag_Value.m_bTebMarker_reconfigure_flag)
                 Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
+        }
+	    
+	//add...loop...Via Point Check
+        if(m_iViaPoint_Index <= 1)
+        {
+            Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", 0.3);
+        }
+        else
+        {
+            Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
         }
 
         //IMU Reset Loop//
