@@ -964,7 +964,7 @@ void TebMarkers_Callback(const visualization_msgs::Marker::ConstPtr& msg)
     if(msg->ns == "ViaPoints")
     {
         m_iViaPoint_Index = msg->points.size();
-        if(m_iViaPoint_Index <= 3)
+        if(m_iViaPoint_Index <= 1)
         {
             if(!_pFlag_Value.m_bTebMarker_reconfigure_flag)
             {
