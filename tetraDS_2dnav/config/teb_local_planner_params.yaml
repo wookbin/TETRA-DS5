@@ -9,7 +9,7 @@ TebLocalPlannerROS:
  min_samples: 5
  max_samples: 50
  global_plan_overwrite_orientation: true
- global_plan_viapoint_sep: 1.0 #0.5
+ global_plan_viapoint_sep: 0.3 #0.5
  max_global_plan_lookahead_dist: 5.0
  force_reinit_new_goal_dist: 1.0
  feasibility_check_no_poses: 3
