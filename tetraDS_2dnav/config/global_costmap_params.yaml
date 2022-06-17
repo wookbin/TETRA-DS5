@@ -4,8 +4,6 @@ global_costmap:
   update_frequency: 10.0
   publish_frequency: 10.0
   rolling_window : false
-  width: 20.0
-  height: 20.0
   resolution: 0.05
   footprint_padding: 0.0
   unknown_cost_value: 254 #add..
