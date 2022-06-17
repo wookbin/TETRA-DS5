@@ -659,14 +659,14 @@ bool DoParsing(char* data)
         bResult = true;
         //printf("ACK \n");
         // sprintf(Send_buffer, "ACK");
-        write(client_fd, Send_buffer, sizeof(Send_buffer));
+        write(client_fd, Send_buffer, strlen(Send_buffer));
     }
     else
     {
         bResult = false;
         printf("NAK \n");
         sprintf(Send_buffer, "NAK");
-        write(client_fd, Send_buffer, sizeof(Send_buffer));
+        write(client_fd, Send_buffer, strlen(Send_buffer));
     }    
 
 
