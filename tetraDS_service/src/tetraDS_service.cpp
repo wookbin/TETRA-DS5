@@ -4246,22 +4246,12 @@ int main (int argc, char** argv)
         }
         
 	    
-        if(_pFlag_Value.m_bFlag_Obstacle_Center)
+        if(_pFlag_Value.m_bFlag_Obstacle_Center || m_iViaPoint_Index <= 1)
             Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity / 2.5);
         else
         {
             if(!_pFlag_Value.m_bTebMarker_reconfigure_flag)
                 Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
-        }
-	    
-	//add...loop...Via Point Check
-        if(m_iViaPoint_Index <= 1)
-        {
-            Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", 0.3);
-        }
-        else
-        {
-            Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
         }
 
         //IMU Reset Loop//
