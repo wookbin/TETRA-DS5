@@ -4272,7 +4272,7 @@ int main (int argc, char** argv)
         }
 
         //IMU Reset Loop//
-        if(m_iTimer_cnt >= 1800) //1 min_polling
+        if(m_iTimer_cnt >= 900) //30sec_polling
         {
             m_iTimer_cnt = 0;
             Reset_Robot_Pose();
