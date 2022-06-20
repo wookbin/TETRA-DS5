@@ -1970,13 +1970,11 @@ void Reset_Robot_Pose()
     {
         //IMU reset//
         euler_angle_reset_cmd_client.call(euler_angle_reset_srv);
-        usleep(100000);
-	    printf("## IMU Reset ! \n");
+	printf("## IMU Reset ! \n");
         //tetra odometry Reset//
         tetra_PoseRest.data = m_iReset_flag;
         PoseReset_pub.publish(tetra_PoseRest);
-        usleep(300000);
-	    Reset_EKF_SetPose();
+	Reset_EKF_SetPose();
     }
 
     Marker_Reset_Robot_Pose();
