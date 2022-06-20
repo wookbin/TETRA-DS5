@@ -28,7 +28,6 @@
     <rosparam file="$(find tetraDS_2dnav)/config/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find tetraDS_2dnav)/config/global_costmap_params.yaml" command="load" />
     <rosparam file="$(find tetraDS_2dnav)/config/base_global_planner_param.yaml" command="load" />
-    <rosparam file="$(find tetraDS_2dnav)/config/base_local_planner_params.yaml" command="load" />
     <rosparam file="$(find tetraDS_2dnav)/config/teb_local_planner_params.yaml" command="load" />	
 
     <param name="base_global_planner" value="global_planner/GlobalPlanner"/> 
