@@ -1855,6 +1855,25 @@ void Reset_EKF_SetPose()
 
 	SetPose_cmd_client.call(setpose_srv); //Set_pose call//
 	printf("##Set_Pose(EKF)! \n");
+	
+	initPose_.header.stamp = ros::Time::now(); 
+    	initPose_.header.frame_id = "map";
+    	//position
+    	initPose_.pose.pose.position.x = 0.0;
+    	initPose_.pose.pose.position.y = 0.0;
+    	initPose_.pose.pose.position.z = 0.0;
+    	//orientation
+   	initPose_.pose.pose.orientation.x = 0.0;
+    	initPose_.pose.pose.orientation.y = 0.0;
+    	initPose_.pose.pose.orientation.z = 0.0;
+    	initPose_.pose.pose.orientation.w = 1.0;
+
+    	initPose_.pose.covariance[0] = 0.25;
+    	initPose_.pose.covariance[6 * 1 + 1] = 0.25;
+    	initPose_.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
+
+    	initialpose_pub.publish(initPose_);
+    	printf("##Set_initPose(2D Estimate)! \n");
 }
 
 bool Marker_Reset_Robot_Pose()
