@@ -1,4 +1,5 @@
 base_local_planner: teb_local_planner/TebLocalPlannerROS
+controller_frequency: 5.0
 
 TebLocalPlannerROS:
  odom_topic: odom
