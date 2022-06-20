@@ -78,6 +78,7 @@ tetraDS::angular_position_move angular_move_cmd;
 
 //ekf_localization
 bool m_bEKF_option = false;
+bool m_bForwardCheck = false;
 
 
 class TETRA
@@ -560,31 +561,46 @@ int main(int argc, char * argv[])
 
 		//smoother velocity Loop//////////////////////////////////////////////////
 		//linear_velocity
-		if(input_linear > control_linear)
+		if(linear > 0)
+			m_bForwardCheck = true;
+		else
+			m_bForwardCheck = false;
+
+		
+		if(input_linear >= 0)
 		{
-			control_linear = min(input_linear, control_linear + 0.008);  //8mm++
-		}
-		else if(input_linear < control_linear)
-		{
-			control_linear = max(input_linear, control_linear - 0.025);  //25mm --
+			if(input_linear > control_linear)
+			{
+				control_linear = min(input_linear, control_linear + 0.008);  //8mm++
+				if(!m_bForwardCheck)
+					control_linear = min(input_linear, control_linear + 0.025);
+				
+			}
+			else if(input_linear < control_linear)
+			{
+				control_linear = max(input_linear, control_linear - 0.025);  //25mm --
+			}
+			else
+			{
+				control_linear = input_linear;
+			}
 		}
 		else
 		{
-			control_linear = input_linear;
+			if(input_linear < control_linear)
+			{
+				control_linear = max(input_linear, control_linear - 0.008);
+				
+			}
+			else if(input_linear > control_linear)
+			{
+				control_linear = min(input_linear, control_linear + 0.025);
+			}
+			else
+			{
+				control_linear = input_linear;
+			}
 		}
-		// //angular_velocity
-		// if(input_angular > control_angular)
-		// {
-		// 	control_angular = min(input_angular, control_angular + 0.05);
-		// }
-		// else if(input_angular < control_angular)
-		// {
-		// 	control_angular = max(input_angular, control_angular - 0.05); 
-		// }
-		// else
-		// {
-		// 	control_angular = input_angular;
-		// }
 		//////////////////////////////////////////////////////////////////////////
 		
 		//control_linear = input_linear;
