@@ -123,7 +123,7 @@ sonar_obstacle_layer_DL:
   mark_threshold:           1     # voxel height
   update_footprint_enabled: true
   combination_method:       1     # 1=max, 0=override
-  obstacle_range:           0.2   #0.5   # meters #default:0.8
+  obstacle_range:           0.4   # meters #default:0.8
   origin_z:                 0.1   # meters
   publish_voxel_map:        false # default off
   transform_tolerance:      1.0   # seconds default_1.0
@@ -135,7 +135,7 @@ sonar_obstacle_layer_DL:
     topic: range_points_DL
     marking: true
     clearing: false
-    min_obstacle_height: 0.0     # default 0, meters
+    min_obstacle_height: 0.04     # default 0, meters
     max_obstacle_height: 0.5
     expected_update_rate: 0.0    # default 0, if not updating at this rate at least, remove from buffer
     observation_persistence: 0.0 # default 0, use all measurements taken during now-value, 0=latest
@@ -166,7 +166,7 @@ sonar_obstacle_layer_RL:
   mark_threshold:           1     # voxel height
   update_footprint_enabled: true
   combination_method:       1     # 1=max, 0=override
-  obstacle_range:           0.2   #0.5   # meters #default:0.8
+  obstacle_range:           0.4   # meters #default:0.8
   origin_z:                 0.1   # meters
   publish_voxel_map:        false # default off
   transform_tolerance:      5.0   # seconds default_1.0
@@ -178,7 +178,7 @@ sonar_obstacle_layer_RL:
     topic: range_points_RL
     marking: true
     clearing: false
-    min_obstacle_height: 0.0     # default 0, meters
+    min_obstacle_height: 0.04     # default 0, meters
     max_obstacle_height: 0.5
     expected_update_rate: 0.0    # default 0, if not updating at this rate at least, remove from buffer
     observation_persistence: 0.0 # default 0, use all measurements taken during now-value, 0=latest
@@ -209,7 +209,7 @@ sonar_obstacle_layer_RR:
   mark_threshold:           1     # voxel height
   update_footprint_enabled: true
   combination_method:       1     # 1=max, 0=override
-  obstacle_range:           0.2   #0.5   # meters #default:0.8
+  obstacle_range:           0.4   # meters #default:0.8
   origin_z:                 0.1   # meters
   publish_voxel_map:        false # default off
   transform_tolerance:      5.0   # seconds default_1.0
@@ -221,7 +221,7 @@ sonar_obstacle_layer_RR:
     topic: range_points_RR
     marking: true
     clearing: false
-    min_obstacle_height: 0.0     # default 0, meters
+    min_obstacle_height: 0.04     # default 0, meters
     max_obstacle_height: 0.5
     expected_update_rate: 0.0    # default 0, if not updating at this rate at least, remove from buffer
     observation_persistence: 0.0 # default 0, use all measurements taken during now-value, 0=latest
@@ -252,7 +252,7 @@ sonar_obstacle_layer_DR:
   mark_threshold:           1     # voxel height
   update_footprint_enabled: true
   combination_method:       1     # 1=max, 0=override
-  obstacle_range:           0.2   #0.5   # meters #default:0.8
+  obstacle_range:           0.4   # meters #default:0.8
   origin_z:                 0.1   # meters
   publish_voxel_map:        false # default off
   transform_tolerance:      5.0   # seconds default_1.0
@@ -264,7 +264,7 @@ sonar_obstacle_layer_DR:
     topic: range_points_DR
     marking: true
     clearing: false
-    min_obstacle_height: 0.0     # default 0, meters
+    min_obstacle_height: 0.04     # default 0, meters
     max_obstacle_height: 0.5
     expected_update_rate: 0.0    # default 0, if not updating at this rate at least, remove from buffer
     observation_persistence: 0.0 # default 0, use all measurements taken during now-value, 0=latest
