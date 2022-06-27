@@ -2850,7 +2850,7 @@ bool ChargingStation_tracking2(int marker_id)
     {
         m_fdistance = sqrt(_pAR_tag_pose.m_transform_pose_x * _pAR_tag_pose.m_transform_pose_x + _pAR_tag_pose.m_transform_pose_y * _pAR_tag_pose.m_transform_pose_y);
         //printf("master_distance: %.5f \n", m_fdistance);
-        if((_pRobot_Status.m_iCallback_Charging_status < 2) || (_pAR_tag_pose.m_transform_pose_x >= 0.360))
+        if(_pRobot_Status.m_iCallback_Charging_status < 2)
         {
             cmd->linear.x = -1.0 * (m_fdistance /1.2) * 0.1; //max speed 0.1m/s
             //printf("linear velocity: %.2f \n", cmd->linear.x);
@@ -3113,7 +3113,7 @@ bool ConveyorStation_tracking2(int marker_id)
     if(_pAR_tag_pose.m_iAR_tag_id == marker_id)
     {
         m_fdistance = sqrt(_pAR_tag_pose.m_transform_pose_x * _pAR_tag_pose.m_transform_pose_x + _pAR_tag_pose.m_transform_pose_y * _pAR_tag_pose.m_transform_pose_y);
-        if((_pRobot_Status.m_iCallback_Charging_status < 2) || (_pAR_tag_pose.m_transform_pose_x >= 0.360))
+        if(_pRobot_Status.m_iCallback_Charging_status < 2)
         {
             cmd->linear.x = -1.0 * (m_fdistance /1.2) * 0.1; //max speed 0.1m/s
             //printf("linear velocity: %.2f \n", cmd->linear.x);
