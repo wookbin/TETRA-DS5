@@ -214,6 +214,8 @@ typedef struct FALG_VALUE
     bool m_bflagGo = false;
     bool m_bflagGo2 = false;
     bool m_bCorneringFlag = true;
+    //no motion service call flag//
+    bool m_bFlag_nomotion = true;
 
 }FALG_VALUE;
 FALG_VALUE _pFlag_Value;
@@ -953,7 +955,10 @@ void Particle_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
     m_iParticleCloud_size = msg->poses.size();
     if(m_iParticleCloud_size > 501 && _pDynamic_param.m_linear_vel == 0.0 && _pDynamic_param.m_angular_vel == 0.0)
     {
-        request_nomotion_update_client.call(m_request3);
+        if(_pFlag_Value.m_bFlag_nomotion)
+        {
+            request_nomotion_update_client.call(m_request3);
+        }
     }
     
 }
@@ -1874,6 +1879,9 @@ void Reset_EKF_SetPose()
 
     	initialpose_pub.publish(initPose_);
     	printf("##Set_initPose(2D Estimate)! \n");
+	
+    	usleep(500000);
+   	 _pFlag_Value.m_bFlag_nomotion = true;
 }
 
 bool Marker_Reset_Robot_Pose()
@@ -1968,6 +1976,8 @@ void Reset_Robot_Pose()
 {
     if(_pRobot_Status.HOME_ID == _pAR_tag_pose.m_iAR_tag_id) // Same as Home ID... Loop 
     {
+        _pFlag_Value.m_bFlag_nomotion = false;
+	
         //IMU reset//
         euler_angle_reset_cmd_client.call(euler_angle_reset_srv);
 	printf("## IMU Reset ! \n");
