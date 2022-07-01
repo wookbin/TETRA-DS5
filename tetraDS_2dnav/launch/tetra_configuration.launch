@@ -4,7 +4,7 @@
   <param name="tf_prefix" value="$(optenv ROS_NAMESPACE)"/> 
   <param name="HOME_ID" value="0" />
   <param name="bumper_behavior" type="bool" value="true" />
-  <param name="max_vel_x" type="double" value="0.8" />
+  <param name="max_vel_x" type="double" value="0.6" />
   <param name="conveyor_option" type="bool" value="false" />
   <param name="ekf_option" type="bool" value="true" /> <!--false-->
   <arg   name="ekf_option_flag" default="1"/>
