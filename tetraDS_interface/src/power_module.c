@@ -213,8 +213,11 @@ int power_read_Battery(int fd, double *dbattery, double *dVoltage, double *dCurr
 
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf);
+	if(packet_buf[1] == 0x02) //Packet Error Pass..
+	{
+		return -1;
+	}
 	
-
 	//Battery Level
 	int ibattery = (packet_buf[4] & 0xff) | ((packet_buf[3] << 8) & 0xff00);
 	*dbattery = ibattery;
