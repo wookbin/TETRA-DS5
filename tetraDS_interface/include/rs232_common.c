@@ -152,37 +152,37 @@ int get_response(int fd, unsigned char data[])
 
 int get_response2(int fd, unsigned char data[])
 {
-	int index;
+	int index = 0;
 	int ret = 0;
+	int lrc_val = 0;
+	int total_byte = 0;
 
-	do
-	{
-		ret = read(fd, data, 1);
-		if(ret <= 0) 
-			return -1;
+	// receive STX
+	do {
+		if( read(fd, data, 1) < 1) 
+		{
+			printf("return -10 \n");
+			return -10;
+		}
+	} while(data[0] != STX);	
 
-	} while(!(data[0] == STX));
+	// receive data total byte check
+	read(fd, &data[1], 1);
+	read(fd, &data[2], 1);
 
-	index = 1;
-	
-	do
-	{
+	total_byte = (data[2] & 0xff) | ((data[1] << 8)& 0xff00);
+	//printf("total_byte: %d \n", total_byte);
+	index = 3;
+
+	do {
 		ret = read(fd, &data[index], 1);
 		index++;
-		if(ret <= 0) 
-			return -1;
+		if(!ret) 
+		{
+			//printf("return -11 \n");
+			return -11;
+		}
 
-	} while((data[14] != ETX));
-
-	
-	if(data[1] != FLAG_OK)
-		return -1;
-	else if(data[index-1] != make_lrc(&data[1], index - 2)) 
-	{
-		return -1;
-	}
-	else 
-	{
-		return 0;
-	}
+	} 
+	while(index-3 < total_byte);
 }
