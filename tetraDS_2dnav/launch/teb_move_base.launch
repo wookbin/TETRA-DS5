@@ -10,6 +10,7 @@
   <arg name="move_forward_only" default="false"/>
 
   <node pkg="move_base" type="move_base" name="move_base" output="screen" clear_params="true" respawn="false">
+    <rosparam file="$(find tetraDS_2dnav)/config/move_base_params.yaml" command="load"/>
     <rosparam file="$(find tetraDS_2dnav)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find tetraDS_2dnav)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
 
