@@ -939,7 +939,7 @@ int power_read_GPIO(int fd,  int *Input, int *Output)
 
 	memset(packet_buf2, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf2);
-	if(packet_buf[1] == 0x02) //Packet Error Pass..
+	if(packet_buf2[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
 	}
