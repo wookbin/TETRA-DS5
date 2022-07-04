@@ -1029,7 +1029,7 @@ void Teblocalplan_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
 
 void setGoal(move_base_msgs::MoveBaseActionGoal& goal)
 {
-    ros::Time now = ros::Time::now();
+    ros::Time now = ros::Time(0);
 
     goal.header.frame_id="map";
     goal.header.stamp=now;
@@ -1846,7 +1846,7 @@ void Reset_EKF_SetPose()
 {
 	//robot_localization::SetPose ekf_reset;
 	setpose_srv.request.pose.header.frame_id = tf_prefix_ + "/odom";
-	setpose_srv.request.pose.header.stamp = ros::Time::now();
+	setpose_srv.request.pose.header.stamp = ros::Time(0);
 	setpose_srv.request.pose.pose.pose.position.x = 0.0; //_pTF_pose.poseTFx;
 	setpose_srv.request.pose.pose.pose.position.y = 0.0; //_pTF_pose.poseTFy;
 	setpose_srv.request.pose.pose.pose.position.z = 0.0; //_pTF_pose.poseTFz;
@@ -1861,7 +1861,7 @@ void Reset_EKF_SetPose()
 	SetPose_cmd_client.call(setpose_srv); //Set_pose call//
 	printf("##Set_Pose(EKF)! \n");
 	
-	initPose_.header.stamp = ros::Time::now(); 
+	initPose_.header.stamp = ros::Time(0);
     	initPose_.header.frame_id = "map";
     	//position
     	initPose_.pose.pose.position.x = 0.0;
@@ -1942,7 +1942,7 @@ bool Marker_Reset_Robot_Pose()
             }
         }
         fclose(fp);
-	    initPose_.header.stamp = ros::Time::now(); 
+	    initPose_.header.stamp = ros::Time(0);
 	    initPose_.header.frame_id = "map";
 	    //position
 	    initPose_.pose.pose.position.x = _pLandMarkPose.init_position_x;
@@ -2057,7 +2057,7 @@ bool SetInitPose_Command(tetraDS_service::setinitpose::Request  &req,
         fclose(fp);
     }
 
-    initPose_.header.stamp = ros::Time::now(); 
+    initPose_.header.stamp = ros::Time(0);
     initPose_.header.frame_id = "map";
     //position
     initPose_.pose.pose.position.x = _pLandMarkPose.init_position_x;
@@ -2086,7 +2086,7 @@ bool Set2D_Pose_Estimate_Command(tetraDS_service::pose_estimate::Request  &req,
 					             tetraDS_service::pose_estimate::Response &res)
 {
     bool bResult = false;
-    initPose_.header.stamp = ros::Time::now(); 
+    initPose_.header.stamp = ros::Time(0);
     initPose_.header.frame_id = "map";
     //position
     initPose_.pose.pose.position.x = req.estimate_position_x;
@@ -3884,7 +3884,7 @@ void TESTCallback(const sensor_msgs::Joy::ConstPtr& joy)
          _pFlag_Value.m_bflag_ComebackHome = true;
         //View _Ignition Point...
         node.header.frame_id = "/map";
-        node.header.stamp = ros::Time::now(); 
+        node.header.stamp = ros::Time(0);
         node.type = visualization_msgs::Marker::SPHERE;
         node.ns = "Ignition_shapes";
         node.id = 0;
@@ -3916,7 +3916,7 @@ void TESTCallback(const sensor_msgs::Joy::ConstPtr& joy)
     {
         //View _Ignition Point...
         node.header.frame_id = "/map";
-        node.header.stamp = ros::Time::now(); 
+        node.header.stamp = ros::Time(0); 
         node.type = visualization_msgs::Marker::SPHERE;
         node.ns = "Ignition_shapes";
         node.id = 0;
