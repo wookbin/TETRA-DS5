@@ -46,7 +46,6 @@ generate_messages(
 catkin_package(
   LIBRARIES ros_server
   CATKIN_DEPENDS roscpp std_msgs std_srvs message_generation message_runtime
-  DEPENDS system_lib
 )
 
 ###########
