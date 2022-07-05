@@ -38,7 +38,6 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES tetraDS
   CATKIN_DEPENDS roscpp message_generation message_runtime
-  DEPENDS system_lib
 )
 
 ###########
