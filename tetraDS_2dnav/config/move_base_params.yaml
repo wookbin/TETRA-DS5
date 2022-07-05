@@ -17,17 +17,8 @@ clearing_rotation_allowed: true
 recovery_behaviors:
   - name: conservative_reset
     type: clear_costmap_recovery/ClearCostmapRecovery
-  - name: "rotate_recovery"
-    type: "rotate_recovery/RotateRecovery"
   - name: aggresive_reset
     type: clear_costmap_recovery/ClearCostmapRecovery
 
 conservative_reset:
   reset_distance: 10.0
-
-rotate_recovery:
-  frequency: 10.0
-  sim_granularity: 0.05
-
-aggresive_reset:
-  reset_distance: 0.5
