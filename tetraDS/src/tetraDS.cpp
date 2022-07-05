@@ -571,14 +571,14 @@ int main(int argc, char * argv[])
 		{
 			if(input_linear > control_linear)
 			{
-				control_linear = min(input_linear, control_linear + 0.008);  //8mm++
+				control_linear = min(input_linear, control_linear + 0.01);  //10mm++
 				if(!m_bForwardCheck)
-					control_linear = min(input_linear, control_linear + 0.025);
+					control_linear = min(input_linear, control_linear + 0.05);
 				
 			}
 			else if(input_linear < control_linear)
 			{
-				control_linear = max(input_linear, control_linear - 0.025);  //25mm --
+				control_linear = max(input_linear, control_linear - 0.05);  //50mm --
 			}
 			else
 			{
@@ -589,12 +589,12 @@ int main(int argc, char * argv[])
 		{
 			if(input_linear < control_linear)
 			{
-				control_linear = max(input_linear, control_linear - 0.008);
+				control_linear = max(input_linear, control_linear - 0.01);
 				
 			}
 			else if(input_linear > control_linear)
 			{
-				control_linear = min(input_linear, control_linear + 0.025);
+				control_linear = min(input_linear, control_linear + 0.05);
 			}
 			else
 			{
