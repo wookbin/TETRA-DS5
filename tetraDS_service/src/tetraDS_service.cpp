@@ -1990,7 +1990,7 @@ void Reset_Robot_Pose()
     Marker_Reset_Robot_Pose();
 
     //costmap clear call//
-    clear_costmap_client.call(m_request);
+    //clear_costmap_client.call(m_request);
     
 }
 
@@ -4155,12 +4155,12 @@ int main (int argc, char** argv)
         printf("docking thread create error !!");
         exit(0);
     }
-    auto_thread_id = pthread_create(&p_auto_thread, NULL, AutoThread_function, (void *)&b);
-    if (auto_thread_id < 0)
-    {
-        printf("auto thread create error !!");
-        exit(0);
-    }  
+    //auto_thread_id = pthread_create(&p_auto_thread, NULL, AutoThread_function, (void *)&b);
+    //if (auto_thread_id < 0)
+    //{
+        //printf("auto thread create error !!");
+        //exit(0);
+    //}  
 
     //TF transform//
     tf::TransformListener listener;
