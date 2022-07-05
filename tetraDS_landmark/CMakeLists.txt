@@ -30,7 +30,6 @@ generate_messages(
 catkin_package(
   LIBRARIES tetraDS_landmark
   CATKIN_DEPENDS roscpp std_msgs std_srvs message_generation message_runtime
-  DEPENDS system_lib
 )
 
 include_directories(
