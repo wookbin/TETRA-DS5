@@ -55,7 +55,6 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES tetraDS_interface
   CATKIN_DEPENDS pcl_ros roscpp std_srvs std_msgs sensor_msgs tf2 tf2_geometry_msgs message_generation message_runtime
-  DEPENDS system_lib
 )
 
 
