@@ -7,7 +7,7 @@ local_costmap:
   width: 15
   height: 15
   resolution: 0.05
-  transform_tolerance: 0.2 #0.05
+  transform_tolerance: 0.05
   footprint_padding: 0.0
   unknown_cost_value: 254
   always_send_full_costmap: true
