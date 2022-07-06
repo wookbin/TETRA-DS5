@@ -273,25 +273,20 @@ int drvm_read_bumper_emg(int fd, int *bumper, int *emg_state)
 	if(ret !=0 ) return ret;
 
 	memset(binary, 0, sizeof(int)*16);
-	bumper_val = packet_buf[7];
-	decimal2binary(bumper_val, binary);
-	bumper[0] = binary[0];
-	bumper[1] = binary[1];
-	bumper[2] = binary[2];
-	bumper[3] = binary[3];
+	bumper_val1 = packet_buf[7] & 0x0f;
 	
 	memset(binary, 0, sizeof(int)*16);
-	bumper_val = packet_buf[6];
-	decimal2binary(bumper_val, binary);
-	bumper[4] = binary[0];
-	bumper[5] = binary[1];
-	bumper[6] = binary[2];
-	bumper[7] = binary[3];
+	bumper_val2 = packet_buf[6] & 0x0f;
+
+	//printf("BUM1: %d \n", bumper_val1);
+	//printf("BUM2: %d \n", bumper_val2);
+
+	*bumper = (bumper_val1) + (bumper_val2 << 4);
+	//printf("Sum: %d \n", *bumper );
 
 	memset(binary, 0, sizeof(int)*16);
 	emg_val = packet_buf[8];
 	decimal2binary(emg_val, binary);
-
 	*emg_state = binary[0];
 
 	return ret;
