@@ -540,7 +540,6 @@ int main(int argc, char * argv[])
 	//Reset odometry
 	dssp_rs232_drv_module_reset_odometry();
 	usleep(10000);
-	dssp_rs232_drv_module_set_charge(0);
 	//emg flag//
 	bool m_bflag_emg = false;
 	//
