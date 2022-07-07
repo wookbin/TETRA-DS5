@@ -140,19 +140,19 @@ class TETRA
 
     void pub()
 	{
-        double dt=(current_time-last_time).toSec();
-        double velocity[3];
+        	double dt=(current_time-last_time).toSec();
+        	double velocity[3];
 
-        for(int i=0;i<3;i++)
+		for(int i=0;i<3;i++)
 		{
-            velocity[i]=(coordinates[i]-prev_coordinates[i])/dt;
-            prev_coordinates[i]=coordinates[i];
-        }
+		    velocity[i]=(coordinates[i]-prev_coordinates[i])/dt;
+		    prev_coordinates[i]=coordinates[i];
+		}
 
 		
-        geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(coordinates[2]);
+        	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(coordinates[2]);
 		
-        geometry_msgs::TransformStamped odom_trans;
+        	geometry_msgs::TransformStamped odom_trans;
 		if(!m_bEKF_option) //add...ekf_localization option _ wbjin
 		{
 			odom_trans.header.stamp = current_time;
@@ -173,8 +173,8 @@ class TETRA
 			odom_broadcaster.sendTransform(odom_trans);
 		}
 		
-        nav_msgs::Odometry odom;
-        odom.header.stamp = current_time;
+		nav_msgs::Odometry odom;
+		odom.header.stamp = current_time;
 		if(has_prefix)
 		{
 			odom.header.frame_id = tf_prefix_ + "/odom"; //tf_prefix add
@@ -185,18 +185,18 @@ class TETRA
 			odom.header.frame_id = "odom";
 			odom.child_frame_id = "base_footprint";
 		}
-        //pose
-        odom.pose.pose.position.x= coordinates[0];
-        odom.pose.pose.position.y= coordinates[1];
-        odom.pose.pose.position.z= 0.0;
-        odom.pose.pose.orientation= odom_quat;
-        odom.twist.twist.linear.x = velocity[0];
-        odom.twist.twist.linear.y = velocity[1];
-        odom.twist.twist.linear.z = 0.0;
-	odom.twist.twist.angular.z = velocity[2];
-        odom_publisher.publish(odom);
+		//pose
+		odom.pose.pose.position.x= coordinates[0];
+		odom.pose.pose.position.y= coordinates[1];
+		odom.pose.pose.position.z= 0.0;
+		odom.pose.pose.orientation= odom_quat;
+		odom.twist.twist.linear.x = velocity[0];
+		odom.twist.twist.linear.y = velocity[1];
+		odom.twist.twist.linear.z = 0.0;
+		odom.twist.twist.angular.z = velocity[2];
+		odom_publisher.publish(odom);
 
-        last_time=current_time;
+		last_time=current_time;
     }
 };
 
@@ -270,7 +270,6 @@ void vjoyCallback(const geometry_msgs::Twist::ConstPtr& vel)
 int Reset = 0;
 void PoseResetCallback(const std_msgs::Int32::ConstPtr& msg)
 {
-	TETRA tetra;
 	Reset = msg->data;
 	if(Reset == 1)
 	{
@@ -332,8 +331,8 @@ bool Parameter_Read_Command(tetraDS::parameter_read::Request  &req,
 	---
 	int32 data
 	bool command_Result
-    */
-    bResult = true;
+    	*/
+    	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -349,8 +348,8 @@ bool Parameter_Write_Command(tetraDS::parameter_write::Request  &req,
 	int32 data
 	---
 	bool command_Result
-    */
-    bResult = true;
+    	*/
+    	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -382,9 +381,9 @@ bool Movemode_Change_Command(tetraDS::set_move_mode::Request  &req,
 	int32 mode
 	---
 	bool command_Result
-    */
+    	*/
 
-    bResult = true;
+    	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -399,9 +398,9 @@ bool Linear_Move_Command(tetraDS::linear_position_move::Request  &req,
 	int32 linear_position
 	---
 	bool command_Result
-    */
+    	*/
 
-    bResult = true;
+    	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -416,9 +415,9 @@ bool Angular_Move_Command(tetraDS::angular_position_move::Request  &req,
 	int32 angular_degree
 	---
 	bool command_Result
-    */
+    	*/
 
-    bResult = true;
+    	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -466,28 +465,28 @@ void SetMoveCommand(double fLinear_vel, double fAngular_vel)
 //Main Loop//
 int main(int argc, char * argv[])
 {
-    ros::init(argc, argv, "tetraDS");
-    ros::NodeHandle n;
+	ros::init(argc, argv, "tetraDS");
+	ros::NodeHandle n;
 	ros::NodeHandle njoy;
 	ros::NodeHandle vjoy;
 	ros::NodeHandle nReset;
 	ros::NodeHandle nbumper;
 	ros::NodeHandle nemg;
 	ros::NodeHandle param;
-    ros::Publisher tetra_battery_publisher;
+    	ros::Publisher tetra_battery_publisher;
 	has_prefix=ros::param::get("tf_prefix", tf_prefix_); //tf_prefix add - 210701
 
 	//Read Conveyor Option Param Read//
-    n.getParam("ekf_option", m_bEKF_option);
-    printf("##ekf_option: %d \n", m_bEKF_option);
+    	n.getParam("ekf_option", m_bEKF_option);
+    	printf("##ekf_option: %d \n", m_bEKF_option);
 
-    TETRA tetra;
-    //cmd_velocity_velue//
+    	TETRA tetra;
+    	//cmd_velocity_velue//
 	ros::Subscriber vel_sub = n.subscribe("cmd_vel",100,tetra.velCallback);
 	//acceleration_velue//
 	ros::Subscriber acc_sub = n.subscribe("accel_vel",10,accelCallback);
 	//Joystick//
-    ros::Subscriber joy_sub = njoy.subscribe<sensor_msgs::Joy>("joy", 10, joyCallback);
+    	ros::Subscriber joy_sub = njoy.subscribe<sensor_msgs::Joy>("joy", 10, joyCallback);
 	ros::Subscriber vjoy_sub = vjoy.subscribe<geometry_msgs::Twist>("virtual_joystick/cmd_vel", 10, vjoyCallback);
 	//Pose Reset//_test
 	ros::Subscriber PoseReset = nReset.subscribe<std_msgs::Int32>("PoseRest",10, PoseResetCallback);
@@ -511,7 +510,7 @@ int main(int argc, char * argv[])
 	linear_position_move_service = param.advertiseService("linear_move_cmd", Linear_Move_Command);
 	angular_position_move_service = param.advertiseService("angular_move_cmd", Angular_Move_Command);
 
-    ros::Rate loop_rate(30.0); //default: 30HZ
+    	ros::Rate loop_rate(30.0); //default: 30HZ
 
 	sprintf(port, "/dev/ttyS0");
 	//RS232 Connect
@@ -553,7 +552,7 @@ int main(int argc, char * argv[])
 
     while(ros::ok())
 	{
-        ros::spinOnce();
+        	ros::spinOnce();
 		
 		input_linear  = linear;
 		input_angular = angular;
