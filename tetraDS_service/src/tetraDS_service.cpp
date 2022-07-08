@@ -4098,7 +4098,7 @@ int main (int argc, char** argv)
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //bumper_data to Pointcloud2_data///
     ros::NodeHandle nbumper;
-    pointcloud_.header.frame_id = "Front_bumper";
+    pointcloud_.header.frame_id = tf_prefix_ + "/Front_bumper";
     pointcloud_.width  = 3;
     pointcloud_.height = 1;
     pointcloud_.fields.resize(3);
