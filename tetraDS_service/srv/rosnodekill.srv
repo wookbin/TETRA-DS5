@@ -1,0 +1,5 @@
+#This message is used to send command to tetra
+# rosnode kill Command
+
+---
+bool command_Result

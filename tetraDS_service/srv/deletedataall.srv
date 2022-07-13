@@ -1,0 +1,5 @@
+#This message is used to send command to tetra
+#delete data all Command (map, location, landmark)
+
+---
+bool command_Result

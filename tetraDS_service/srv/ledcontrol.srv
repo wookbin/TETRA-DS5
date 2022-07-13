@@ -1,0 +1,8 @@
+#This message is used to send command to tetra
+#LED Control command
+
+int32 ID
+int32 led_brightness
+---
+bool command_Result
+

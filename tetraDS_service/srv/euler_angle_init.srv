@@ -1,0 +1,6 @@
+#This message is used to send command to IAHRS(IMU)
+#Euler_angle_init command
+
+---
+bool command_Result
+

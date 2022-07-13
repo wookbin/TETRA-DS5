@@ -1,0 +1,7 @@
+#This message is used to send command to tetra
+#Acceleration Slop Time Control command
+
+int32 slop_time
+---
+bool command_Result
+
