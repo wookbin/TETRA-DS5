@@ -256,7 +256,7 @@ int drvm_read_bumper_emg(int fd, int *bumper, int *emg_state)
 {
 	int ret;
 	unsigned char packet_buf[255] = {STX, 'A', 'A', ETX};
-	int bumper_val;
+	int bumper_val1, bumper_val2;
 	int emg_val;
 	int binary[16] = {0};
 
