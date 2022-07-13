@@ -4249,9 +4249,7 @@ int main (int argc, char** argv)
                 if(m_iList_Count > 0)
                 {
 		    //message copy...
-                    virtual_obstacle2.list.clear();
-                    virtual_obstacle2 = virtual_obstacle;
-			
+                    virtual_obstacle2.list.clear();	
                     virtual_obstacle2.list.resize(m_iList_Count);
                     for(int i=0; i<m_iList_Count; i++)
                     {
