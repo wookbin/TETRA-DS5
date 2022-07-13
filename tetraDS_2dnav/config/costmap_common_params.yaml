@@ -288,7 +288,7 @@ virtual_layer:
   enabled:              true
   zone_topics:          [virtual_costamp_layer/zone]
   obstacle_topics:      [virtual_costamp_layer/obsctacles]
-  one_zone:             true     
+  one_zone:             false     
   forms:    
      - [0.4, 0.0]
      - [[0.4, 0.0]]
@@ -299,7 +299,7 @@ virtual_layer2:
   enabled:              true
   zone_topics:          [virtual_costamp_layer2/zone]
   obstacle_topics:      [virtual_costamp_layer2/obsctacles]
-  one_zone:             true     
+  one_zone:             false     
   forms:    
      - [0.4, 0.0]
      - [[0.4, 0.0]]
