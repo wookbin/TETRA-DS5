@@ -11,5 +11,8 @@ TETRA-DS5_(beta version) _ ROS1-melodic
 - tetraDS_service: TETRA-DS5의 환경지도/자율주행/각종 기능들에 서비스를 사용하기 위한 패키지
 - tetraDS_2dnav: TETRA-DS5의 각종 설정 파일과 런치 파일들을 모아둔 패키지
 
+- virtual_costmap_layer: GMahmoud가 만든 가상 레이어 패키지 (Global costmap에 활용)
+- virtual_costmap_layer2: GMahmoud가 만든 가상 레이어 패키지에서 플러그인 이름만 수정한 버전 (local costmap에 활용)
+
 
 //It will be continuously updated...
