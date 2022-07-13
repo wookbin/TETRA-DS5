@@ -1017,7 +1017,7 @@ void Teblocalplan_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
     {
         if(m_dDelta_Value >= 3.5)
         {
-            Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_theta", 0.35);
+            Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_theta", 0.5);
         }
         else
         {
