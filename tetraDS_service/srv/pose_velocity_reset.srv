@@ -1,6 +1,0 @@
-#This message is used to send command to IAHRS(IMU)
-#Pose_Velocity_Reset command
-
----
-bool command_Result
-
