@@ -966,7 +966,7 @@ int main(int argc, char * argv[])
 		docking_status_publisher.publish(docking_status);
 		if(m_imode_status == 0)
 		{
-			if(m_iPowerCheckCount>5)
+			if(m_iPowerCheckCount>50) //timeout check!
 			{
 				servo.data = 2;
 				servo_pub.publish(servo);
