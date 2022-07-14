@@ -11,7 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
   message_runtime
   tf
   geometry_msgs
-  custom_msgs
   visualization_msgs 
 )
 
