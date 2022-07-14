@@ -11,7 +11,6 @@ find_package(catkin REQUIRED
   nav_msgs
   geometry_msgs
   move_base
-  custom_msgs
   visualization_msgs 
   dynamic_reconfigure
 )
