@@ -26,9 +26,9 @@ TebLocalPlannerROS:
  max_vel_y: 0.0
  max_vel_x_backwards: 0.15
  max_vel_theta: 0.15
- acc_lim_x: 1.0
+ acc_lim_x: 2.0
  acc_lim_y: 0.0 
- acc_lim_theta: 1.0
+ acc_lim_theta: 2.0
  min_turning_radius: 0.0
  wheelbase: 0.0
  cmd_angle_instead_rotvel: false
