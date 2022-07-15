@@ -19,8 +19,8 @@
     <rosparam param="local_costmap/virtual_layer/obstacle_topics" subst_value="True">[/$(arg namespace)/virtual_costamp_layer/obsctacles]</rosparam>
 
     <!--Virtual layer2 -->
-    <rosparam param="global_costmap/virtual_layer2/obstacle_topics" subst_value="True">[/$(arg namespace)/virtual_costamp_layer2/obsctacles]</rosparam>
-    <rosparam param="local_costmap/virtual_layer2/obstacle_topics" subst_value="True">[/$(arg namespace)/virtual_costamp_layer2/obsctacles]</rosparam>		
+    <rosparam param="global_costmap/virtual_layer2/obstacle_topics" subst_value="True">[/$(arg namespace)/virtual_costamp_layer2/obsctacles2]</rosparam>
+    <rosparam param="local_costmap/virtual_layer2/obstacle_topics" subst_value="True">[/$(arg namespace)/virtual_costamp_layer2/obsctacles2]</rosparam>		
 
     <rosparam file="$(find tetraDS_2dnav)/config/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find tetraDS_2dnav)/config/global_costmap_params.yaml" command="load" />
