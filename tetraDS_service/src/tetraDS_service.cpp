@@ -161,7 +161,8 @@ int m_iList_Count = 0;
 int m_iMode_Count = 0;
 //Teb Via Point...
 int m_iViaPoint_Index = 0;
-
+//mutex//
+pthread_mutex_t mutex;
 
 typedef struct HOME_POSE
 {
@@ -4276,6 +4277,9 @@ int main (int argc, char** argv)
                 m_iList_Count = virtual_obstacle.list.size();
                 if(m_iList_Count > 0)
                 {
+		    pthread_mutex_lock(&mutex);
+                    //======== critical section =============
+		
                     //message copy...
                     virtual_obstacle2.list.clear();
                     //virtual_obstacle2 = virtual_obstacle;
@@ -4294,7 +4298,9 @@ int main (int argc, char** argv)
                         }
                     }
                     virtual_obstacle2_pub.publish(virtual_obstacle2);
-                    //printf(" ~~~~~~~~ \n");
+		
+                    //========= critical section ============
+                    pthread_mutex_unlock(&mutex);
                 }
                 
             }
