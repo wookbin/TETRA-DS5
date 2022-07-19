@@ -4010,6 +4010,13 @@ int main (int argc, char** argv)
     //Depthimage to scan subscriber//
     ros::Subscriber pcl1_sub = nh.subscribe("pcl_1", 100, PCL1_Callback);
     ros::Subscriber pcl2_sub = nh.subscribe("pcl_2", 100, PCL2_Callback);
+    //virtual costmap
+    //virtual costmap_pub
+    virtual_obstacle_pub = nh.advertise<virtual_costmap_layer::Obstacles>("virtual_costamp_layer/obsctacles", 100);
+    virtual_obstacle2_pub = nh.advertise<virtual_costmap_layer2::Obstacles2>("virtual_costamp_layer2/obsctacles", 100);
+    //virtual costmap_sub
+    ros::Subscriber virtual_sub = nh.subscribe<virtual_costmap_layer::Obstacles>("virtual_costamp_layer/obsctacles", 100, Virtual_Callback);
+
     //Joystick//
     ros::NodeHandle njoy;
     ros::Subscriber joy_sub = njoy.subscribe<sensor_msgs::Joy>("joy", 10, joyCallback);
@@ -4073,8 +4080,7 @@ int main (int argc, char** argv)
     //Delete Data All Service//
     deletedataall_service = service_h.advertiseService("deletedataall_cmd", DeleteData_All_Command);
     //Virtual costmap Service//
-    ros::NodeHandle virtual_costmap_nh;
-    virtual_obstacle_service = virtual_costmap_nh.advertiseService("virtual_obstacle_cmd", Virtual_Obstacle_Command);
+    virtual_obstacle_service = service_h.advertiseService("virtual_obstacle_cmd", Virtual_Obstacle_Command);
     
     //usb_cam Service Client...
     ros::NodeHandle client_h;
@@ -4157,14 +4163,6 @@ int main (int argc, char** argv)
     memcpy(&pointcloud_.data[2 * pointcloud_.point_step + pointcloud_.fields[2].offset], &pc_height_, sizeof(float));
     pointcloud_pub_ = nbumper.advertise <sensor_msgs::PointCloud2> ("bumper_pointcloud", 100);
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    //virtual costmap
-    ros::NodeHandle virtual_nh;
-    //virtual costmap_pub
-    virtual_obstacle_pub = virtual_nh.advertise<virtual_costmap_layer::Obstacles>("virtual_costamp_layer/obsctacles", 100);
-    virtual_obstacle2_pub = virtual_nh.advertise<virtual_costmap_layer2::Obstacles2>("virtual_costamp_layer2/obsctacles", 100);
-    //virtual costmap_sub
-    ros::Subscriber virtual_sub = virtual_nh.subscribe<virtual_costmap_layer::Obstacles>("virtual_costamp_layer/obsctacles", 100, Virtual_Callback);
 
     //Docking Loop 
     ros::NodeHandle docking_nh;
