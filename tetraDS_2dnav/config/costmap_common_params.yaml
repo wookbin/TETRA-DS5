@@ -40,7 +40,7 @@ rgbd_obstacle_layer1:
   obstacle_range:           1.5   # meters #default:0.8
   origin_z:                 0.0 #0.1   # meters
   publish_voxel_map:        false # default off
-  transform_tolerance:      0.05 #1.0   # seconds default_1.0
+  transform_tolerance:      1.0   # seconds default_1.0
   mapping_mode:             false # default off, saves map not for navigation
   map_save_duration:        60    # default 60s, how often to autosave
   observation_sources:      rgbd1_mark rgbd1_clear
@@ -83,7 +83,7 @@ rgbd_obstacle_layer2:
   obstacle_range:           1.5   # meters #default:0.8
   origin_z:                 0.0 #0.1   # meters
   publish_voxel_map:        false # default off
-  transform_tolerance:      0.05 #1.0   # seconds default_1.0
+  transform_tolerance:      1.0   # seconds default_1.0
   mapping_mode:             false # default off, saves map not for navigation
   map_save_duration:        60    # default 60s, how often to autosave
   observation_sources:      rgbd2_mark rgbd2_clear
@@ -126,7 +126,7 @@ sonar_obstacle_layer_DL:
   obstacle_range:           0.4   # meters #default:0.8
   origin_z:                 0.1   # meters
   publish_voxel_map:        false # default off
-  transform_tolerance:      0.05   # seconds default_1.0
+  transform_tolerance:      1.0   # seconds default_1.0
   mapping_mode:             false # default off, saves map not for navigation
   map_save_duration:        60    # default 60s, how often to autosave
   observation_sources:      sonar1_mark sonar1_clear
@@ -169,7 +169,7 @@ sonar_obstacle_layer_RL:
   obstacle_range:           0.4   # meters #default:0.8
   origin_z:                 0.1   # meters
   publish_voxel_map:        false # default off
-  transform_tolerance:      0.05   # seconds default_1.0
+  transform_tolerance:      1.0   # seconds default_1.0
   mapping_mode:             false # default off, saves map not for navigation
   map_save_duration:        60    # default 60s, how often to autosave
   observation_sources:      sonar2_mark sonar2_clear
@@ -212,7 +212,7 @@ sonar_obstacle_layer_RR:
   obstacle_range:           0.4   # meters #default:0.8
   origin_z:                 0.1   # meters
   publish_voxel_map:        false # default off
-  transform_tolerance:      0.05   # seconds default_1.0
+  transform_tolerance:      1.0   # seconds default_1.0
   mapping_mode:             false # default off, saves map not for navigation
   map_save_duration:        60    # default 60s, how often to autosave
   observation_sources:      sonar3_mark sonar3_clear
@@ -255,7 +255,7 @@ sonar_obstacle_layer_DR:
   obstacle_range:           0.4   # meters #default:0.8
   origin_z:                 0.1   # meters
   publish_voxel_map:        false # default off
-  transform_tolerance:      0.05   # seconds default_1.0
+  transform_tolerance:      1.0   # seconds default_1.0
   mapping_mode:             false # default off, saves map not for navigation
   map_save_duration:        60    # default 60s, how often to autosave
   observation_sources:      sonar4_mark sonar4_clear
