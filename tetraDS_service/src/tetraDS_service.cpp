@@ -4159,16 +4159,12 @@ int main (int argc, char** argv)
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //virtual costmap
-    ros::NodeHandle virtual_nh, virtual_nh2;
-    //virtual_obstacle_pub = virtual_nh.advertise<custom_msgs::Obstacles>("virtual_costamp_layer/obsctacles", 100);
-    //virtual_obstacle2_pub = virtual_nh2.advertise<custom_msgs::Obstacles>("virtual_costamp_layer2/obsctacles", 100);
+    ros::NodeHandle virtual_nh;
+    //virtual costmap_pub
     virtual_obstacle_pub = virtual_nh.advertise<virtual_costmap_layer::Obstacles>("virtual_costamp_layer/obsctacles", 100);
-    virtual_obstacle2_pub = virtual_nh2.advertise<virtual_costmap_layer2::Obstacles2>("virtual_costamp_layer2/obsctacles", 100);
-
+    virtual_obstacle2_pub = virtual_nh.advertise<virtual_costmap_layer2::Obstacles2>("virtual_costamp_layer2/obsctacles", 100);
     //virtual costmap_sub
-    ros::NodeHandle virtual_sub_h;
-    //ros::Subscriber virtual_sub = virtual_sub_h.subscribe<custom_msgs::Obstacles>("virtual_costamp_layer/obsctacles", 1000, Virtual_Callback);
-    ros::Subscriber virtual_sub = virtual_sub_h.subscribe<virtual_costmap_layer::Obstacles>("virtual_costamp_layer/obsctacles", 1000, Virtual_Callback);
+    ros::Subscriber virtual_sub = virtual_nh.subscribe<virtual_costmap_layer::Obstacles>("virtual_costamp_layer/obsctacles", 100, Virtual_Callback);
 
     //Docking Loop 
     ros::NodeHandle docking_nh;
