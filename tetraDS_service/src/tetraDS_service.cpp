@@ -4016,7 +4016,15 @@ int main (int argc, char** argv)
     virtual_obstacle2_pub = nh.advertise<virtual_costmap_layer2::Obstacles2>("virtual_costamp_layer2/obsctacles", 100);
     //virtual costmap_sub
     ros::Subscriber virtual_sub = nh.subscribe<virtual_costmap_layer::Obstacles>("virtual_costamp_layer/obsctacles", 100, Virtual_Callback);
-
+    //amcl particlecloud Subscribe
+    ros::Subscriber pacticle_sub = nh.subscribe<geometry_msgs::PoseArray>("particlecloud", 3000, Particle_Callback);
+    //teb Markers Subscribe
+    ros::Subscriber tebmarksers_sub = nh.subscribe<visualization_msgs::Marker>("move_base/TebLocalPlannerROS/teb_markers", 100, TebMarkers_Callback);
+    //teb_localPlan Subscribe
+    ros::Subscriber teblocalplan_sub = nh.subscribe<geometry_msgs::PoseArray>("move_base/TebLocalPlannerROS/teb_poses", 100, Teblocalplan_Callback);
+    //Initialpose publish//
+    initialpose_pub = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 100, true);
+	
     //Joystick//
     ros::NodeHandle njoy;
     ros::Subscriber joy_sub = njoy.subscribe<sensor_msgs::Joy>("joy", 10, joyCallback);
@@ -4119,15 +4127,6 @@ int main (int argc, char** argv)
     ros::Subscriber ultrasonic_FR = nInfo.subscribe<sensor_msgs::Range>("Ultrasonic_D_R", 10, Ultrasonic_DR_Callback);
     ros::Subscriber ultrasonic_RL = nInfo.subscribe<sensor_msgs::Range>("Ultrasonic_R_L", 10, Ultrasonic_RL_Callback);
     ros::Subscriber ultrasonic_RR = nInfo.subscribe<sensor_msgs::Range>("Ultrasonic_R_R", 10, Ultrasonic_RR_Callback);
-    //amcl particlecloud Subscribe
-    ros::Subscriber pacticle_sub = nInfo.subscribe<geometry_msgs::PoseArray>("particlecloud", 3000, Particle_Callback);
-    //teb Markers Subscribe
-    ros::Subscriber tebmarksers_sub = nInfo.subscribe<visualization_msgs::Marker>("move_base/TebLocalPlannerROS/teb_markers", 100, TebMarkers_Callback);
-    //teb_localPlan Subscribe
-    ros::Subscriber teblocalplan_sub = nInfo.subscribe<geometry_msgs::PoseArray>("move_base/TebLocalPlannerROS/teb_poses", 100, Teblocalplan_Callback);
-    //Initialpose publish//
-    ros::NodeHandle nInitpub;
-    initialpose_pub = nInitpub.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 100, true);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //bumper_data to Pointcloud2_data///
