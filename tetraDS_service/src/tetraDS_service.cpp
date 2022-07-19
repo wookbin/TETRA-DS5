@@ -3975,11 +3975,6 @@ void TESTCallback(const sensor_msgs::Joy::ConstPtr& joy)
     }
 }
 
-void Virtual_Callback(const virtual_costmap_layer::Obstacles::ConstPtr& msgObstacles)
-{
-    virtual_obstacle = *msgObstacles;
-}
-
 /////*******************************************************************************//////
 
 int main (int argc, char** argv)
@@ -4014,8 +4009,6 @@ int main (int argc, char** argv)
     //virtual costmap_pub
     virtual_obstacle_pub = nh.advertise<virtual_costmap_layer::Obstacles>("virtual_costamp_layer/obsctacles", 100);
     virtual_obstacle2_pub = nh.advertise<virtual_costmap_layer2::Obstacles2>("virtual_costamp_layer2/obsctacles", 100);
-    //virtual costmap_sub
-    ros::Subscriber virtual_sub = nh.subscribe<virtual_costmap_layer::Obstacles>("virtual_costamp_layer/obsctacles", 100, Virtual_Callback);
     //amcl particlecloud Subscribe
     ros::Subscriber pacticle_sub = nh.subscribe<geometry_msgs::PoseArray>("particlecloud", 3000, Particle_Callback);
     //teb Markers Subscribe
