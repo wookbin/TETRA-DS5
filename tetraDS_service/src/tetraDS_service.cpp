@@ -2014,7 +2014,7 @@ void Reset_Robot_Pose()
     Marker_Reset_Robot_Pose();
 
     //costmap clear call//
-    //clear_costmap_client.call(m_request);
+    clear_costmap_client.call(m_request);
     
 }
 
