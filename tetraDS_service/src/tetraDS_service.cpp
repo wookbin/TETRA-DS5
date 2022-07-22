@@ -3564,6 +3564,8 @@ void *DockingThread_function(void *data)
                 printf("Docking FAIL ! \n");
                 LED_Toggle_Control(1, 10,100,10,1);
                 LED_Turn_On(18);
+		docking_progress.data = 10;
+                docking_progress_pub.publish(docking_progress);
                 ex_iDocking_CommandMode = 0;
                 break;
             case 10:
