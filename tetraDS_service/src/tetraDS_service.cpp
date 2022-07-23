@@ -103,10 +103,6 @@
 #include <dynamic_reconfigure/Reconfigure.h>
 #include <dynamic_reconfigure/Config.h>
 //virtual costmap msg//
-//#include <custom_msgs/Obstacles.h>
-//#include <custom_msgs/Zone.h>
-//#include <custom_msgs/Form.h>
-
 #include <virtual_costmap_layer/Obstacles.h>
 #include <virtual_costmap_layer/Zone.h>
 #include <virtual_costmap_layer2/Obstacles2.h>
@@ -120,6 +116,8 @@
 #include "tetraDS_service/reboot_sensor.h"
 //robot_localization//
 #include "tetraDS_service/SetPose.h"
+//Set EKF & IMU Reset Service//
+#include "tetraDS_service/setekf.h"
 
 
 #define LOW_BATTERY 40
@@ -466,6 +464,9 @@ tetraDS_service::conveyor_auto_movement conveyor_srv;
 //delete data all Service//
 tetraDS_service::deletedataall deletedataall_cmd;
 ros::ServiceServer deletedataall_service;
+//Set EKF & IMU Reset Service//
+tetraDS_service::setekf set_ekf_cmd;
+ros::ServiceServer set_ekf_service;
 
 //**Command srv _ Service Client************************/
 //Usb_cam Service Client//
@@ -3977,6 +3978,64 @@ void TESTCallback(const sensor_msgs::Joy::ConstPtr& joy)
     }
 }
 
+bool SetEKF_Command(tetraDS_service::setekf::Request &req, tetraDS_service::setekf::Response &res)
+{
+    	bool bResult = false;
+
+    	//IMU reset//
+    	euler_angle_reset_cmd_client.call(euler_angle_reset_srv);
+    	printf("## IMU Reset ! \n");
+    	usleep(100000);
+
+    	//robot_localization::SetPose ekf_reset;
+	setpose_srv.request.pose.header.frame_id = tf_prefix_ + "/odom";
+	setpose_srv.request.pose.header.stamp = ros::Time(0); //ros::Time::now();
+
+	setpose_srv.request.pose.pose.pose.position.x = req.init_position_x;
+	setpose_srv.request.pose.pose.pose.position.y = req.init_position_y;
+	setpose_srv.request.pose.pose.pose.position.z = req.init_position_z;
+
+	setpose_srv.request.pose.pose.pose.orientation.x = req.init_orientation_x;
+	setpose_srv.request.pose.pose.pose.orientation.y = req.init_orientation_y;
+	setpose_srv.request.pose.pose.pose.orientation.z = req.init_orientation_z;
+	setpose_srv.request.pose.pose.pose.orientation.w = req.init_orientation_w;
+
+	setpose_srv.request.pose.pose.covariance[0] = 0.25;
+	setpose_srv.request.pose.pose.covariance[6 * 1 + 1] = 0.25;
+	setpose_srv.request.pose.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
+    
+	SetPose_cmd_client.call(setpose_srv); //Set_pose call//
+	printf("##Set_Pose(EKF)2! \n");
+
+    	initPose_.header.stamp = ros::Time(0); //ros::Time::now(); 
+    	initPose_.header.frame_id = "map";
+    	//position
+    	initPose_.pose.pose.position.x = req.init_position_x;
+    	initPose_.pose.pose.position.y = req.init_position_y;
+    	initPose_.pose.pose.position.z = req.init_position_z;
+    	//orientation
+    	initPose_.pose.pose.orientation.x = req.init_orientation_x;
+    	initPose_.pose.pose.orientation.y = req.init_orientation_y;
+    	initPose_.pose.pose.orientation.z = req.init_orientation_z;
+    	initPose_.pose.pose.orientation.w = req.init_orientation_w;
+
+    	initPose_.pose.covariance[0] = 0.25;
+    	initPose_.pose.covariance[6 * 1 + 1] = 0.25;
+    	initPose_.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
+
+    	initialpose_pub.publish(initPose_);
+    	printf("##Set_initPose(2D Estimate)2! \n");
+
+    	usleep(500000);
+
+    	_pFlag_Value.m_bFlag_nomotion = true;
+
+
+    	bResult = true;
+	res.command_Result = bResult;
+	return true;
+}
+
 /////*******************************************************************************//////
 
 int main (int argc, char** argv)
@@ -4084,6 +4143,8 @@ int main (int argc, char** argv)
     deletedataall_service = service_h.advertiseService("deletedataall_cmd", DeleteData_All_Command);
     //Virtual costmap Service//
     virtual_obstacle_service = service_h.advertiseService("virtual_obstacle_cmd", Virtual_Obstacle_Command);
+    //Set EKF & IMU Reset Service//
+    set_ekf_service = service_h.advertiseService("set_ekf_cmd", SetEKF_Command);
     
     //usb_cam Service Client...
     ros::NodeHandle client_h;
