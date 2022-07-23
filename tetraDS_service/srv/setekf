@@ -1,0 +1,12 @@
+#This message is used to send command to tetra
+# Set EKF Pose & IMU Reset Command
+
+float64 init_position_x
+float64 init_position_y
+float64 init_position_z
+float64 init_orientation_x
+float64 init_orientation_y
+float64 init_orientation_z
+float64 init_orientation_w
+---
+bool command_Result
