@@ -59,6 +59,7 @@ add_service_files(
   pose_velocity_reset.srv
   reboot_sensor.srv
   SetPose.srv
+  setekf.srv
 )
 
 generate_messages(   
