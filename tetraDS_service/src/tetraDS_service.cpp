@@ -1773,22 +1773,28 @@ bool DeleteMap_Command(tetraDS_service::deletemap::Request &req,
 bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req, 
 				              tetraDS_service::virtual_obstacle::Response &res)
 {
-	bool bResult = false;
+
+    bool bResult = false;
+    int m_iInt_count = 0;
+    int m_iNext_count = 0;
+
     // msg clear
     virtual_obstacle.list.clear();
-
     //Global_costmap Loop//
     virtual_obstacle.list.resize(req.list_count.size());
     for(int i=0; i<req.list_count.size(); i++)
     {
         virtual_obstacle.list[i].form.clear();
         virtual_obstacle.list[i].form.resize(req.list_count[i]);
+        m_iInt_count = req.list_count[i];
         for(int j=0; j<req.list_count[i]; j++)
         {
-            virtual_obstacle.list[i].form[j].x = req.form_x[(i*req.list_count[i]) + j];
-            virtual_obstacle.list[i].form[j].y = req.form_y[(i*req.list_count[i]) + j];
-            virtual_obstacle.list[i].form[j].z = req.form_z[(i*req.list_count[i]) + j];
+            virtual_obstacle.list[i].form[j].x = req.form_x[m_iNext_count + j];
+            virtual_obstacle.list[i].form[j].y = req.form_y[m_iNext_count + j];
+            virtual_obstacle.list[i].form[j].z = req.form_z[m_iNext_count + j];
         }
+        m_iNext_count += m_iInt_count;
+        
     }
     
     virtual_obstacle_pub.publish(virtual_obstacle);
