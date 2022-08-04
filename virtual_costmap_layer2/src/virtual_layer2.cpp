@@ -361,6 +361,8 @@ void VirtualLayer2::setPolygonCost(costmap_2d::Costmap2D &master_grid, const Pol
     std::vector<PointInt> map_polygon;
     pthread_mutex_lock(&mutex);
     //======== critical section =============
+    if (polygon.size() < 0)
+        return;
     
     for (unsigned int i = 0; i < polygon.size(); ++i) {
         PointInt loc;
