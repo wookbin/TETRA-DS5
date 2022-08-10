@@ -4283,7 +4283,7 @@ int main (int argc, char** argv)
             tf::StampedTransform transform;
             try
             {
-                listener.waitForTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), ros::Duration(1.0));
+                listener.waitForTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), ros::Duration(3.0));
                 listener.lookupTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), transform);
 
                 geometry_msgs::TransformStamped ts_msg;
@@ -4309,7 +4309,7 @@ int main (int argc, char** argv)
             tf::StampedTransform transform2;
             try
             {
-                listener2.waitForTransform("/map", tf_prefix_ + "/odom", ros::Time(0), ros::Duration(1.0));
+                listener2.waitForTransform("/map", tf_prefix_ + "/odom", ros::Time(0), ros::Duration(3.0));
                 listener2.lookupTransform("/map", tf_prefix_ + "/odom", ros::Time(0), transform2);
 
                 geometry_msgs::TransformStamped ts_msg2;
