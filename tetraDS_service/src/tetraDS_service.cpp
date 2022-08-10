@@ -156,7 +156,9 @@ double m_dTF_Yaw = 0.0;
 double m_dTF_New_Pose_X = 0.0;
 double m_dTF_New_Pose_Y = 0.0;
 int m_iList_Count = 0;
+int m_iList_Count2 = 0;
 int m_iMode_Count = 0;
+int m_iMode_Count2 = 0;
 //Teb Via Point...
 int m_iViaPoint_Index = 0;
 //mutex//
@@ -4332,28 +4334,34 @@ int main (int argc, char** argv)
                 m_iList_Count = virtual_obstacle.list.size();
                 if(m_iList_Count > 0)
                 {
-		    pthread_mutex_lock(&mutex);
+                    pthread_mutex_lock(&mutex);
                     //======== critical section =============
-		
+
                     //message copy...
                     virtual_obstacle2.list.clear();
-                    //virtual_obstacle2 = virtual_obstacle;
-
                     virtual_obstacle2.list.resize(m_iList_Count);
-                    for(int i=0; i<m_iList_Count; i++)
+                    m_iList_Count2 = virtual_obstacle2.list.size();
+                    if(m_iList_Count2 > 0)
                     {
-                        m_iMode_Count = virtual_obstacle.list[i].form.size();
-                        virtual_obstacle2.list[i].form.clear();
-                        virtual_obstacle2.list[i].form.resize(m_iMode_Count);
-                        for(int j=0; j<m_iMode_Count; j++)
+                        for(int i=0; i<m_iList_Count2; i++)
                         {
-                            virtual_obstacle2.list[i].form[j].x = (((virtual_obstacle.list[i].form[j].x *  cos(m_dTF_Yaw)) + (virtual_obstacle.list[i].form[j].y * sin(m_dTF_Yaw)))) - m_dTF_New_Pose_X;
-                            virtual_obstacle2.list[i].form[j].y = (((virtual_obstacle.list[i].form[j].x * -sin(m_dTF_Yaw)) + (virtual_obstacle.list[i].form[j].y  * cos(m_dTF_Yaw)))) - m_dTF_New_Pose_Y;
-                            virtual_obstacle2.list[i].form[j].z = virtual_obstacle.list[i].form[j].z;
+                            m_iMode_Count = virtual_obstacle.list[i].form.size();
+                            virtual_obstacle2.list[i].form.clear();
+                            virtual_obstacle2.list[i].form.resize(m_iMode_Count);
+                            m_iMode_Count2 = virtual_obstacle2.list[i].form.size();
+                            if(m_iMode_Count2 > 0)
+                            {
+                                for(int j=0; j<m_iMode_Count; j++)
+                                {
+                                    virtual_obstacle2.list[i].form[j].x = (((virtual_obstacle.list[i].form[j].x *  cos(m_dTF_Yaw)) + (virtual_obstacle.list[i].form[j].y * sin(m_dTF_Yaw)))) - m_dTF_New_Pose_X;
+                                    virtual_obstacle2.list[i].form[j].y = (((virtual_obstacle.list[i].form[j].x * -sin(m_dTF_Yaw)) + (virtual_obstacle.list[i].form[j].y  * cos(m_dTF_Yaw)))) - m_dTF_New_Pose_Y;
+                                    virtual_obstacle2.list[i].form[j].z = virtual_obstacle.list[i].form[j].z;
+                                }
+                            }
                         }
+                        virtual_obstacle2_pub.publish(virtual_obstacle2);
                     }
-                    virtual_obstacle2_pub.publish(virtual_obstacle2);
-		
+
                     //========= critical section ============
                     pthread_mutex_unlock(&mutex);
                 }
