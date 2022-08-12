@@ -161,8 +161,8 @@ int m_iMode_Count = 0;
 int m_iMode_Count2 = 0;
 //Teb Via Point...
 int m_iViaPoint_Index = 0;
-//mutex//
-pthread_mutex_t mutex;
+//pthread_mutex_t mutex; //mutex//
+bool m_bFlag_nomotion_call = false;
 
 typedef struct HOME_POSE
 {
@@ -965,16 +965,19 @@ void cmd_vel_Callback(const geometry_msgs::Twist::ConstPtr& msg)
 
 void Particle_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
 {
-
     m_iParticleCloud_size = msg->poses.size();
     if(m_iParticleCloud_size > 501 && _pDynamic_param.m_linear_vel == 0.0 && _pDynamic_param.m_angular_vel == 0.0)
     {
         if(_pFlag_Value.m_bFlag_nomotion)
         {
+	    m_bFlag_nomotion_call = true;
             request_nomotion_update_client.call(m_request3);
-        }
+        }   
     }
-    
+    else
+    {
+            m_bFlag_nomotion_call = false;
+    }
 }
 
 void TebMarkers_Callback(const visualization_msgs::Marker::ConstPtr& msg)
@@ -4334,7 +4337,10 @@ int main (int argc, char** argv)
                 m_iList_Count = virtual_obstacle.list.size();
                 if(m_iList_Count > 0)
                 {
-                    pthread_mutex_lock(&mutex);
+		    if(m_bFlag_nomotion_call )
+	               continue;
+			
+                    //pthread_mutex_lock(&mutex);
                     //======== critical section =============
 
                     //message copy...
@@ -4363,7 +4369,7 @@ int main (int argc, char** argv)
                     }
 
                     //========= critical section ============
-                    pthread_mutex_unlock(&mutex);
+                    //pthread_mutex_unlock(&mutex);
                 }
                 
             }
@@ -4411,7 +4417,7 @@ int main (int argc, char** argv)
         loop_rate.sleep();
     }
 	
- 	pthread_mutex_destroy(&mutex);
+ 	//pthread_mutex_destroy(&mutex);
 
     return 0;
 }
