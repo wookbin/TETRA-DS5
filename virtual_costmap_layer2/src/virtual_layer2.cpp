@@ -6,10 +6,6 @@
 
 #include <XmlRpcException.h>
 
-#include <thread> //thread add...
-//mutex//
-pthread_mutex_t mutex;
-
 PLUGINLIB_EXPORT_CLASS(virtual_costmap_layer2::VirtualLayer2, costmap_2d::Layer);
 
 static const std::string tag {"[VIRTUAL-LAYER2] "};
@@ -29,7 +25,6 @@ VirtualLayer2::~VirtualLayer2()
     if (_dsrv) {
         _dsrv = nullptr;
     }
-    pthread_mutex_destroy(&mutex);
 }
 
 // ---------------------------------------------------------------------
@@ -359,8 +354,7 @@ void VirtualLayer2::setPolygonCost(costmap_2d::Costmap2D &master_grid, const Pol
                                   int min_i, int min_j, int max_i, int max_j, bool fill_polygon)
 {
     std::vector<PointInt> map_polygon;
-    pthread_mutex_lock(&mutex);
-    //======== critical section =============
+
     if (polygon.size() < 0)
         return;
     
@@ -390,8 +384,7 @@ void VirtualLayer2::setPolygonCost(costmap_2d::Costmap2D &master_grid, const Pol
             continue;
         master_grid.setCost(mx, my, cost);
     }
-    //========= critical section ============
-    pthread_mutex_unlock(&mutex);
+
 }
 
 void VirtualLayer2::polygonOutlineCells(const std::vector<PointInt> &polygon, std::vector<PointInt> &polygon_cells)
