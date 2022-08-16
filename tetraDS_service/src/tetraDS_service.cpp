@@ -1920,6 +1920,8 @@ void Reset_EKF_SetPose()
 
 bool Marker_Reset_Robot_Pose()
 {
+    _pFlag_Value.m_bFlag_nomotion = false;
+	
     bool bResult = false;
     string m_strFilePathName;
     string landmark_name = "marker_" + std::to_string(_pAR_tag_pose.m_iAR_tag_id);
@@ -1995,13 +1997,15 @@ bool Marker_Reset_Robot_Pose()
     //publish msg
     initialpose_pub.publish(initPose_);
 
-    printf("$$$$ init_position_x: %f , init_position_y: %f \n", _pLandMarkPose.init_position_x, _pLandMarkPose.init_position_y);
+    //printf("$$$$ init_position_x: %f , init_position_y: %f \n", _pLandMarkPose.init_position_x, _pLandMarkPose.init_position_y);
     }
     else
     {
         bResult = false;
     }
 
+    _pFlag_Value.m_bFlag_nomotion = true;
+	
     return bResult;
 }
 
@@ -3503,6 +3507,24 @@ void *DockingThread_function(void *data)
         switch(ex_iDocking_CommandMode)
         {
             case 0:
+		//IMU Reset Loop//
+                if(m_iTimer_cnt >= 1500) //30 sec_polling
+                {
+                    m_iTimer_cnt = 0;
+                    Reset_Robot_Pose();
+                    ROS_INFO("Reset_Robot_Pose Call !");
+                }
+                else
+                {
+                    if(_pRobot_Status.m_iCallback_Charging_status == 3 || _pRobot_Status.m_iCallback_Charging_status == 6 || _pRobot_Status.m_iCallback_Charging_status == 2)
+                    {
+                        m_iTimer_cnt ++;
+                    }
+                    else
+                    {
+                        m_iTimer_cnt = 0;
+                    }
+                }
                 break;
             /****************************************************************/
             // Station Docking Loop//
@@ -4280,6 +4302,18 @@ int main (int argc, char** argv)
     {
         ros::spinOnce();
 	
+	if(_pFlag_Value.m_bFlag_Obstacle_Center || m_iViaPoint_Index <= 1)
+        {
+            Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity / 2.5);
+        }
+        else
+        {
+            if(!_pFlag_Value.m_bTebMarker_reconfigure_flag)
+            {
+                Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
+            }
+        }
+	
         //Get Active map param..//
         nh.getParam("active_map", m_bActive_map_check);
         if(m_bActive_map_check)
@@ -4337,7 +4371,7 @@ int main (int argc, char** argv)
                 m_iList_Count = virtual_obstacle.list.size();
                 if(m_iList_Count > 0)
                 {
-		    if(m_bFlag_nomotion_call )
+                    if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion)
 	               continue;
 			
                     //pthread_mutex_lock(&mutex);
@@ -4380,40 +4414,7 @@ int main (int argc, char** argv)
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         }
-        
-	    
-        if(_pFlag_Value.m_bFlag_Obstacle_Center || m_iViaPoint_Index <= 1)
-        {
-            Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity / 2.5);
-        }
-        else
-        {
-            if(!_pFlag_Value.m_bTebMarker_reconfigure_flag)
-            {
-                Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
-            }
-        }
-
-
-        //IMU Reset Loop//
-        if(m_iTimer_cnt >= 900) //30 sec_polling
-        {
-            m_iTimer_cnt = 0;
-            Reset_Robot_Pose();
-            //ROS_INFO("IMU Reset Call !");
-        }
-        else
-        {
-            if(_pRobot_Status.m_iCallback_Charging_status == 3 || _pRobot_Status.m_iCallback_Charging_status == 6 || _pRobot_Status.m_iCallback_Charging_status == 2)
-            {
-                m_iTimer_cnt ++;
-            }
-            else
-            {
-                m_iTimer_cnt = 0;
-            }
-        }
-        
+                
         loop_rate.sleep();
     }
 	
