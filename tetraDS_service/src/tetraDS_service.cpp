@@ -4016,6 +4016,9 @@ void TESTCallback(const sensor_msgs::Joy::ConstPtr& joy)
 
 bool SetEKF_Command(tetraDS_service::setekf::Request &req, tetraDS_service::setekf::Response &res)
 {
+	if(m_bFlag_nomotion_call)
+        	return true;
+	
 	_pFlag_Value.m_bFlag_nomotion = false;
 	
     	bool bResult = false;
