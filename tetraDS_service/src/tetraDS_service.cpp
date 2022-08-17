@@ -1940,7 +1940,11 @@ bool Marker_Reset_Robot_Pose()
     m_strFilePathName = "/home/tetra/LANDMARK/" + landmark_name + ".txt";
     fp = fopen(m_strFilePathName.c_str(), "r");
 
-    if(_pAR_tag_pose.m_iAR_tag_id > 0 && fp == NULL) return false;
+    if(_pAR_tag_pose.m_iAR_tag_id > 0 && fp == NULL) 
+    {
+	    _pFlag_Value.m_bFlag_nomotion = true;
+	    return false;
+    }
 
     if (fp != NULL) //File Open Check
     {
