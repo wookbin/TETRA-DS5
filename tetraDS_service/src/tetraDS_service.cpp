@@ -3510,24 +3510,6 @@ void *DockingThread_function(void *data)
         switch(ex_iDocking_CommandMode)
         {
             case 0:
-		//IMU Reset Loop//
-                if(m_iTimer_cnt >= 1500) //30 sec_polling
-                {
-                    m_iTimer_cnt = 0;
-                    Reset_Robot_Pose();
-                    ROS_INFO("Reset_Robot_Pose Call !");
-                }
-                else
-                {
-                    if(_pRobot_Status.m_iCallback_Charging_status == 3 || _pRobot_Status.m_iCallback_Charging_status == 6 || _pRobot_Status.m_iCallback_Charging_status == 2)
-                    {
-                        m_iTimer_cnt ++;
-                    }
-                    else
-                    {
-                        m_iTimer_cnt = 0;
-                    }
-                }
                 break;
             /****************************************************************/
             // Station Docking Loop//
@@ -4320,6 +4302,25 @@ int main (int argc, char** argv)
                 Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
             }
         }
+	   
+	//IMU Reset Loop//
+        if(m_iTimer_cnt >= 1500) //30 sec_polling
+        {
+            m_iTimer_cnt = 0;
+            Reset_Robot_Pose();
+            //ROS_INFO("Reset_Robot_Pose Call !");
+        }
+        else
+        {
+            if(_pRobot_Status.m_iCallback_Charging_status == 3 || _pRobot_Status.m_iCallback_Charging_status == 6 || _pRobot_Status.m_iCallback_Charging_status == 2)
+            {
+                m_iTimer_cnt ++;
+            }
+            else
+            {
+                m_iTimer_cnt = 0;
+            }
+        }
 	
         //Get Active map param..//
         nh.getParam("active_map", m_bActive_map_check);
@@ -4379,7 +4380,10 @@ int main (int argc, char** argv)
                 if(m_iList_Count > 0)
                 {
                     if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion)
-	               continue;
+                    {
+                        loop_rate.sleep();
+	                    continue;
+                    }
 			
                     //pthread_mutex_lock(&mutex);
                     //======== critical section =============
