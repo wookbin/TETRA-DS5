@@ -119,8 +119,7 @@
 //Set EKF & IMU Reset Service//
 #include "tetraDS_service/setekf.h"
 
-
-#define LOW_BATTERY 40
+#define LOW_BATTERY 15
 #define MAX_RETRY_CNT 3
 #define BUF_LEN 4096
 using namespace std;
@@ -362,6 +361,21 @@ typedef struct DYNAMIC_PARAM
 }DYNAMIC_PARAM;
 DYNAMIC_PARAM _pDynamic_param;
 
+//SetEKF_Command Service 
+typedef struct RESET_SRV
+{
+    bool   bflag_reset = false;
+    double init_position_x = 0.0;
+    double init_position_y = 0.0;
+    double init_position_z = 0.0;
+    double init_orientation_x = 0.0;
+    double init_orientation_y = 0.0;
+    double init_orientation_z = 0.0;
+    double init_orientation_w = 1.0;
+
+}RESET_SRV;
+RESET_SRV _pReset_srv;
+
 //Publisher & msg define....
 ros::Publisher cmdpub_;
 ros::Publisher service_pub; 
@@ -556,13 +570,13 @@ double reduceHeading(double a)
 ///////Logitech F710 Joypad//////////////////////////////////////
 void joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
 {
-    if(joy->buttons[6]) //LT button
+    	if(joy->buttons[6]) //LT button
 	{	
 		//Docking Start//
 		ex_iDocking_CommandMode = 1;
 		_pFlag_Value.m_bfalg_DockingExit = false;
 	}
-    if(joy->buttons[7]) //RT button
+    	if(joy->buttons[7]) //RT button
 	{	
 		//Docking Stop//
 		ex_iDocking_CommandMode = 0;
@@ -741,9 +755,7 @@ double Quaternion2Yaw_rad(double Quaternion_W, double Quaternion_X, double Quate
     //< rotation Matrix -> rpy
     m.getRPY(m_dRoll, m_dPitch, m_dYaw);
     m_dYaw_rad = m_dYaw; 
-    
     //m_dYaw_rad = reduceHeading(m_dYaw);
-    
     return m_dYaw_rad;
 }
 
@@ -764,7 +776,6 @@ string GetWIFI_IPAddress()
     close(fd);
      
     sprintf(myEth0_addr, "%s", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
-    
 
     str_ip = myEth0_addr;
     return str_ip;
@@ -1068,9 +1079,7 @@ void setGoal(move_base_msgs::MoveBaseActionGoal& goal)
     printf("setGoal call: %.5f, %.5f !!\n", _pGoal_pose.goal_positionX, _pGoal_pose.goal_positionY);
 }
 
-bool SaveLocation(string str_location, 
-                  float m_fposeAMCLx, float m_fposeAMCLy,
-                  float m_fposeAMCLqx, float m_fposeAMCLqy, float m_fposeAMCLqz, float m_fposeAMCLqw)
+bool SaveLocation(string str_location, float m_fposeAMCLx, float m_fposeAMCLy,float m_fposeAMCLqx, float m_fposeAMCLqy, float m_fposeAMCLqz, float m_fposeAMCLqw)
 {
     bool bResult = false;
 
@@ -1286,13 +1295,13 @@ bool Goto_Command(tetraDS_service::gotolocation::Request &req,
 
 	else //Docking...
 	{
-	ex_iDocking_CommandMode = 10; //Depart Move
-	bResult = true;
+		ex_iDocking_CommandMode = 10; //Depart Move
+		bResult = true;
 	}
 
 	if(req.Location == "HOME") //HOME Point Check
 	{
-	_pFlag_Value.m_bflag_ComebackHome = true;
+		_pFlag_Value.m_bflag_ComebackHome = true;
 	}
 
 	/*
@@ -1316,12 +1325,9 @@ bool Goto_Command(tetraDS_service::gotolocation::Request &req,
 	return true;
 }
 
-bool Goto_Command2(tetraDS_service::gotolocation2::Request &req, 
-				   tetraDS_service::gotolocation2::Response &res)
+bool Goto_Command2(tetraDS_service::gotolocation2::Request &req, tetraDS_service::gotolocation2::Response &res)
 {
 	bool bResult = false;
-
-	//usb_cam_Off_client.call(m_request); //USB cam Off
 
 	_pGoal_pose.goal_positionX = req.goal_positionX;
 	_pGoal_pose.goal_positionY = req.goal_positionY;
@@ -1363,8 +1369,7 @@ bool Goto_Command2(tetraDS_service::gotolocation2::Request &req,
 	return true;
 }
 
-bool GotoCancel_Command(tetraDS_service::gotocancel::Request &req, 
-				        tetraDS_service::gotocancel::Response &res)
+bool GotoCancel_Command(tetraDS_service::gotocancel::Request &req, tetraDS_service::gotocancel::Response &res)
 {
 	bool bResult = false;
 
@@ -1382,8 +1387,7 @@ bool GotoCancel_Command(tetraDS_service::gotocancel::Request &req,
 	return true;
 }
 
-bool SetLocation_Command(tetraDS_service::setlocation::Request  &req, 
-					     tetraDS_service::setlocation::Response &res)
+bool SetLocation_Command(tetraDS_service::setlocation::Request  &req, tetraDS_service::setlocation::Response &res)
 {
 	bool bResult = false;
 
@@ -1448,8 +1452,7 @@ void CMD_SaveMap(string strMapname)
 }
 
 
-bool SetSavemap_Command(tetraDS_service::setsavemap::Request &req, 
-					    tetraDS_service::setsavemap::Response &res)
+bool SetSavemap_Command(tetraDS_service::setsavemap::Request &req, tetraDS_service::setsavemap::Response &res)
 {
 	bool bResult = false;
     
@@ -1474,8 +1477,7 @@ bool SetSavemap_Command(tetraDS_service::setsavemap::Request &req,
 	return true;
 }
 
-bool GetInformation_Command(tetraDS_service::getinformation::Request  &req, 
-					        tetraDS_service::getinformation::Response &res)
+bool GetInformation_Command(tetraDS_service::getinformation::Request  &req, tetraDS_service::getinformation::Response &res)
 {
 	bool bResult = false;
 	res.command_Result = false;
@@ -1501,8 +1503,7 @@ bool GetInformation_Command(tetraDS_service::getinformation::Request  &req,
 	return true;
 }
 
-bool Docking_Command(tetraDS_service::dockingcontrol::Request  &req, 
-					 tetraDS_service::dockingcontrol::Response &res)
+bool Docking_Command(tetraDS_service::dockingcontrol::Request  &req, tetraDS_service::dockingcontrol::Response &res)
 {
 	bool bResult = false;
 	_pAR_tag_pose.m_iSelect_AR_tag_id = req.id;
@@ -1533,8 +1534,7 @@ void poseAMCLCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& 
 }
 
 
-bool LocationList_Command(tetraDS_service::getlocationlist::Request  &req, 
-					      tetraDS_service::getlocationlist::Response &res)
+bool LocationList_Command(tetraDS_service::getlocationlist::Request  &req, tetraDS_service::getlocationlist::Response &res)
 {
     bool bResult = false;
 
@@ -1584,8 +1584,7 @@ bool LocationList_Command(tetraDS_service::getlocationlist::Request  &req,
     return true;
 }
 
-bool LandmarkList_Command(tetraDS_service::getlandmarklist::Request  &req, 
-					      tetraDS_service::getlandmarklist::Response &res)
+bool LandmarkList_Command(tetraDS_service::getlandmarklist::Request  &req, tetraDS_service::getlandmarklist::Response &res)
 {
     bool bResult = false;
 
@@ -1628,8 +1627,7 @@ bool LandmarkList_Command(tetraDS_service::getlandmarklist::Request  &req,
     return true;
 }
 
-bool MapList_Command(tetraDS_service::getmaplist::Request &req, 
-					 tetraDS_service::getmaplist::Response &res)
+bool MapList_Command(tetraDS_service::getmaplist::Request &req, tetraDS_service::getmaplist::Response &res)
 {
     bool bResult = false;
 
@@ -1685,8 +1683,7 @@ bool MapList_Command(tetraDS_service::getmaplist::Request &req,
     return true;
 }
 
-bool DeleteLocation_Command(tetraDS_service::deletelocation::Request  &req, 
-				           tetraDS_service::deletelocation::Response &res)
+bool DeleteLocation_Command(tetraDS_service::deletelocation::Request  &req, tetraDS_service::deletelocation::Response &res)
 {
     bool bResult = false;
 
@@ -1712,8 +1709,7 @@ bool DeleteLocation_Command(tetraDS_service::deletelocation::Request  &req,
     return true;
 }
 
-bool DeleteLandmark_Command(tetraDS_service::deletelandmark::Request  &req, 
-				           tetraDS_service::deletelandmark::Response &res)
+bool DeleteLandmark_Command(tetraDS_service::deletelandmark::Request  &req, tetraDS_service::deletelandmark::Response &res)
 {
     bool bResult = false;
 
@@ -1735,8 +1731,7 @@ bool DeleteLandmark_Command(tetraDS_service::deletelandmark::Request  &req,
     return true;
 }
 
-bool DeleteMap_Command(tetraDS_service::deletemap::Request &req, 
-				      tetraDS_service::deletemap::Response &res)
+bool DeleteMap_Command(tetraDS_service::deletemap::Request &req, tetraDS_service::deletemap::Response &res)
 {
     bool bResult = false;
 
@@ -1775,8 +1770,7 @@ bool DeleteMap_Command(tetraDS_service::deletemap::Request &req,
     return true;
 }
 
-bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req, 
-				              tetraDS_service::virtual_obstacle::Response &res)
+bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req, tetraDS_service::virtual_obstacle::Response &res)
 {
 
 	bool bResult = false;
@@ -1817,8 +1811,7 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req,
 	return true;
 }
 
-bool Patrol_Command(tetraDS_service::patrol::Request &req, 
-				    tetraDS_service::patrol::Response &res)
+bool Patrol_Command(tetraDS_service::patrol::Request &req, tetraDS_service::patrol::Response &res)
 {
 	bool bResult = false;
 
@@ -1829,8 +1822,8 @@ bool Patrol_Command(tetraDS_service::patrol::Request &req,
 
 	for(int i=0; i<m_patrol_location_cnt; i++)
 	{
-	arr_patrol_location[i] = req.location_name[i];
-	ROS_INFO("# arr_patrol_location[%d]:%s ", i, arr_patrol_location[i].c_str());
+		arr_patrol_location[i] = req.location_name[i];
+		ROS_INFO("# arr_patrol_location[%d]:%s ", i, arr_patrol_location[i].c_str());
 	}
 
 	/*
@@ -1999,7 +1992,6 @@ bool Marker_Reset_Robot_Pose()
 
 	//publish msg
 	initialpose_pub.publish(initPose_);
-
 	//printf("$$$$ init_position_x: %f , init_position_y: %f \n", _pLandMarkPose.init_position_x, _pLandMarkPose.init_position_y);
     }
     else
@@ -2021,7 +2013,7 @@ void Reset_Robot_Pose()
 
         //IMU reset//
         euler_angle_reset_cmd_client.call(euler_angle_reset_srv);
-	    printf("## IMU Reset ! \n");
+	printf("## IMU Reset ! \n");
         //tetra odometry Reset//
         tetra_PoseRest.data = m_iReset_flag;
         PoseReset_pub.publish(tetra_PoseRest);
@@ -2037,10 +2029,9 @@ void Reset_Robot_Pose()
     
 }
 
-bool SetInitPose_Command(tetraDS_service::setinitpose::Request  &req, 
-					     tetraDS_service::setinitpose::Response &res)
+bool SetInitPose_Command(tetraDS_service::setinitpose::Request  &req, tetraDS_service::setinitpose::Response &res)
 {
- bool bResult = false;
+    bool bResult = false;
 
     string landmark_name = "marker_" + std::to_string(_pAR_tag_pose.m_iAR_tag_id);
     if(_pAR_tag_pose.m_iAR_tag_id == -1)
@@ -2125,8 +2116,7 @@ bool SetInitPose_Command(tetraDS_service::setinitpose::Request  &req,
     return bResult;
 }
 
-bool Set2D_Pose_Estimate_Command(tetraDS_service::pose_estimate::Request  &req, 
-					             tetraDS_service::pose_estimate::Response &res)
+bool Set2D_Pose_Estimate_Command(tetraDS_service::pose_estimate::Request  &req, tetraDS_service::pose_estimate::Response &res)
 {
     bool bResult = false;
     initPose_.header.stamp = ros::Time(0); //ros::Time::now(); 
@@ -2255,9 +2245,7 @@ void BumperCallback(const std_msgs::Int32::ConstPtr& msg)
             LED_Turn_On(63); //White led
             _pFlag_Value.m_bumperhit_flag = false;
         }
-
     }
-
 }
 
 void Ultrasonic_DL_Callback(const sensor_msgs::Range::ConstPtr& msg)
@@ -3262,8 +3250,7 @@ bool navigation_Command(tetraDS_service::runnavigation::Request &req,
 	return true;
 }
 
-bool nodekill_Command(tetraDS_service::rosnodekill::Request &req, 
-					  tetraDS_service::rosnodekill::Response &res)
+bool nodekill_Command(tetraDS_service::rosnodekill::Request &req, tetraDS_service::rosnodekill::Response &res)
 {
 	bool bResult = false;
     
@@ -3283,8 +3270,7 @@ bool nodekill_Command(tetraDS_service::rosnodekill::Request &req,
 	return true;
 }
 
-bool Goto_Conveyor_Command(tetraDS_service::gotoconveyor::Request &req, 
-				            tetraDS_service::gotoconveyor::Response &res)
+bool Goto_Conveyor_Command(tetraDS_service::gotoconveyor::Request &req, tetraDS_service::gotoconveyor::Response &res)
 {
 	bool bResult = false;
 
@@ -3332,11 +3318,11 @@ bool Loading_check_Command(tetraDS_service::loadingcheck::Request &req, tetraDS_
 	//to do Check Loop...
 	if(_pRobot_Status.m_iConveyor_Sensor_info == 0)
 	{
-	bResult = true;
+		bResult = true;
 	}
 	else
 	{
-	bResult = false;
+		bResult = false;
 	}
 	/*
 	---
@@ -3471,8 +3457,7 @@ bool RemoveAll_landmark_data()
     }
 }
 
-bool DeleteData_All_Command(tetraDS_service::deletedataall::Request  &req, 
-				            tetraDS_service::deletedataall::Response &res)
+bool DeleteData_All_Command(tetraDS_service::deletedataall::Request  &req, tetraDS_service::deletedataall::Response &res)
 {
     bool bResult = false;
     bool bRemove_map = false;
@@ -3996,64 +3981,75 @@ void TESTCallback(const sensor_msgs::Joy::ConstPtr& joy)
     }
 }
 
-bool SetEKF_Command(tetraDS_service::setekf::Request &req, tetraDS_service::setekf::Response &res)
+void Reset_Call_service()
 {
-	if(m_bFlag_nomotion_call)
-        	return true;
-	
 	_pFlag_Value.m_bFlag_nomotion = false;
-	
-    	bool bResult = false;
 
-    	//IMU reset//
-    	euler_angle_reset_cmd_client.call(euler_angle_reset_srv);
-    	printf("## IMU Reset ! \n");
-    	usleep(100000);
+	//IMU reset//
+	euler_angle_reset_cmd_client.call(euler_angle_reset_srv);
+	printf("## IMU Reset ! \n");
+	usleep(100000);
 
-    	//robot_localization::SetPose ekf_reset;
+	//robot_localization::SetPose ekf_reset;
 	setpose_srv.request.pose.header.frame_id = tf_prefix_ + "/odom";
 	setpose_srv.request.pose.header.stamp = ros::Time(0); //ros::Time::now();
 
-	setpose_srv.request.pose.pose.pose.position.x = req.init_position_x;
-	setpose_srv.request.pose.pose.pose.position.y = req.init_position_y;
-	setpose_srv.request.pose.pose.pose.position.z = req.init_position_z;
+	setpose_srv.request.pose.pose.pose.position.x = _pReset_srv.init_position_x;
+	setpose_srv.request.pose.pose.pose.position.y = _pReset_srv.init_position_y;
+	setpose_srv.request.pose.pose.pose.position.z = _pReset_srv.init_position_z;
 
-	setpose_srv.request.pose.pose.pose.orientation.x = req.init_orientation_x;
-	setpose_srv.request.pose.pose.pose.orientation.y = req.init_orientation_y;
-	setpose_srv.request.pose.pose.pose.orientation.z = req.init_orientation_z;
-	setpose_srv.request.pose.pose.pose.orientation.w = req.init_orientation_w;
+	setpose_srv.request.pose.pose.pose.orientation.x = _pReset_srv.init_orientation_x;
+	setpose_srv.request.pose.pose.pose.orientation.y = _pReset_srv.init_orientation_y;
+	setpose_srv.request.pose.pose.pose.orientation.z = _pReset_srv.init_orientation_z;
+	setpose_srv.request.pose.pose.pose.orientation.w = _pReset_srv.init_orientation_w;
 
 	setpose_srv.request.pose.pose.covariance[0] = 0.25;
 	setpose_srv.request.pose.pose.covariance[6 * 1 + 1] = 0.25;
 	setpose_srv.request.pose.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
-    
+
 	SetPose_cmd_client.call(setpose_srv); //Set_pose call//
 	printf("##Set_Pose(EKF)2! \n");
 
-    	initPose_.header.stamp = ros::Time(0); //ros::Time::now(); 
-    	initPose_.header.frame_id = "map";
-    	//position
-    	initPose_.pose.pose.position.x = req.init_position_x;
-    	initPose_.pose.pose.position.y = req.init_position_y;
-    	initPose_.pose.pose.position.z = req.init_position_z;
-    	//orientation
-    	initPose_.pose.pose.orientation.x = req.init_orientation_x;
-    	initPose_.pose.pose.orientation.y = req.init_orientation_y;
-    	initPose_.pose.pose.orientation.z = req.init_orientation_z;
-    	initPose_.pose.pose.orientation.w = req.init_orientation_w;
+	initPose_.header.stamp = ros::Time(0); //ros::Time::now(); 
+	initPose_.header.frame_id = "map";
+	//position
+	initPose_.pose.pose.position.x = _pReset_srv.init_position_x;
+	initPose_.pose.pose.position.y = _pReset_srv.init_position_y;
+	initPose_.pose.pose.position.z = _pReset_srv.init_position_z;
+	//orientation
+	initPose_.pose.pose.orientation.x = _pReset_srv.init_orientation_x;
+	initPose_.pose.pose.orientation.y = _pReset_srv.init_orientation_y;
+	initPose_.pose.pose.orientation.z = _pReset_srv.init_orientation_z;
+	initPose_.pose.pose.orientation.w = _pReset_srv.init_orientation_w;
 
-    	initPose_.pose.covariance[0] = 0.25;
-    	initPose_.pose.covariance[6 * 1 + 1] = 0.25;
-    	initPose_.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
+	initPose_.pose.covariance[0] = 0.25;
+	initPose_.pose.covariance[6 * 1 + 1] = 0.25;
+	initPose_.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
 
-    	initialpose_pub.publish(initPose_);
-    	printf("##Set_initPose(2D Estimate)2! \n");
+	initialpose_pub.publish(initPose_);
+	printf("##Set_initPose(2D Estimate)2! \n");
+	usleep(500000);
+	_pFlag_Value.m_bFlag_nomotion = true;
+}
 
-    	usleep(500000);
+bool SetEKF_Command(tetraDS_service::setekf::Request &req, tetraDS_service::setekf::Response &res)
+{   
+	bool bResult = false;
 
-    	_pFlag_Value.m_bFlag_nomotion = true;
+	_pReset_srv.init_position_x = req.init_position_x;
+	_pReset_srv.init_position_y = req.init_position_y;
+	_pReset_srv.init_position_z = req.init_position_z;
 
-    	bResult = true;
+	_pReset_srv.init_orientation_x = req.init_orientation_x;
+	_pReset_srv.init_orientation_y = req.init_orientation_y;
+	_pReset_srv.init_orientation_z = req.init_orientation_z;
+	_pReset_srv.init_orientation_w = req.init_orientation_w;
+
+	_pReset_srv.bflag_reset = true;
+
+	//Reset_Call_service();
+
+	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -4063,9 +4059,8 @@ bool SetEKF_Command(tetraDS_service::setekf::Request &req, tetraDS_service::sete
 int main (int argc, char** argv)
 {
     signal(SIGINT,my_handler);
-
+	
     ros::init(argc, argv, "tetraDS_service", ros::init_options::NoSigintHandler);
-
     ros::NodeHandle nh;
     cmdpub_ = nh.advertise<geometry_msgs::Twist>("cmd_vel",100,true);
     ros::Subscriber cmdsub_ = nh.subscribe<geometry_msgs::Twist>("cmd_vel", 100, cmd_vel_Callback);
@@ -4114,7 +4109,6 @@ int main (int argc, char** argv)
     //Read Max_linear_Velocity
     nh.getParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
     printf("##max_vel_x: %f \n", _pDynamic_param.MAX_Linear_velocity);
-	
     ros::param::get("tf_prefix", tf_prefix_);
 
     //add GUI...
@@ -4321,6 +4315,13 @@ int main (int argc, char** argv)
                 m_iTimer_cnt = 0;
             }
         }
+	    
+	//Reset service call check//
+        if(_pReset_srv.bflag_reset)
+        {
+            Reset_Call_service();
+            _pReset_srv.bflag_reset = false;
+        }
 	
         //Get Active map param..//
         nh.getParam("active_map", m_bActive_map_check);
@@ -4382,7 +4383,7 @@ int main (int argc, char** argv)
                     if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion)
                     {
                         loop_rate.sleep();
-	                    continue;
+	                continue;
                     }
 			
                     //pthread_mutex_lock(&mutex);
