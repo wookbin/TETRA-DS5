@@ -2031,6 +2031,7 @@ void Reset_Robot_Pose()
 
 bool SetInitPose_Command(tetraDS_service::setinitpose::Request  &req, tetraDS_service::setinitpose::Response &res)
 {
+    _pFlag_Value.m_bFlag_nomotion = false;
     bool bResult = false;
 
     string landmark_name = "marker_" + std::to_string(_pAR_tag_pose.m_iAR_tag_id);
@@ -2111,13 +2112,16 @@ bool SetInitPose_Command(tetraDS_service::setinitpose::Request  &req, tetraDS_se
     initialpose_pub.publish(initPose_);
     //costmap clear call//
     clear_costmap_client.call(m_request);
-
     res.command_Result = bResult;
+    _pFlag_Value.m_bFlag_nomotion = true;
+	
     return bResult;
 }
 
 bool Set2D_Pose_Estimate_Command(tetraDS_service::pose_estimate::Request  &req, tetraDS_service::pose_estimate::Response &res)
 {
+    _pFlag_Value.m_bFlag_nomotion = false;
+	
     bool bResult = false;
     initPose_.header.stamp = ros::Time(0); //ros::Time::now(); 
     initPose_.header.frame_id = "map";
@@ -2141,6 +2145,7 @@ bool Set2D_Pose_Estimate_Command(tetraDS_service::pose_estimate::Request  &req, 
     clear_costmap_client.call(m_request);
     bResult = true;
     res.command_Result = bResult;
+    _pFlag_Value.m_bFlag_nomotion = true;
 	/*
 	float64 estimate_position_x
 	float64 estimate_position_y
