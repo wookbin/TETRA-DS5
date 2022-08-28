@@ -4328,114 +4328,112 @@ int main (int argc, char** argv)
             _pReset_srv.bflag_reset = false;
         }
 	
-        //Get Active map param..//
-        nh.getParam("active_map", m_bActive_map_check);
-        if(m_bActive_map_check)
+        if(_pRobot_Status.m_iCallback_Charging_status == 1)
         {
-            //map to base_footprint TF Pose////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            tf::StampedTransform transform;
-            try
+            //Get Active map param..//
+            nh.getParam("active_map", m_bActive_map_check);
+            if(m_bActive_map_check)
             {
-                listener.waitForTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), ros::Duration(3.0));
-                listener.lookupTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), transform);
-
-                geometry_msgs::TransformStamped ts_msg;
-                tf::transformStampedTFToMsg(transform, ts_msg);
-
-                _pTF_pose.poseTFx = ts_msg.transform.translation.x;
-                _pTF_pose.poseTFy = ts_msg.transform.translation.y;
-                _pTF_pose.poseTFz = ts_msg.transform.translation.z;
-                _pTF_pose.poseTFqx = ts_msg.transform.rotation.x;
-                _pTF_pose.poseTFqy = ts_msg.transform.rotation.y;
-                _pTF_pose.poseTFqz = ts_msg.transform.rotation.z;
-                _pTF_pose.poseTFqw = ts_msg.transform.rotation.w;
-
-                
-            }
-            catch (tf::TransformException ex)
-            {
-                ROS_ERROR("[TF_Transform_Error(map to base_footprint)]: %s", ex.what());
-            }
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            //map to odom TF Pose////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            tf::StampedTransform transform2;
-            try
-            {
-                listener2.waitForTransform("/map", tf_prefix_ + "/odom", ros::Time(0), ros::Duration(3.0));
-                listener2.lookupTransform("/map", tf_prefix_ + "/odom", ros::Time(0), transform2);
-
-                geometry_msgs::TransformStamped ts_msg2;
-                tf::transformStampedTFToMsg(transform2, ts_msg2);
-
-                _pTF_pose2.poseTFx2 = ts_msg2.transform.translation.x;
-                _pTF_pose2.poseTFy2 = ts_msg2.transform.translation.y;
-                _pTF_pose2.poseTFz2 = ts_msg2.transform.translation.z;
-                _pTF_pose2.poseTFqx2 = ts_msg2.transform.rotation.x;
-                _pTF_pose2.poseTFqy2 = ts_msg2.transform.rotation.y;
-                _pTF_pose2.poseTFqz2 = ts_msg2.transform.rotation.z;
-                _pTF_pose2.poseTFqw2 = ts_msg2.transform.rotation.w;
-
-                //itself call client service loop
-                m_dTF_Yaw = Quaternion2Yaw_rad(_pTF_pose2.poseTFqw2, _pTF_pose2.poseTFqx2, _pTF_pose2.poseTFqy2, _pTF_pose2.poseTFqz2);
-                m_dTF_New_Pose_X = (((_pTF_pose2.poseTFx2 * cos(m_dTF_Yaw)) + (_pTF_pose2.poseTFy2 * sin(m_dTF_Yaw))));
-                m_dTF_New_Pose_Y = (((_pTF_pose2.poseTFx2 * -sin(m_dTF_Yaw)) + (_pTF_pose2.poseTFy2 * cos(m_dTF_Yaw))));
-
-
-                m_iList_Count = virtual_obstacle.list.size();
-                if(m_iList_Count > 0)
+                //map to base_footprint TF Pose////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                tf::StampedTransform transform;
+                try
                 {
-                    if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion)
-                    {
-                        loop_rate.sleep();
-	                continue;
-                    }
-			
-                    //pthread_mutex_lock(&mutex);
-                    //======== critical section =============
+                    listener.waitForTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), ros::Duration(3.0));
+                    listener.lookupTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), transform);
 
-                    //message copy...
-                    virtual_obstacle2.list.clear();
-                    virtual_obstacle2.list.resize(m_iList_Count);
-                    m_iList_Count2 = virtual_obstacle2.list.size();
-                    if(m_iList_Count2 > 0)
+                    geometry_msgs::TransformStamped ts_msg;
+                    tf::transformStampedTFToMsg(transform, ts_msg);
+
+                    _pTF_pose.poseTFx = ts_msg.transform.translation.x;
+                    _pTF_pose.poseTFy = ts_msg.transform.translation.y;
+                    _pTF_pose.poseTFz = ts_msg.transform.translation.z;
+                    _pTF_pose.poseTFqx = ts_msg.transform.rotation.x;
+                    _pTF_pose.poseTFqy = ts_msg.transform.rotation.y;
+                    _pTF_pose.poseTFqz = ts_msg.transform.rotation.z;
+                    _pTF_pose.poseTFqw = ts_msg.transform.rotation.w;
+
+                    
+                }
+                catch (tf::TransformException ex)
+                {
+                    ROS_ERROR("[TF_Transform_Error(map to base_footprint)]: %s", ex.what());
+                    continue;
+                }
+
+                //map to odom TF Pose////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                tf::StampedTransform transform2;
+                try
+                {
+                    listener2.waitForTransform("/map", tf_prefix_ + "/odom", ros::Time(0), ros::Duration(3.0));
+                    listener2.lookupTransform("/map", tf_prefix_ + "/odom", ros::Time(0), transform2);
+
+                    geometry_msgs::TransformStamped ts_msg2;
+                    tf::transformStampedTFToMsg(transform2, ts_msg2);
+
+                    _pTF_pose2.poseTFx2 = ts_msg2.transform.translation.x;
+                    _pTF_pose2.poseTFy2 = ts_msg2.transform.translation.y;
+                    _pTF_pose2.poseTFz2 = ts_msg2.transform.translation.z;
+                    _pTF_pose2.poseTFqx2 = ts_msg2.transform.rotation.x;
+                    _pTF_pose2.poseTFqy2 = ts_msg2.transform.rotation.y;
+                    _pTF_pose2.poseTFqz2 = ts_msg2.transform.rotation.z;
+                    _pTF_pose2.poseTFqw2 = ts_msg2.transform.rotation.w;
+
+                    //itself call client service loop
+                    m_dTF_Yaw = Quaternion2Yaw_rad(_pTF_pose2.poseTFqw2, _pTF_pose2.poseTFqx2, _pTF_pose2.poseTFqy2, _pTF_pose2.poseTFqz2);
+                    m_dTF_New_Pose_X = (((_pTF_pose2.poseTFx2 * cos(m_dTF_Yaw)) + (_pTF_pose2.poseTFy2 * sin(m_dTF_Yaw))));
+                    m_dTF_New_Pose_Y = (((_pTF_pose2.poseTFx2 * -sin(m_dTF_Yaw)) + (_pTF_pose2.poseTFy2 * cos(m_dTF_Yaw))));
+
+
+                    m_iList_Count = virtual_obstacle.list.size();
+                    if(m_iList_Count > 0)
                     {
-                        for(int i=0; i<m_iList_Count2; i++)
+                        if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion)
                         {
-                            m_iMode_Count = virtual_obstacle.list[i].form.size();
-                            virtual_obstacle2.list[i].form.clear();
-                            virtual_obstacle2.list[i].form.resize(m_iMode_Count);
-                            m_iMode_Count2 = virtual_obstacle2.list[i].form.size();
-                            if(m_iMode_Count2 > 0)
+                            loop_rate.sleep();
+                            continue;
+                        }
+
+                        //message copy...
+                        virtual_obstacle2.list.clear();
+                        virtual_obstacle2.list.resize(m_iList_Count);
+                        m_iList_Count2 = virtual_obstacle2.list.size();
+                        if(m_iList_Count2 > 0)
+                        {
+                            for(int i=0; i<m_iList_Count2; i++)
                             {
-                                for(int j=0; j<m_iMode_Count; j++)
+                                m_iMode_Count = virtual_obstacle.list[i].form.size();
+                                virtual_obstacle2.list[i].form.clear();
+                                virtual_obstacle2.list[i].form.resize(m_iMode_Count);
+                                m_iMode_Count2 = virtual_obstacle2.list[i].form.size();
+                                if(m_iMode_Count2 > 0)
                                 {
-                                    virtual_obstacle2.list[i].form[j].x = (((virtual_obstacle.list[i].form[j].x *  cos(m_dTF_Yaw)) + (virtual_obstacle.list[i].form[j].y * sin(m_dTF_Yaw)))) - m_dTF_New_Pose_X;
-                                    virtual_obstacle2.list[i].form[j].y = (((virtual_obstacle.list[i].form[j].x * -sin(m_dTF_Yaw)) + (virtual_obstacle.list[i].form[j].y  * cos(m_dTF_Yaw)))) - m_dTF_New_Pose_Y;
-                                    virtual_obstacle2.list[i].form[j].z = virtual_obstacle.list[i].form[j].z;
+                                    for(int j=0; j<m_iMode_Count; j++)
+                                    {
+                                        virtual_obstacle2.list[i].form[j].x = (((virtual_obstacle.list[i].form[j].x *  cos(m_dTF_Yaw)) + (virtual_obstacle.list[i].form[j].y * sin(m_dTF_Yaw)))) - m_dTF_New_Pose_X;
+                                        virtual_obstacle2.list[i].form[j].y = (((virtual_obstacle.list[i].form[j].x * -sin(m_dTF_Yaw)) + (virtual_obstacle.list[i].form[j].y  * cos(m_dTF_Yaw)))) - m_dTF_New_Pose_Y;
+                                        virtual_obstacle2.list[i].form[j].z = virtual_obstacle.list[i].form[j].z;
+                                    }
                                 }
                             }
+                            virtual_obstacle2_pub.publish(virtual_obstacle2);
                         }
-                        virtual_obstacle2_pub.publish(virtual_obstacle2);
                     }
-
-                    //========= critical section ============
-                    //pthread_mutex_unlock(&mutex);
+                                    
                 }
-                
-            }
-            catch (tf::TransformException ex2)
-            {
-                ROS_ERROR("[TF_Transform_Error2(map to odom)]: %s", ex2.what());
-            }
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                catch (tf::TransformException ex2)
+                {
+                    ROS_ERROR("[TF_Transform_Error2(map to odom)]: %s", ex2.what());
+                    continue;
+                }
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+            }
         }
                 
         loop_rate.sleep();
     }
 	
- 	//pthread_mutex_destroy(&mutex);
+	//pthread_mutex_destroy(&mutex);
 
     return 0;
 }
