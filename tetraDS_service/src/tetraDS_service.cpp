@@ -977,7 +977,7 @@ void cmd_vel_Callback(const geometry_msgs::Twist::ConstPtr& msg)
 void Particle_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
 {
     m_iParticleCloud_size = msg->poses.size();
-    if(m_iParticleCloud_size > 501 && _pDynamic_param.m_linear_vel == 0.0 && _pDynamic_param.m_angular_vel == 0.0)
+    if(m_iParticleCloud_size > 501 && _pDynamic_param.m_linear_vel == 0.0 && _pDynamic_param.m_angular_vel == 0.0 && _pRobot_Status.m_iCallback_Charging_status != 1)
     {
         if(_pFlag_Value.m_bFlag_nomotion)
         {
