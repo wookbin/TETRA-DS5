@@ -4103,7 +4103,7 @@ int main (int argc, char** argv)
     //teb_localPlan Subscribe
     ros::Subscriber teblocalplan_sub = nh.subscribe<geometry_msgs::PoseArray>("move_base/TebLocalPlannerROS/teb_poses", 100, Teblocalplan_Callback);
     //Initialpose publish//
-    initialpose_pub = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 100, true);
+    initialpose_pub = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 100);
 	
     //Joystick//
     ros::NodeHandle njoy;
