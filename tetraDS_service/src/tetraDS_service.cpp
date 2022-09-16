@@ -1257,13 +1257,15 @@ bool Goto_Command(tetraDS_service::gotolocation::Request &req,
 				  tetraDS_service::gotolocation::Response &res)
 {
 	bool bResult = false;
+	
+	//costmap clear call//
+	clear_costmap_client.call(m_request);
 
 	LED_Toggle_Control(1,3,100,3,1);
 	if(_pFlag_Value.m_bflag_patrol)
 	LED_Turn_On(100); //blue led
 	else
 	LED_Turn_On(63); //White led
-
 
 	bResult = OpenLocationFile(req.Location);
 	printf("Goto bResult: %d \n", bResult);
@@ -1276,8 +1278,6 @@ bool Goto_Command(tetraDS_service::gotolocation::Request &req,
 	goto_goal_id.id = req.Location;
 
 	ROS_INFO("goto_id.id: %s", goto_goal_id.id.c_str());
-	//costmap clear call//
-	clear_costmap_client.call(m_request);
 
 	if(_pRobot_Status.m_iCallback_Charging_status <= 1 && (_pAR_tag_pose.m_iAR_tag_id == -1 || _pAR_tag_pose.m_transform_pose_x <= 0.5)) //Nomal
 	{
@@ -1328,6 +1328,9 @@ bool Goto_Command(tetraDS_service::gotolocation::Request &req,
 bool Goto_Command2(tetraDS_service::gotolocation2::Request &req, tetraDS_service::gotolocation2::Response &res)
 {
 	bool bResult = false;
+	
+	//costmap clear call//
+	clear_costmap_client.call(m_request);
 
 	_pGoal_pose.goal_positionX = req.goal_positionX;
 	_pGoal_pose.goal_positionY = req.goal_positionY;
@@ -1336,9 +1339,6 @@ bool Goto_Command2(tetraDS_service::gotolocation2::Request &req, tetraDS_service
 	_pGoal_pose.goal_quarterZ = req.goal_quarterZ;
 	_pGoal_pose.goal_quarterW = req.goal_quarterW;
 	goto_goal_id.id = "1";
-
-	//costmap clear call//
-	clear_costmap_client.call(m_request);
 
 	LED_Toggle_Control(1, 3,100,3,1);
 	LED_Turn_On(63);
@@ -2397,7 +2397,7 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
     usleep(100000); 
     LED_Control(2, 100);
     //costmap clear call//
-    clear_costmap_client.call(m_request);
+    //clear_costmap_client.call(m_request);
 
     if(_pFlag_Value.m_bflag_ComebackHome) //Home Postion -> docking mode start
     {
@@ -2424,8 +2424,6 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
     printf("[ERROR]resultCallback _ RED LED On \n");
     _pFlag_Value.m_bflag_NextStep = false;
     ROS_INFO("[ERROR]resultCallback: %d ",msgResult->status.status);
-    //costmap clear call//
-    clear_costmap_client.call(m_request);
 
     //Dynamic_reconfigure_Teb_Set_DoubleParam("weight_kinematics_forward_drive", _pDynamic_param.m_dweight_kinematics_forward_drive_backward);
 
@@ -2441,6 +2439,9 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
             LED_Turn_On(45); //sky_blue
         else
             LED_Turn_On(63);
+	    
+	//costmap clear call//
+        clear_costmap_client.call(m_request);
 
         ROS_INFO("[RETRY Behavior]: goto_ %s", goal.goal_id.id.c_str());
         setGoal(goal);
@@ -3279,6 +3280,9 @@ bool Goto_Conveyor_Command(tetraDS_service::gotoconveyor::Request &req, tetraDS_
 {
 	bool bResult = false;
 
+	//costmap clear call//
+	clear_costmap_client.call(m_request);
+	
 	LED_Toggle_Control(1, 3,100,3,1);
 	LED_Turn_On(45); //sky_blue
 
@@ -3291,9 +3295,6 @@ bool Goto_Conveyor_Command(tetraDS_service::gotoconveyor::Request &req, tetraDS_
 	_pFlag_Value.m_bflag_Conveyor_docking = true;
 
 	ROS_INFO("goto_conveyor_name: %s, id: %d, movement: %d", goto_goal_id.id.c_str(), _pRobot_Status.CONVEYOR_ID, _pRobot_Status.CONVEYOR_MOVEMENT);
-
-	//costmap clear call//
-	clear_costmap_client.call(m_request);
 
 	if(_pRobot_Status.m_iCallback_Charging_status <= 1 && (_pAR_tag_pose.m_iAR_tag_id == -1 || _pAR_tag_pose.m_transform_pose_x <= 0.5))  //Nomal
 	{
