@@ -3992,9 +3992,12 @@ void Reset_Call_service()
 	_pFlag_Value.m_bFlag_nomotion = false;
 
 	//IMU reset//
-	euler_angle_reset_cmd_client.call(euler_angle_reset_srv);
-	printf("## IMU Reset ! \n");
-	usleep(100000);
+    	euler_angle_reset_cmd_client.call(euler_angle_reset_srv);
+    	printf("## IMU Reset ! \n");
+    	//tetra odometry Reset//
+    	tetra_PoseRest.data = m_iReset_flag;
+    	PoseReset_pub.publish(tetra_PoseRest);
+    	usleep(100000);
 
 	//robot_localization::SetPose ekf_reset;
 	setpose_srv.request.pose.header.frame_id = tf_prefix_ + "/odom";
