@@ -4071,7 +4071,7 @@ int main (int argc, char** argv)
 	
     ros::init(argc, argv, "tetraDS_service", ros::init_options::NoSigintHandler);
     ros::NodeHandle nh;
-    cmdpub_ = nh.advertise<geometry_msgs::Twist>("cmd_vel",100,true);
+    cmdpub_ = nh.advertise<geometry_msgs::Twist>("cmd_vel",100);
     ros::Subscriber cmdsub_ = nh.subscribe<geometry_msgs::Twist>("cmd_vel", 100, cmd_vel_Callback);
     //Servo On/Off publish
     servo_pub = nh.advertise<std_msgs::Int32>("Servo_ON",10);
