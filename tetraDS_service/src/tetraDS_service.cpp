@@ -120,7 +120,7 @@
 #include "tetraDS_service/setekf.h"
 
 #define LOW_BATTERY 15
-#define MAX_RETRY_CNT 3
+#define MAX_RETRY_CNT 10
 #define BUF_LEN 4096
 using namespace std;
 std::string tf_prefix_;
@@ -2026,6 +2026,8 @@ void Reset_Robot_Pose()
 
     //costmap clear call//
     //clear_costmap_client.call(m_request);
+    virtual_obstacle2.list.clear();
+    virtual_obstacle2_pub.publish(virtual_obstacle2);
     
 }
 
