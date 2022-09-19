@@ -1338,7 +1338,7 @@ bool Goto_Command2(tetraDS_service::gotolocation2::Request &req, tetraDS_service
 	_pGoal_pose.goal_quarterY = req.goal_quarterY;
 	_pGoal_pose.goal_quarterZ = req.goal_quarterZ;
 	_pGoal_pose.goal_quarterW = req.goal_quarterW;
-	goto_goal_id.id = "1";
+	//goto_goal_id.id = "1";
 
 	LED_Toggle_Control(1, 3,100,3,1);
 	LED_Turn_On(63);
