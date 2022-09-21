@@ -12,7 +12,7 @@ oscillation_distance: 0.5
 max_planning_retries: 3
 
 recovery_behavior_enabled: true
-clearing_rotation_allowed: true
+clearing_rotation_allowed: false
 
 recovery_behaviors:
   - name: conservative_reset
