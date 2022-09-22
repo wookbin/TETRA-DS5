@@ -16,8 +16,6 @@ global_costmap:
       type: "costmap_2d::StaticLayer"
     - name: obstacle_layer
       type: "costmap_2d::VoxelLayer"
-    - name: restricted_layer
-      type: "restrict_area::RestrictedLayer"
     - name: virtual_layer
       type: "virtual_costmap_layer::VirtualLayer"
     - name: inflation_layer
