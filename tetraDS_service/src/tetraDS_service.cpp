@@ -1282,12 +1282,6 @@ bool Goto_Command(tetraDS_service::gotolocation::Request &req,
 	if(_pRobot_Status.m_iCallback_Charging_status <= 1 && (_pAR_tag_pose.m_iAR_tag_id == -1 || _pAR_tag_pose.m_transform_pose_x <= 0.5)) //Nomal
 	{
 	ROS_INFO("Goto Nomal Loop !");
-	LED_Toggle_Control(1,3,100,3,1);
-	if(_pFlag_Value.m_bflag_patrol)
-	    LED_Turn_On(100); //blue led
-	else
-	    LED_Turn_On(63); //White led
-
 	setGoal(goal);
 	bResult = true;
 
