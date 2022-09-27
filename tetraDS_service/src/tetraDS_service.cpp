@@ -2426,18 +2426,18 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
     if(m_iRetry_cnt >= MAX_RETRY_CNT)
     {
         m_iRetry_cnt = 0;
-        ROS_INFO("[RETRY Behavior]: FAIL !");
+        ROS_INFO("[RETRY Behavior]: FAIL (%d)! \n", m_iRetry_cnt);
     }
     else
     {
+        //costmap clear call//
+        clear_costmap_client.call(m_request);
+
         LED_Toggle_Control(1, 3,100,3,1);
         if(_pFlag_Value.m_bflag_Conveyor_docking)
             LED_Turn_On(45); //sky_blue
         else
             LED_Turn_On(63);
-	    
-	//costmap clear call//
-        clear_costmap_client.call(m_request);
 
         ROS_INFO("[RETRY Behavior]: goto_ %s", goal.goal_id.id.c_str());
         setGoal(goal);
