@@ -2422,6 +2422,9 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
     ROS_INFO("[ERROR]resultCallback: %d ",msgResult->status.status);
 
     //Dynamic_reconfigure_Teb_Set_DoubleParam("weight_kinematics_forward_drive", _pDynamic_param.m_dweight_kinematics_forward_drive_backward);
+    goto_goal_id.id = "";
+    ROS_INFO("Goto Cancel call");
+    GotoCancel_pub.publish(goto_goal_id);
 
     if(m_iRetry_cnt >= MAX_RETRY_CNT)
     {
