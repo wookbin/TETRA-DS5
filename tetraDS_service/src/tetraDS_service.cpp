@@ -1780,12 +1780,12 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req, t
 	virtual_obstacle.list[i].form.clear();
 	virtual_obstacle.list[i].form.resize(req.list_count[i]);
 	m_iInt_count = req.list_count[i];
-	for(int j=0; j<req.list_count[i]; j++)
-	{
-	    virtual_obstacle.list[i].form[j].x = req.form_x[m_iNext_count + j];
-	    virtual_obstacle.list[i].form[j].y = req.form_y[m_iNext_count + j];
-	    virtual_obstacle.list[i].form[j].z = req.form_z[m_iNext_count + j];
-	}
+        for(int j=0; j<req.list_count[i]; j++)
+        {
+            virtual_obstacle.list[i].form[j].x = floor(req.form_x[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
+            virtual_obstacle.list[i].form[j].y = floor(req.form_y[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
+            virtual_obstacle.list[i].form[j].z = floor(req.form_z[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
+        }
 	m_iNext_count += m_iInt_count;
 
 	}
@@ -4397,7 +4397,7 @@ int main (int argc, char** argv)
                         }
 
                         //message copy...
-                        virtual_obstacle2.list.clear();
+                        //virtual_obstacle2.list.clear();
                         virtual_obstacle2.list.resize(m_iList_Count);
                         m_iList_Count2 = virtual_obstacle2.list.size();
                         if(m_iList_Count2 > 0)
