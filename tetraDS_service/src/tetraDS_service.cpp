@@ -1060,7 +1060,7 @@ void Teblocalplan_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
 
 void setGoal(move_base_msgs::MoveBaseActionGoal& goal)
 {
-    ros::Time now = ros::Time(0); //ros::Time::now();
+    ros::Time now = ros::Time::now();
 
     goal.header.frame_id="map";
     goal.header.stamp=now;
