@@ -1221,7 +1221,7 @@ bool Depart_Station2Move()
     
     if(_pAR_tag_pose.m_transform_pose_x <= 0.575) //575mm depart move
     {
-        if(_pFlag_Value.m_bFlag_Obstacle_PCL1 || _pFlag_Value.m_bFlag_Obstacle_PCL2)
+        if(_pFlag_Value.m_bFlag_Obstacle_Center)
         {
             cmd->linear.x =  0.0; 
             cmd->angular.z = 0.0;
@@ -2814,7 +2814,7 @@ bool ChargingStation_Yaw_tracking()
 
         while(m_iback_cnt < 30)
         {
-            if(_pFlag_Value.m_bFlag_Obstacle_PCL1 || _pFlag_Value.m_bFlag_Obstacle_PCL2)
+            if(_pFlag_Value.m_bFlag_Obstacle_Center)
             {
                 cmd->angular.z = 0.0;
                 cmd->linear.x = 0.0;
@@ -2859,7 +2859,7 @@ bool ChargingStation_Yaw_tracking()
 
         while(m_iback_cnt < 30)
         {
-            if(_pFlag_Value.m_bFlag_Obstacle_PCL1 || _pFlag_Value.m_bFlag_Obstacle_PCL2)
+            if(_pFlag_Value.m_bFlag_Obstacle_Center)
             {
                 cmd->angular.z = 0.0;
                 cmd->linear.x = 0.0;
@@ -3081,7 +3081,7 @@ bool ConveyorStation_Yaw_tracking()
 
         while(m_iback_cnt < 30)
         {
-            if(_pFlag_Value.m_bFlag_Obstacle_PCL1 || _pFlag_Value.m_bFlag_Obstacle_PCL2)
+            if(_pFlag_Value.m_bFlag_Obstacle_Center)
             {
                 cmd->angular.z = 0.0;
                 cmd->linear.x = 0.0;
@@ -3125,7 +3125,7 @@ bool ConveyorStation_Yaw_tracking()
 
         while(m_iback_cnt < 30)
         {
-            if(_pFlag_Value.m_bFlag_Obstacle_PCL1 || _pFlag_Value.m_bFlag_Obstacle_PCL2)
+            if(_pFlag_Value.m_bFlag_Obstacle_Center)
             {
                 cmd->angular.z = 0.0;
                 cmd->linear.x = 0.0;
