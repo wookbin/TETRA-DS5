@@ -89,7 +89,7 @@
 <!--realsense_Point Cloud data -->
   <include file = "$(find realsense2_camera)/launch/rs_pointcloud_r.launch"/>
   <include file = "$(find tetraDS_2dnav)/launch/timed_rgbd.launch"/>
-  <include file="$(find tetraDS_2dnav)/launch/DepthimageToScan.launch"/>
+  <!--<include file="$(find tetraDS_2dnav)/launch/DepthimageToScan.launch"/>-->
 
 </launch>
 
