@@ -15,8 +15,6 @@ local_costmap:
   plugins:
     - name: obstacle_layer
       type: "costmap_2d::VoxelLayer"
-    #- name: restricted_layer_2
-      #type: "restrict_area_2::RestrictedLayer_2"
     - name: rgbd_obstacle_layer1   
       type: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"
     - name: rgbd_obstacle_layer2
