@@ -8,13 +8,13 @@ TebLocalPlannerROS:
  teb_autosize: true
  dt_ref: 0.3
  dt_hysteresis: 0.03
- min_samples: 3 #5
+ min_samples: 5
  max_samples: 50
  global_plan_overwrite_orientation: true
  global_plan_viapoint_sep: 1.0 #0.5
  max_global_plan_lookahead_dist: 5.0
  force_reinit_new_goal_dist: 1.0
- feasibility_check_no_poses: 3
+ feasibility_check_no_poses: 20 #3
  publish_feedback: false
  shrink_horizon_backup: true
  allow_init_with_backwards_motion: false #true
@@ -62,7 +62,7 @@ TebLocalPlannerROS:
  # Optimization
  no_inner_iterations: 5
  no_outer_iterations: 4
- penalty_epsilon: 0.04 #0.1
+ penalty_epsilon: 0.04
  weight_max_vel_x: 1.0
  weight_max_vel_y: 0.0
  weight_max_vel_theta: 1.0
@@ -70,7 +70,7 @@ TebLocalPlannerROS:
  weight_acc_lim_y: 0.0 
  weight_acc_lim_theta: 0.0
  weight_kinematics_nh: 1000.0
- weight_kinematics_forward_drive: 1000.0 #600.0
+ weight_kinematics_forward_drive: 1000.0
  weight_kinematics_turning_radius: 1.0
  weight_optimaltime: 1.0
  weight_obstacle: 10.0 #50.0
@@ -83,7 +83,7 @@ TebLocalPlannerROS:
  enable_homotopy_class_planning: false
  enable_multithreading: true
  simple_exploration: false
- max_number_classes: 4 #10
+ max_number_classes: 4
  selection_cost_hysteresis: 1.0
  selection_obst_cost_scale: 1.0
  selection_viapoint_cost_scale: 1.0
