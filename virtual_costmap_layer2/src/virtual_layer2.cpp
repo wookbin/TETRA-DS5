@@ -358,14 +358,11 @@ void VirtualLayer2::setPolygonCost(costmap_2d::Costmap2D &master_grid, const Pol
     if (polygon.size() < 0)
         return;
     
-    for (unsigned int i = 0; i < polygon.size(); ++i) {
+    for (unsigned int i = 0; i < polygon.size(); ++i) 
+    {
         PointInt loc;
         master_grid.worldToMapNoBounds(polygon[i].x, polygon[i].y, loc.x, loc.y);
-        //map_polygon.push_back(loc);
-        if(loc.x >= 0 && loc.y >= 0)
-        {
-            map_polygon.push_back(loc);
-        }
+        map_polygon.push_back(loc);
     }
 
     std::vector<PointInt> polygon_cells;
