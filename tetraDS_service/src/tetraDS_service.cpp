@@ -1777,16 +1777,16 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req, t
 	virtual_obstacle.list.resize(req.list_count.size());
 	for(int i=0; i<req.list_count.size(); i++)
 	{
-	virtual_obstacle.list[i].form.clear();
-	virtual_obstacle.list[i].form.resize(req.list_count[i]);
-	m_iInt_count = req.list_count[i];
-        for(int j=0; j<req.list_count[i]; j++)
-        {
-            virtual_obstacle.list[i].form[j].x = floor(req.form_x[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
-            virtual_obstacle.list[i].form[j].y = floor(req.form_y[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
-            virtual_obstacle.list[i].form[j].z = floor(req.form_z[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
-        }
-	m_iNext_count += m_iInt_count;
+		//virtual_obstacle.list[i].form.clear();
+		virtual_obstacle.list[i].form.resize(req.list_count[i]);
+		m_iInt_count = req.list_count[i];
+		for(int j=0; j<req.list_count[i]; j++)
+		{
+		    virtual_obstacle.list[i].form[j].x = floor(req.form_x[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
+		    virtual_obstacle.list[i].form[j].y = floor(req.form_y[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
+		    virtual_obstacle.list[i].form[j].z = floor(req.form_z[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
+		}
+		m_iNext_count += m_iInt_count;
 
 	}
     
@@ -2453,12 +2453,20 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
   {
     // if(_pFlag_Value.BUMPER_BT)
     //     ex_iDocking_CommandMode = 100;
+    goto_goal_id.id = "";
+    ROS_INFO("Goto Cancel call");
+    GotoCancel_pub.publish(goto_goal_id);
   }
   else
   {
     _pFlag_Value.m_bflag_NextStep = false;
     ROS_INFO("resultCallback: %d ",msgResult->status.status);
     _pRobot_Status.m_iMovebase_Result = msgResult->status.status;
+
+    goto_goal_id.id = "";
+    ROS_INFO("Goto Cancel call");
+    GotoCancel_pub.publish(goto_goal_id);
+	  
     //costmap clear call//
     clear_costmap_client.call(m_request);
   }
