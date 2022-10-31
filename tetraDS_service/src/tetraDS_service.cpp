@@ -399,6 +399,8 @@ std_msgs::Int32 docking_progress;
 ros::Publisher virtual_obstacle_pub;
 //custom_msgs::Obstacles virtual_obstacle;
 virtual_costmap_layer::Obstacles virtual_obstacle;
+//Compare msg data
+virtual_costmap_layer::Obstacles old_virtual_obstacle;
 //Virtual Costmap2//
 ros::Publisher virtual_obstacle2_pub;
 //custom_msgs::Obstacles virtual_obstacle2;
@@ -1766,10 +1768,48 @@ bool DeleteMap_Command(tetraDS_service::deletemap::Request &req, tetraDS_service
 
 bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req, tetraDS_service::virtual_obstacle::Response &res)
 {
-
 	bool bResult = false;
 	int m_iInt_count = 0;
 	int m_iNext_count = 0;
+	int m_icompare_count = 0;
+
+	//array_compare_check ////////////////////////////////////////////////////////////////////////////////////////////////////  
+	if(old_virtual_obstacle.list.size() == req.list_count.size())
+	{
+	//printf("Same Data_list count!!!\n");
+	for(int i=0; i<req.list_count.size(); i++)
+	{
+	    m_iInt_count = req.list_count[i];
+	    for(int j=0; j<m_iInt_count; j++)
+	    {
+		if(old_virtual_obstacle.list[i].form[j].x != floor(req.form_x[m_iNext_count + j] * 1000.f + 0.5) / 1000.f)
+		{   
+		    m_icompare_count++;
+		}
+		if(old_virtual_obstacle.list[i].form[j].y != floor(req.form_y[m_iNext_count + j] * 1000.f + 0.5) / 1000.f)
+		{
+		    m_icompare_count++;
+		}
+		if(old_virtual_obstacle.list[i].form[j].z != floor(req.form_z[m_iNext_count + j] * 1000.f + 0.5) / 1000.f)
+		{
+		    m_icompare_count++;
+		}
+
+	    }
+	    m_iNext_count += m_iInt_count;
+
+	}
+	//printf("m_icompare_count: %d \n", m_icompare_count);
+	if(m_icompare_count == 0)
+	{
+	    //printf("Skip Virtual costmap!! \n");
+	    return true;
+	}
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	m_iInt_count = 0;
+	m_iNext_count = 0;
 
 	// msg clear
 	virtual_obstacle.list.clear();
@@ -1777,21 +1817,24 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req, t
 	virtual_obstacle.list.resize(req.list_count.size());
 	for(int i=0; i<req.list_count.size(); i++)
 	{
-		//virtual_obstacle.list[i].form.clear();
-		virtual_obstacle.list[i].form.resize(req.list_count[i]);
-		m_iInt_count = req.list_count[i];
-		for(int j=0; j<req.list_count[i]; j++)
-		{
-		    virtual_obstacle.list[i].form[j].x = floor(req.form_x[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
-		    virtual_obstacle.list[i].form[j].y = floor(req.form_y[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
-		    virtual_obstacle.list[i].form[j].z = floor(req.form_z[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
-		}
-		m_iNext_count += m_iInt_count;
+	//virtual_obstacle.list[i].form.clear();
+	virtual_obstacle.list[i].form.resize(req.list_count[i]);
+	m_iInt_count = req.list_count[i];
+	for(int j=0; j<req.list_count[i]; j++)
+	{
+	    virtual_obstacle.list[i].form[j].x = floor(req.form_x[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
+	    virtual_obstacle.list[i].form[j].y = floor(req.form_y[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
+	    virtual_obstacle.list[i].form[j].z = floor(req.form_z[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
+	}
+	m_iNext_count += m_iInt_count;
 
 	}
     
 	virtual_obstacle_pub.publish(virtual_obstacle);
 
+	//copy
+	old_virtual_obstacle = virtual_obstacle;
+ 
 	/*
 	int32[]  list_count
 	float64[] form_x
@@ -1800,7 +1843,7 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req, t
 	---
 	bool command_Result
 	*/
-	bResult = true;
+    	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
