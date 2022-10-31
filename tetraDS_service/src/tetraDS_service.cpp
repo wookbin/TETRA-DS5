@@ -1776,35 +1776,35 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req, t
 	//array_compare_check ////////////////////////////////////////////////////////////////////////////////////////////////////  
 	if(old_virtual_obstacle.list.size() == req.list_count.size())
 	{
-	//printf("Same Data_list count!!!\n");
-	for(int i=0; i<req.list_count.size(); i++)
-	{
-	    m_iInt_count = req.list_count[i];
-	    for(int j=0; j<m_iInt_count; j++)
-	    {
-		if(old_virtual_obstacle.list[i].form[j].x != floor(req.form_x[m_iNext_count + j] * 1000.f + 0.5) / 1000.f)
-		{   
-		    m_icompare_count++;
-		}
-		if(old_virtual_obstacle.list[i].form[j].y != floor(req.form_y[m_iNext_count + j] * 1000.f + 0.5) / 1000.f)
+		//printf("Same Data_list count!!!\n");
+		for(int i=0; i<req.list_count.size(); i++)
 		{
-		    m_icompare_count++;
+		    m_iInt_count = req.list_count[i];
+		    for(int j=0; j<m_iInt_count; j++)
+		    {
+			if(old_virtual_obstacle.list[i].form[j].x != floor(req.form_x[m_iNext_count + j] * 1000.f + 0.5) / 1000.f)
+			{   
+			    m_icompare_count++;
+			}
+			if(old_virtual_obstacle.list[i].form[j].y != floor(req.form_y[m_iNext_count + j] * 1000.f + 0.5) / 1000.f)
+			{
+			    m_icompare_count++;
+			}
+			if(old_virtual_obstacle.list[i].form[j].z != floor(req.form_z[m_iNext_count + j] * 1000.f + 0.5) / 1000.f)
+			{
+			    m_icompare_count++;
+			}
+
+		    }
+		    m_iNext_count += m_iInt_count;
+
 		}
-		if(old_virtual_obstacle.list[i].form[j].z != floor(req.form_z[m_iNext_count + j] * 1000.f + 0.5) / 1000.f)
+		//printf("m_icompare_count: %d \n", m_icompare_count);
+		if(m_icompare_count == 0)
 		{
-		    m_icompare_count++;
+		    //printf("Skip Virtual costmap!! \n");
+		    return true;
 		}
-
-	    }
-	    m_iNext_count += m_iInt_count;
-
-	}
-	//printf("m_icompare_count: %d \n", m_icompare_count);
-	if(m_icompare_count == 0)
-	{
-	    //printf("Skip Virtual costmap!! \n");
-	    return true;
-	}
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
