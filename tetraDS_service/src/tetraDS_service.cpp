@@ -4349,12 +4349,11 @@ int main (int argc, char** argv)
             {
                 //map to base_footprint TF Pose////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 tf::StampedTransform transform;
+		geometry_msgs::TransformStamped ts_msg;
                 try
                 {
                     listener.waitForTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), ros::Duration(3.0));
                     listener.lookupTransform("/map", tf_prefix_ + "/base_footprint", ros::Time(0), transform);
-
-                    geometry_msgs::TransformStamped ts_msg;
                     tf::transformStampedTFToMsg(transform, ts_msg);
 
                     _pTF_pose.poseTFx = ts_msg.transform.translation.x;
@@ -4364,8 +4363,6 @@ int main (int argc, char** argv)
                     _pTF_pose.poseTFqy = ts_msg.transform.rotation.y;
                     _pTF_pose.poseTFqz = ts_msg.transform.rotation.z;
                     _pTF_pose.poseTFqw = ts_msg.transform.rotation.w;
-
-                    
                 }
                 catch (tf::TransformException ex)
                 {
@@ -4375,12 +4372,12 @@ int main (int argc, char** argv)
 
                 //map to odom TF Pose////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 tf::StampedTransform transform2;
+                geometry_msgs::TransformStamped ts_msg2;
+                bool bCheck_waitForTransform = false;
                 try
                 {
-                    listener2.waitForTransform("/map", tf_prefix_ + "/odom", ros::Time(0), ros::Duration(3.0));
+                    bCheck_waitForTransform = listener2.waitForTransform("/map", tf_prefix_ + "/odom", ros::Time(0), ros::Duration(5.0));
                     listener2.lookupTransform("/map", tf_prefix_ + "/odom", ros::Time(0), transform2);
-
-                    geometry_msgs::TransformStamped ts_msg2;
                     tf::transformStampedTFToMsg(transform2, ts_msg2);
 
                     _pTF_pose2.poseTFx2 = ts_msg2.transform.translation.x;
@@ -4396,7 +4393,15 @@ int main (int argc, char** argv)
                     m_dTF_New_Pose_X = (((_pTF_pose2.poseTFx2 * cos(m_dTF_Yaw)) + (_pTF_pose2.poseTFy2 * sin(m_dTF_Yaw))));
                     m_dTF_New_Pose_Y = (((_pTF_pose2.poseTFx2 * -sin(m_dTF_Yaw)) + (_pTF_pose2.poseTFy2 * cos(m_dTF_Yaw))));
 
+                }
+                catch (tf::TransformException ex2)
+                {
+                    ROS_ERROR("[TF_Transform_Error2(map to odom)]: %s", ex2.what());
+                    continue;
+                }
 
+                if(bCheck_waitForTransform)
+                {
                     m_iList_Count = virtual_obstacle.list.size();
                     if(m_iList_Count > 0)
                     {
@@ -4430,13 +4435,12 @@ int main (int argc, char** argv)
                             }
                             virtual_obstacle2_pub.publish(virtual_obstacle2);
                         }
+
                     }
-                                    
                 }
-                catch (tf::TransformException ex2)
+                else
                 {
-                    ROS_ERROR("[TF_Transform_Error2(map to odom)]: %s", ex2.what());
-                    continue;
+                    printf("[Error]listener2.waitForTransform Fail & lookupTransform Fail!! \n");
                 }
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
