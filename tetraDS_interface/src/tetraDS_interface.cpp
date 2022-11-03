@@ -949,6 +949,14 @@ int main(int argc, char * argv[])
 		ros::Time measurement_time = ros::Time(0) + ros::Duration(time_offset_in_seconds);
 	//	m_iPowerCheck = dssp_rs232_power_module_read_battery(&m_dbattery, &m_dVoltage, &m_dCurrent, &m_imode_status, m_iInput, m_iOutput);
 		m_iPowerCheck = dssp_rs232_power_module_read_tetra(&m_dbattery, &m_dVoltage, &m_dCurrent, &m_imode_status, m_iInput, m_iOutput, m_dUltrasonic);
+		
+		if(m_iPowerCheck <= 0 || m_imode_status == 0)
+		{
+			printf("!!!! Power Board data read Error !!!! \n");
+			loop_rate.sleep();
+			continue;
+		}
+		
 		//add...Power Board Check
 		power_status.data = m_iPowerCheck;
 		power_error_publisher.publish(power_status);
