@@ -1,6 +1,7 @@
 int  dssp_rs232_power_module_create(const char *device, int time_out);
 void dssp_rs232_power_module_destroy();
 int  dssp_rs232_power_module_read_battery(double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output);
+int  dssp_rs232_power_module_read_tetra(double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output, double *Ultrasonic);
 int  dssp_rs232_power_module_read_bumper(int *bumper_data);
 int  dssp_rs232_power_module_set_Ultrasonic(int mode);
 int  dssp_rs232_power_module_read_Ultrasonic(double * Ultrasonic);

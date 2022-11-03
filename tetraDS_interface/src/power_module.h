@@ -31,6 +31,7 @@ typedef struct DATA
 int  power_init(const char *port, int time_out);
 void power_deinit(int fd);
 int  power_read_Battery(int fd, double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output);
+int  power_read_tetra(int fd, double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output, double *Ultrasonic);
 int  power_read_bumper(int fd, int *bumper);
 int  power_set_Ultrasonic(int fd, int mode);
 int  power_read_Ultrasonic(int fd, double *Ultrasonic);

@@ -46,6 +46,15 @@ int  dssp_rs232_power_module_read_battery(double *dbattery, double *dVoltage, do
 	return ret;
 }
 
+int  dssp_rs232_power_module_read_tetra(double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output, double *Ultrasonic)
+{
+	int ret;
+
+	ret = power_read_tetra(_power, dbattery, dVoltage, dCurrent, mode_status, Input, Output, Ultrasonic);
+
+	return ret;
+}
+
 int  dssp_rs232_power_module_set_Ultrasonic(int mode)
 {
 	int ret;

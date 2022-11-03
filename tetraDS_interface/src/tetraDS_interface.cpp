@@ -592,8 +592,8 @@ bool Power_parameter_Read_Command(tetraDS_interface::power_parameter_read::Reque
 	res.P5_SONAR_MAX_DISTANCE = m_iParam5;
 	res.P6_SONAR_BUMPER_DISTANCE = m_iParam6;
 	res.P7_SONAR_NONE_DETECT_MODE = m_iParam7;
-	res.P8_SONAR_DELTA_FILTER = m_iParam8;
-	res.P9_SONAR_DELTA_FILTER_COUNT = m_iParam9;
+	res.P8_BATTERY_CHARGING_OFFSET = m_iParam8;
+	res.P9_BATTERY_CHARGING_GAIN = m_iParam9;
 	res.P10_STATUS_LED_MIN = m_iParam10;
 	res.P11_STATUS_LED_MAX = m_iParam11;
 	res.P12_BATTERY_LED_MIN = m_iParam12;
@@ -940,15 +940,15 @@ int main(int argc, char * argv[])
 	//Charge port Enable//
 	dssp_rs232_power_module_set_charging_ready(1);
 	//Ultrasonic On//
-	dssp_rs232_power_module_set_Ultrasonic(1);
+	// dssp_rs232_power_module_set_Ultrasonic(1);
 
     	while(ros::ok())
 	{
         	ros::spinOnce();
 		// calculate measurement time
 		ros::Time measurement_time = ros::Time(0) + ros::Duration(time_offset_in_seconds);
-		m_iPowerCheck = dssp_rs232_power_module_read_battery(&m_dbattery, &m_dVoltage, &m_dCurrent, &m_imode_status, m_iInput, m_iOutput);
-
+	//	m_iPowerCheck = dssp_rs232_power_module_read_battery(&m_dbattery, &m_dVoltage, &m_dCurrent, &m_imode_status, m_iInput, m_iOutput);
+		m_iPowerCheck = dssp_rs232_power_module_read_tetra(&m_dbattery, &m_dVoltage, &m_dCurrent, &m_imode_status, m_iInput, m_iOutput, m_dUltrasonic);
 		//add...Power Board Check
 		power_status.data = m_iPowerCheck;
 		power_error_publisher.publish(power_status);
@@ -980,6 +980,7 @@ int main(int argc, char * argv[])
 			}
 			else
 			{
+				printf("!!!!!!!!!TETRA_Power_rs232 disconnected once !!!!!!!!!\n");
 				m_iPowerCheckCount++;
 			}
 		}
@@ -1006,7 +1007,7 @@ int main(int argc, char * argv[])
 		GPIO_pub.publish(gpio_msg);
 
 		//m_dUltrasonic * 4ea
-		dssp_rs232_power_module_read_Ultrasonic(m_dUltrasonic);
+	//	dssp_rs232_power_module_read_Ultrasonic(m_dUltrasonic);
 
 		if(m_dUltrasonic[0] == 0.0)
 			range_msg1.range = Ultrasonic_MAX_range;

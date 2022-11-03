@@ -245,6 +245,93 @@ int power_read_Battery(int fd, double *dbattery, double *dVoltage, double *dCurr
 	return ret;
 }
 
+int power_read_tetra(int fd, double *dbattery, double *dVoltage, double *dCurrent, int *mode_status, int *Input, int *Output,double *Ultrasonic)
+{
+	unsigned char packet_buf[255] = {STX, 'P','Q', ETX};
+	int ret;
+	int  Input_binary[8] = {0,};
+	int Output_binary[8] = {0,};
+
+	if(!fd) return -1;
+
+	packet_buf[4] = make_lrc(&packet_buf[1], 3);
+
+	ret = write(fd, packet_buf, 5);
+	//fflush(fd);
+	if(ret <= 0) return -2;
+
+	memset(packet_buf, 0, sizeof(unsigned char)*255);
+	ret = get_response2(fd, packet_buf);
+	if(packet_buf[1] == 0x02) //Packet Error Pass..
+	{
+		return -1;
+	}
+	
+	//Battery Level
+	int ibattery = (packet_buf[4] & 0xff) | ((packet_buf[3] << 8) & 0xff00);
+	*dbattery = ibattery;
+
+	int iVoltage = (packet_buf[6] & 0xff) | ((packet_buf[5] << 8) & 0xff00);
+	*dVoltage = iVoltage / 10.0;
+
+	int iCurrent = (packet_buf[8] & 0xff) | ((packet_buf[7] << 8) & 0xff00);
+	*dCurrent = iCurrent / 10.0;
+	
+	// Charging Mode Status
+	*mode_status = (packet_buf[10] & 0xff) | ((packet_buf[9] << 8) & 0xff00);
+
+	//GPIO _add 2021.10.22 wbjin
+	int iInput = (packet_buf[12] & 0xff) | ((packet_buf[11] << 8) & 0xff00);
+	decimal2binary(iInput, Input_binary);
+	int iOutput = (packet_buf[14] & 0xff) | ((packet_buf[13] << 8) & 0xff00);
+	decimal2binary(iOutput, Output_binary);
+	for(int i=0; i<8; i++)
+	{
+		Input[i]  = Input_binary[i];
+		Output[i] = Output_binary[i];
+	}
+	int _m_Sonar_1 = (packet_buf[16] & 0xff) | ((packet_buf[15] << 8) & 0xff00);
+	Ultrasonic[1] = _m_Sonar_1 / 1000.0;
+	int _m_Sonar_2 = (packet_buf[18] & 0xff) | ((packet_buf[17] << 8) & 0xff00);
+	Ultrasonic[2] = _m_Sonar_2 / 1000.0;
+	int _m_Sonar_3 = (packet_buf[20] & 0xff) | ((packet_buf[19] << 8) & 0xff00);
+	Ultrasonic[3] = _m_Sonar_3 / 1000.0;
+	int _m_Sonar_0= (packet_buf[22] & 0xff) | ((packet_buf[21] << 8) & 0xff00);
+	Ultrasonic[0] = _m_Sonar_0 / 1000.0;
+
+
+	return ret;
+}
+
+int  power_read_Ultrasonic(int fd,  double *Ultrasonic)
+{
+	unsigned char packet_buf[255] = {STX, 'P','N', ETX};
+	int ret;
+	if(!fd) return -1;
+	packet_buf[4] = make_lrc(&packet_buf[1], 3);
+	ret = write(fd, packet_buf, 5);
+	if(ret <= 0) return -2;
+
+	memset(packet_buf, 0, sizeof(unsigned char)*255);
+	ret = get_response2(fd, packet_buf);
+	if(packet_buf[1] == 0x02) //Packet Error Pass..
+	{
+		return -1;
+	}
+
+	int _m_Sonar_1 = (packet_buf[6] & 0xff) | ((packet_buf[5] << 8) & 0xff00);
+	Ultrasonic[1] = _m_Sonar_1 / 1000.0;
+	int _m_Sonar_2 = (packet_buf[8] & 0xff) | ((packet_buf[7] << 8) & 0xff00);
+	Ultrasonic[2] = _m_Sonar_2 / 1000.0;
+	int _m_Sonar_3 = (packet_buf[10] & 0xff) | ((packet_buf[9] << 8) & 0xff00);
+	Ultrasonic[3] = _m_Sonar_3 / 1000.0;
+	int _m_Sonar_0= (packet_buf[12] & 0xff) | ((packet_buf[11] << 8) & 0xff00);
+	Ultrasonic[0] = _m_Sonar_0 / 1000.0;
+
+	return ret;
+}
+
+
 int power_set_Ultrasonic(int fd, int mode)
 {
 	int ret;
@@ -391,33 +478,6 @@ int  power_read_Analog_data(int fd, int *iADB_0, int *iADB_1, int *iADB_2, int *
 	return ret;
 }
 
-int  power_read_Ultrasonic(int fd,  double *Ultrasonic)
-{
-	unsigned char packet_buf[255] = {STX, 'P','N', ETX};
-	int ret;
-	if(!fd) return -1;
-	packet_buf[4] = make_lrc(&packet_buf[1], 3);
-	ret = write(fd, packet_buf, 5);
-	if(ret <= 0) return -2;
-
-	memset(packet_buf, 0, sizeof(unsigned char)*255);
-	ret = get_response2(fd, packet_buf);
-	if(packet_buf[1] == 0x02) //Packet Error Pass..
-	{
-		return -1;
-	}
-
-	int _m_Sonar_1 = (packet_buf[6] & 0xff) | ((packet_buf[5] << 8) & 0xff00);
-	Ultrasonic[1] = _m_Sonar_1 / 1000.0;
-	int _m_Sonar_2 = (packet_buf[8] & 0xff) | ((packet_buf[7] << 8) & 0xff00);
-	Ultrasonic[2] = _m_Sonar_2 / 1000.0;
-	int _m_Sonar_3 = (packet_buf[10] & 0xff) | ((packet_buf[9] << 8) & 0xff00);
-	Ultrasonic[3] = _m_Sonar_3 / 1000.0;
-	int _m_Sonar_0= (packet_buf[12] & 0xff) | ((packet_buf[11] << 8) & 0xff00);
-	Ultrasonic[0] = _m_Sonar_0 / 1000.0;
-
-	return ret;
-}
 
 int power_flash_write(int fd)
 {
@@ -441,6 +501,7 @@ int  power_parameter_write(int fd, int id, int data)
 	int ret;
 	int index;
 	unsigned char packet_buf[255] = {STX, 'P', 'W'};
+	unsigned char packet_buf2[255] = {STX, 'P', 'F', ETX};
 
 	if(!fd) return -1;
 
@@ -471,7 +532,18 @@ int  power_parameter_write(int fd, int id, int data)
 	
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response(fd, packet_buf);
+	if(ret) return -1;
 
+	packet_buf2[4] = make_lrc(&packet_buf2[1], 3);
+	ret = write(fd, packet_buf2, 5);
+	if(ret <= 0) return -2;
+
+	
+	memset(packet_buf2, 0, sizeof(unsigned char)*255);
+	ret = get_response(fd, packet_buf2);
+	if(packet_buf2[1] == 0x30) ret = 0;
+
+	if(ret) return -1;
 	return ret;
 }
 
@@ -506,53 +578,27 @@ int  conveyor_parameter_write(int fd, int id, int data)
 	packet_buf[index] = make_lrc(&packet_buf[1], index-1);
 	index++;
 
-		// for(int j=0; j<10; j++)
-		// {
-		// 	printf("%02x ", packet_buf[j]);
-		// }
-		// printf("\n");
-
 	ret = write(fd, packet_buf, index);
 	    
 	if(ret <= 0) return -2;
-	
 		
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response(fd, packet_buf);
-	    // for(int j=0; j<4; j++)
-		// {
-		// 	printf("%02x ", packet_buf[j]);
-		// }
-		// printf("\n");
+	
 	    
     if(ret) return -1;
-
-		// for(int j=0; j<4; j++)
-		// {
-		// 	printf("%02x ", packet_buf[j]);
-		// }
-		// printf("\n");
 
 	packet_buf2[4] = make_lrc(&packet_buf2[1], 3);
 	ret = write(fd, packet_buf2, 5);
 	if(ret <= 0) return -2;
 
-		// for(int j=0; j<5; j++)
-		// {
-		// 	printf("%02x ", packet_buf2[j]);
-		// }
-		// printf("\n");
-
+	
 	memset(packet_buf2, 0, sizeof(unsigned char)*255);
 	ret = get_response(fd, packet_buf2);
 	if(packet_buf2[1] == 0x30) ret = 0;
 
 	if(ret) return -1;
-		// for(int j=0; j<4; j++)
-		// {
-		// 	printf("%02x ", packet_buf2[j]);
-		// }
-		// printf("\n");
+
 	return ret;
 }
 
