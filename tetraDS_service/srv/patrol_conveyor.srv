@@ -1,0 +1,9 @@
+#This message is used to send command to patrol_conveyor On
+
+bool on
+int32  loading_id
+int32  unloading_id
+string loading_location_name
+string unloading_location_name
+---
+bool command_Result

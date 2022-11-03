@@ -1,0 +1,6 @@
+#This message is used to send command to tetra
+#delete landmark Command
+
+string Landmark
+---
+bool command_Result

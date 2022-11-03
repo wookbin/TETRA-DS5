@@ -1,0 +1,13 @@
+#This message is used to send command to tetra
+# Get information Command
+
+
+---
+bool command_Result
+int32 battery
+int32 Error_Code
+int32 EMG
+int32 bumper
+int32 charging
+int32 running_mode
+

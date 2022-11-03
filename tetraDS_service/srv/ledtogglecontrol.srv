@@ -1,0 +1,10 @@
+#This message is used to send command to tetra
+#LED Toggle Control command
+
+int32 de_index
+int32 light_accel
+int32 led_High_brightness
+int32 light_decel
+int32 led_Low_brightness
+---
+bool command_Result

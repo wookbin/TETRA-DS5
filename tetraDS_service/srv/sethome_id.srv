@@ -1,0 +1,6 @@
+#This message is used to send command to tetra
+#Set Home ID command
+
+int32 id
+---
+bool command_Result
