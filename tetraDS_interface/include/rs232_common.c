@@ -156,7 +156,7 @@ int get_response2(int fd, unsigned char data[])
 	int ret = 0;
 	int lrc_val = 0;
 	int total_byte = 0;
-
+	unsigned char tmp = 0;
 	// receive STX
 	do {
 		if( read(fd, data, 1) < 1) 
@@ -171,18 +171,24 @@ int get_response2(int fd, unsigned char data[])
 	read(fd, &data[2], 1);
 
 	total_byte = (data[2] & 0xff) | ((data[1] << 8)& 0xff00);
-	//printf("total_byte: %d \n", total_byte);
 	index = 3;
-
 	do {
 		ret = read(fd, &data[index], 1);
 		index++;
 		if(!ret) 
 		{
-			//printf("return -11 \n");
 			return -11;
 		}
 
 	} 
-	while(index-3 < total_byte);
+	while(index < total_byte + 5);
+
+	//calc lrc...
+	for(int j=3; j<total_byte-1; j++)
+	{
+		tmp ^= data[j];
+	}
+	//lrc check
+	if(data[index-1] != tmp)
+		return -1;
 }
