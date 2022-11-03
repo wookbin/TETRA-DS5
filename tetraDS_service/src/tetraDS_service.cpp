@@ -162,6 +162,8 @@ int m_iMode_Count2 = 0;
 int m_iViaPoint_Index = 0;
 //pthread_mutex_t mutex; //mutex//
 bool m_bFlag_nomotion_call = false;
+//Dynamic_reconfigure call flag//
+bool m_flag_Dynamic_reconfigure_call = false;
 
 typedef struct HOME_POSE
 {
@@ -856,6 +858,8 @@ void Dynamic_reconfigure_Teb_Set_DoubleParam(string strname, double dValue)
 
     if((DRD_old_strname != strname) || (DRD_old_dValue != dValue))
     {
+	m_flag_Dynamic_reconfigure_call = true;
+	    
         double_param.name = strname;
         double_param.value = dValue;
         reconf.doubles.push_back(double_param);
@@ -863,6 +867,8 @@ void Dynamic_reconfigure_Teb_Set_DoubleParam(string strname, double dValue)
         srv_req.config = reconf;
 
         ros::service::call("move_base/TebLocalPlannerROS/set_parameters", srv_req, srv_resp);
+	    
+	m_flag_Dynamic_reconfigure_call = false;
     }
 
     DRD_old_strname = strname;
@@ -1769,6 +1775,14 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req, t
 	bool bResult = false;
 	int m_iInt_count = 0;
 	int m_iNext_count = 0;
+	
+	if(m_flag_Dynamic_reconfigure_call)
+	{
+		bResult = false;
+		res.command_Result = bResult;
+		printf("!!!! m_flag_Dynamic_reconfigure_call Timing !!!! \n");
+		return true;
+	}
 
 	// msg clear
 	virtual_obstacle.list.clear();
@@ -4405,7 +4419,7 @@ int main (int argc, char** argv)
                     m_iList_Count = virtual_obstacle.list.size();
                     if(m_iList_Count > 0)
                     {
-                        if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion)
+                        if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call)
                         {
                             loop_rate.sleep();
                             continue;
