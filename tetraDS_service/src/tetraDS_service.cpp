@@ -3961,116 +3961,131 @@ void *AutoThread_function(void *data)
     pthread_cancel(p_auto_thread); //Thread2 kill
 }
 
-
 //add _ GUI Button callback fuction...
-void TESTCallback(const sensor_msgs::Joy::ConstPtr& joy)
+void RVIZ_GUI_Callback(const std_msgs::String::ConstPtr& msg)
 {
-    //printf("JOY: %d, %d, %d, %d, %d  \n",  joy->buttons[1], joy->buttons[2], joy->buttons[3], joy->buttons[4], joy->buttons[5]);
-    
-    if(joy->buttons[1] == 1) //POINT1 goto...
+    if(msg->data == "STOP") //Stop...
     {
-        OpenLocationFile("POINT1");
-        goto_goal_id.id = "POINT1";
-    }
-    else if(joy->buttons[2] == 1) //POINT2 goto...
-    {
-        OpenLocationFile("POINT2");
-        goto_goal_id.id = "POINT2";
-    }
-    else if(joy->buttons[3] == 1) //POINT3 goto...
-    {
-        OpenLocationFile("POINT3");
-        goto_goal_id.id = "POINT3";
-    }
-    else if(joy->buttons[4] == 1) //POINT4 goto...
-    {
-        OpenLocationFile("POINT4");
-        goto_goal_id.id = "POINT4";
-    }
-    else if(joy->buttons[5] == 1) //HOME goto...
-    {
-        OpenLocationFile("HOME");
-        goto_goal_id.id = "HOME";
+        goto_goal_id.id = "";
+        ROS_INFO("Goto Cancel call");
+        GotoCancel_pub.publish(goto_goal_id);
+        ex_iDocking_CommandMode = 0;
     }
     
-    ROS_INFO("goto_id.id: %s", goto_goal_id.id.c_str());
-    //costmap clear call//
-    clear_costmap_client.call(m_request);
+}
 
-    if(_pRobot_Status.m_iCallback_Charging_status <= 1) //Nomal
+void RVIZ_GUI_Str_Callback(const std_msgs::String::ConstPtr& msg)
+{
+    //msg->data.c_str();
+    printf("Set Location Name: %s \n", msg->data.c_str());
+    SaveLocation(msg->data.c_str(), _pTF_pose.poseTFx,_pTF_pose.poseTFy,
+                                    _pTF_pose.poseTFqx,_pTF_pose.poseTFqy,_pTF_pose.poseTFqz,_pTF_pose.poseTFqw);
+    
+}
+
+void RVIZ_GUI_Goto_Callback(const std_msgs::String::ConstPtr& msg)
+{
+    //msg->data.c_str();
+    bool m_bGoto = false;
+    
+    if(msg->data != "") //HOME goto...
     {
-        setGoal(goal);
-    }
-    else //Docking...
-    {
-        ex_iDocking_CommandMode = 10; //Depart Move
-    }
-
-    if(goto_goal_id.id == "HOME") //HOME Point Check
-    {
-         _pFlag_Value.m_bflag_ComebackHome = true;
-        //View _Ignition Point...
-        node.header.frame_id = "/map";
-        node.header.stamp = ros::Time(0); //ros::Time::now(); 
-        node.type = visualization_msgs::Marker::SPHERE;
-        node.ns = "Ignition_shapes";
-        node.id = 0;
-        node.action = visualization_msgs::Marker::ADD; 
-        node.pose.position.x = _pGoal_pose.goal_positionX;
-        node.pose.position.y = _pGoal_pose.goal_positionY;
-        node.pose.position.z = _pGoal_pose.goal_positionZ;
-        
-        node.pose.orientation.x = 0.0;
-        node.pose.orientation.y = 0.0; 
-        node.pose.orientation.z = 0.0; 
-        node.pose.orientation.w = 1.0; 
-        
-        // Points are green 
-        node.color.a = 0.8; 
-        node.color.r = 0.0;
-        node.color.g = 0.5;
-        node.color.b = 0.0;  
-        node.scale.x = 0.3;
-        node.scale.y = 0.3;
-        node.scale.z = 0.3;
-
-        node.lifetime = ros::Duration();
-
-        //Publish
-        landmark_pub.publish(node);
+        OpenLocationFile(msg->data.c_str());
+        goto_goal_id.id = msg->data.c_str();
+        m_bGoto = true;
     }
     else
     {
-        //View _Ignition Point...
-        node.header.frame_id = "/map";
-        node.header.stamp = ros::Time(0); //ros::Time::now(); 
-        node.type = visualization_msgs::Marker::SPHERE;
-        node.ns = "Ignition_shapes";
-        node.id = 0;
-        node.action = visualization_msgs::Marker::ADD; 
-        node.pose.position.x = _pGoal_pose.goal_positionX;
-        node.pose.position.y = _pGoal_pose.goal_positionY;
-        node.pose.position.z = _pGoal_pose.goal_positionZ;
-        
-        node.pose.orientation.x = 0.0;
-        node.pose.orientation.y = 0.0; 
-        node.pose.orientation.z = 0.0; 
-        node.pose.orientation.w = 1.0; 
-        
-        // Points are green 
-        node.color.a = 0.8; 
-        node.color.r = 1.0;
-        node.color.g = 0.0;
-        node.color.b = 0.0;  
-        node.scale.x = 0.5;
-        node.scale.y = 0.5;
-        node.scale.z = 0.5;
 
-        node.lifetime = ros::Duration();
-
-        //Publish
-        landmark_pub.publish(node);
+        m_bGoto = false;
     }
+    
+
+    if(m_bGoto)
+    {
+        ROS_INFO("goto_id.id: %s", goto_goal_id.id.c_str());
+        //costmap clear call//
+        clear_costmap_client.call(m_request);
+
+        if(_pRobot_Status.m_iCallback_Charging_status <= 1) //Nomal
+        {
+            setGoal(goal);
+        }
+        else //Docking...
+        {
+            ex_iDocking_CommandMode = 10; //Depart Move
+        }
+
+        if(goto_goal_id.id == "HOME") //HOME Point Check
+        {
+            _pFlag_Value.m_bflag_ComebackHome = true;
+            //View _Ignition Point...
+            node.header.frame_id = "/map";
+            node.header.stamp = ros::Time(0); //ros::Time::now(); 
+            node.type = visualization_msgs::Marker::SPHERE;
+            node.ns = "Ignition_shapes";
+            node.id = 0;
+            node.action = visualization_msgs::Marker::ADD; 
+            node.pose.position.x = _pGoal_pose.goal_positionX;
+            node.pose.position.y = _pGoal_pose.goal_positionY;
+            node.pose.position.z = _pGoal_pose.goal_positionZ;
+            
+            node.pose.orientation.x = 0.0;
+            node.pose.orientation.y = 0.0; 
+            node.pose.orientation.z = 0.0; 
+            node.pose.orientation.w = 1.0; 
+            
+            // Points are green 
+            node.color.a = 0.8; 
+            node.color.r = 0.0;
+            node.color.g = 0.5;
+            node.color.b = 0.0;  
+            node.scale.x = 0.3;
+            node.scale.y = 0.3;
+            node.scale.z = 0.3;
+
+            node.lifetime = ros::Duration();
+
+            //Publish
+            landmark_pub.publish(node);
+        }
+        else
+        {
+            //View _Ignition Point...
+            node.header.frame_id = "/map";
+            node.header.stamp = ros::Time(0); //ros::Time::now(); 
+            node.type = visualization_msgs::Marker::SPHERE;
+            node.ns = "Ignition_shapes";
+            node.id = 0;
+            node.action = visualization_msgs::Marker::ADD; 
+            node.pose.position.x = _pGoal_pose.goal_positionX;
+            node.pose.position.y = _pGoal_pose.goal_positionY;
+            node.pose.position.z = _pGoal_pose.goal_positionZ;
+            
+            node.pose.orientation.x = 0.0;
+            node.pose.orientation.y = 0.0; 
+            node.pose.orientation.z = 0.0; 
+            node.pose.orientation.w = 1.0; 
+            
+            // Points are green 
+            node.color.a = 0.8; 
+            node.color.r = 1.0;
+            node.color.g = 0.0;
+            node.color.b = 0.0;  
+            node.scale.x = 0.3;
+            node.scale.y = 0.3;
+            node.scale.z = 0.3;
+
+            node.lifetime = ros::Duration();
+
+            //Publish
+            landmark_pub.publish(node);
+        }
+
+        m_bGoto = false; //reset
+    }
+    
+    
 }
 
 void Reset_Call_service()
@@ -4216,10 +4231,13 @@ int main (int argc, char** argv)
     ros::param::get("tf_prefix", tf_prefix_);
 
     //add GUI...
-    ros::NodeHandle nTest;
-    ros::Subscriber Test_sub = nTest.subscribe("/rviz_visual_tools_gui", 10, TESTCallback);
+    ros::NodeHandle nGUI;
+    ros::Subscriber GUI_sub = nGUI.subscribe("/rviz_visual_tools_gui_btn", 10, RVIZ_GUI_Callback);
+    ros::Subscriber GUI_Str_sub = nGUI.subscribe("/rviz_visual_tools_gui_location_name", 10, RVIZ_GUI_Str_Callback);
+    ros::Subscriber GUI_goto_sub = nGUI.subscribe("/rviz_visual_tools_gui_goto_location_name", 10, RVIZ_GUI_Goto_Callback);
+	
     landmark_pub = nTest.advertise<visualization_msgs::Marker>("visualization_marker", 1);
-
+	
     //Command Service//
     ros::NodeHandle service_h;
     getlocation_service = service_h.advertiseService("getlocation_cmd", GetLocation_Command);
