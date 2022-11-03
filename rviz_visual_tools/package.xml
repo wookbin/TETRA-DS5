@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>rviz_visual_tools</name>
+  <version>3.8.0</version>
+  <description>Utility functions for displaying and debugging data in Rviz via published markers</description>
+
+  <maintainer email="davetcoleman@gmail.com">Dave Coleman</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">https://github.com/davetcoleman/rviz_visual_tools</url>
+  <url type="butracker">https://github.com/davetcoleman/rviz_visual_tools/issues</url>
+  <url type="repository">https://github.com/davetcoleman/rviz_visual_tools/</url>
+
+  <author email="davetcoleman@gmail.com">Dave Coleman</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>message_generation</depend>
+  <depend>rviz</depend>
+  <depend>sensor_msgs</depend>
+  <depend>eigen_conversions</depend>
+  <depend>geometry_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>tf_conversions</depend>
+  <depend>visualization_msgs</depend>
+  <depend>graph_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>roslint</depend>
+  <depend>eigen_stl_containers</depend>
+  <depend>libogre-dev</depend>
+
+  <!-- Something changed in ROS Lunar / Ubuntu Zesty that requires extra QT5 dependency-->
+  <!-- I suspect this depend is more than needed, but was the only dependency available -->
+  <!-- from the rosdep list that worked: https://github.com/ros/rosdistro/blob/master/rosdep/base.yaml -->
+  <depend>libqt5x11extras5-dev</depend>
+
+  <test_depend>rostest</test_depend>
+  <test_depend>rosunit</test_depend>
+
+  <export>
+    <rviz plugin="${prefix}/plugin_description.xml"/>
+  </export>
+
+</package>
