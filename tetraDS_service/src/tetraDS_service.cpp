@@ -4235,7 +4235,8 @@ int main (int argc, char** argv)
     ros::Subscriber GUI_sub = nGUI.subscribe("/rviz_visual_tools_gui_btn", 10, RVIZ_GUI_Callback);
     ros::Subscriber GUI_Str_sub = nGUI.subscribe("/rviz_visual_tools_gui_location_name", 10, RVIZ_GUI_Str_Callback);
     ros::Subscriber GUI_goto_sub = nGUI.subscribe("/rviz_visual_tools_gui_goto_location_name", 10, RVIZ_GUI_Goto_Callback);
-	
+
+    ros::NodeHandle nTest;
     landmark_pub = nTest.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 	
     //Command Service//
