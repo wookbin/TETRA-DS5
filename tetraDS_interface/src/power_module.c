@@ -213,6 +213,7 @@ int power_read_Battery(int fd, double *dbattery, double *dVoltage, double *dCurr
 
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf);
+	if(ret < 0) return -2;
 	if(packet_buf[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
@@ -262,6 +263,7 @@ int power_read_tetra(int fd, double *dbattery, double *dVoltage, double *dCurren
 
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf);
+	if(ret < 0) return -2;
 	if(packet_buf[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
@@ -314,6 +316,7 @@ int  power_read_Ultrasonic(int fd,  double *Ultrasonic)
 
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf);
+	if(ret < 0) return -2;
 	if(packet_buf[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
@@ -369,6 +372,7 @@ int power_read_data_all(int fd)
 
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf);
+	if(ret < 0) return -2;
 	if(packet_buf[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
@@ -415,6 +419,7 @@ int  power_data_read(int fd, int *idata_0, int *idata_1, int *idata_2, int *idat
 
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf);
+	if(ret < 0) return -2;
 	if(packet_buf[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
@@ -461,6 +466,7 @@ int  power_read_Analog_data(int fd, int *iADB_0, int *iADB_1, int *iADB_2, int *
 
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf);
+	if(ret < 0) return -2;
 	if(packet_buf[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
@@ -616,6 +622,7 @@ int  power_parameter_read(int fd, int *idata_0, int *idata_1, int *idata_2, int 
 
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf);
+	if(ret < 0) return -2;
 	if(packet_buf[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
@@ -702,6 +709,7 @@ int  conveyor_parameter_read(int fd, int *idata_0, int *idata_1, int *idata_2, i
 
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf);
+	if(ret < 0) return -2;
 	if(packet_buf[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
@@ -765,6 +773,7 @@ int  conveyor_data_read(int fd, int *idata_0, int *idata_1, int *idata_2, int *i
 
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf);
+	if(ret < 0) return -2;
 	if(packet_buf[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
@@ -844,7 +853,7 @@ int power_read_Integral_Voltage(int fd, int *V_value)
 
 	memset(packet_buf, 0, sizeof(unsigned char)*1024);
 	ret = get_response2(fd, packet_buf);
-	if(ret <= 0) return -3;
+	if(ret < 0) return -2;
 
 	for(int i=0, j=0; i< 500; i++, j+= 2)
 	{
@@ -868,6 +877,7 @@ int power_read_Integral_Current(int fd, int *I_value)
 
 	memset(packet_buf, 0, sizeof(unsigned char)*1024);
 	ret = get_response2(fd, packet_buf);
+	if(ret < 0) return -2;
 	if(packet_buf[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
@@ -985,6 +995,7 @@ int power_read_GPIO(int fd,  int *Input, int *Output)
 
 	memset(packet_buf2, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf2);
+	if(ret < 0) return -2;
 	if(packet_buf2[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
@@ -1048,6 +1059,7 @@ int  power_read_loadcell(int fd,  double *weight)
 
 	memset(packet_buf, 0, sizeof(unsigned char)*255);
 	ret = get_response2(fd, packet_buf);
+	if(ret < 0) return -2;
 	if(packet_buf[1] == 0x02) //Packet Error Pass..
 	{
 		return -1;
