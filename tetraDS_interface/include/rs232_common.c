@@ -150,6 +150,7 @@ int get_response(int fd, unsigned char data[])
 	}
 }
 
+
 int get_response2(int fd, unsigned char data[])
 {
 	int index = 0;
@@ -184,11 +185,14 @@ int get_response2(int fd, unsigned char data[])
 	while(index < total_byte + 5);
 
 	//calc lrc...
-	for(int j=3; j<total_byte-1; j++)
+	for(int j=0; j<total_byte; j++)
 	{
-		tmp ^= data[j];
+		tmp ^= data[j+3];
 	}
 	//lrc check
 	if(data[index-1] != tmp)
+	{
+		printf(" lrc check error!!! \n");
 		return -1;
+	}
 }
