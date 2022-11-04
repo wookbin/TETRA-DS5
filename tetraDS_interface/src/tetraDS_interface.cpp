@@ -86,7 +86,7 @@ int m_iParam29 = 0;
 int m_iParam30 = 0;
 int m_iParam31 = 0;
 
-
+int m_iFlag_PowerCheck_cnt = 0;
 int com_port = 0;
 char port[16] = {0,};
 //battery data
@@ -949,14 +949,30 @@ int main(int argc, char * argv[])
 		ros::Time measurement_time = ros::Time(0) + ros::Duration(time_offset_in_seconds);
 	//	m_iPowerCheck = dssp_rs232_power_module_read_battery(&m_dbattery, &m_dVoltage, &m_dCurrent, &m_imode_status, m_iInput, m_iOutput);
 		m_iPowerCheck = dssp_rs232_power_module_read_tetra(&m_dbattery, &m_dVoltage, &m_dCurrent, &m_imode_status, m_iInput, m_iOutput, m_dUltrasonic);
-		/*
-		if(m_iPowerCheck <= 0 || m_imode_status == 0)
+
+		if(m_iPowerCheck < 0)
 		{
-			printf("!!!! Power Board data read Error !!!! \n");
+			printf("!!!! Power Board data read Error(m_iPowerCheck: %d) !!!! \n", m_iPowerCheck);
+			if(m_iFlag_PowerCheck_cnt > 10)
+			{
+				//Error 
+				printf("[Error]: Power Board Disconnect !!! \n");
+				//servo Off
+				servo.data = 2;
+				servo_pub.publish(servo);
+				
+			}
+			else
+			{
+				m_iFlag_PowerCheck_cnt++;
+			}
 			loop_rate.sleep();
 			continue;
 		}
-		*/
+		else
+		{
+			m_iFlag_PowerCheck_cnt = 0;
+		}
 		
 		//add...Power Board Check
 		power_status.data = m_iPowerCheck;
@@ -973,27 +989,7 @@ int main(int argc, char * argv[])
 		//docking_status_publisher
 		docking_status.data = m_imode_status;
 		docking_status_publisher.publish(docking_status);
-		if(m_imode_status == 0)
-		{
-			if(m_iPowerCheckCount>50) //timeout check!
-			{
-				servo.data = 2;
-				servo_pub.publish(servo);
-				printf("[ERROR] docking_status_publisher == 0 !!!!!!");
-				m_iPowerCheckCount = 0;
-
-				//add...LED
-				dssp_rs232_power_module_set_light_toggle(1, 10,100,10,100);
-				dssp_rs232_power_module_toggle_on(18);
-
-			}
-			else
-			{
-				printf("!!!!!!!!!TETRA_Power_rs232 disconnected once !!!!!!!!!\n");
-				m_iPowerCheckCount++;
-			}
-		}
-		
+	
 		//GPIO_status////////////////////////////////////////////
 		//Input data
 		gpio_msg.Input0 = m_iInput[0];
