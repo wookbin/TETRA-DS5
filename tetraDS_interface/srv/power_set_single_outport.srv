@@ -1,0 +1,8 @@
+#This message is used to send command to tetra
+#Single Outport Control command
+
+int32 ID
+int32 VALUE
+---
+bool command_Result
+

@@ -1,0 +1,22 @@
+#This message is used to send command to tetra
+#Conveyor system data read command
+
+int32 num
+---
+int32 D0_DOCKING_SIGNAL0
+int32 D1_DOCKING_SIGNAL1
+int32 D2_CHARGE_CURRENT
+int32 D3_CHARGE_SIGNAL
+int32 D4_CHARGE_VOLTAGE
+int32 D5_LOADCELL_LOW
+int32 D6_LOADCELL_SEN
+int32 D7_AD_IN1
+int32 D8_AD_IN2
+int32 D9_AD_IN3
+int32 D10_IN_STATUS
+int32 D11_OUT_STATUS
+int32 D12_PHOTO_STATUS
+int32 D13_CONVEYOR_STATUS
+
+bool command_Result
+

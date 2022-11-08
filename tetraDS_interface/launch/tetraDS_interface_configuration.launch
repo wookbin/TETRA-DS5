@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+
+<!--
+<node pkg="tf" type="static_transform_publisher" name="base_link_to_laser4"
+    args="0.03 0.0 0.17 0.0 0.0  0.0 /base_link /laser_frame 40" /> -->
+
+
+<node pkg="tetraDS_interface" type="tetraDS_interface" name="tetraDS_interface" output="screen" />
+
+</launch>
