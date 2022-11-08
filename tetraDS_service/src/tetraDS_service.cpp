@@ -4425,6 +4425,9 @@ int main (int argc, char** argv)
         //IMU Reset Loop//
         if(m_iTimer_cnt >= 1500) //30 sec_polling
         {
+	    //costmap clear call//
+            clear_costmap_client.call(m_request);
+		
             m_iTimer_cnt = 0;
             Reset_Robot_Pose();
             //ROS_INFO("Reset_Robot_Pose Call !");
