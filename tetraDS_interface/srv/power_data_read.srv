@@ -1,0 +1,20 @@
+#This message is used to send command to tetra
+#PowerSensor BD system data read command
+
+int32 num
+---
+int32 D0_BATTERY_VOLTAGE
+int32 D1_SYSTEM_CURRENT
+int32 D2_CHARGE_CURRENT
+int32 D3_CHARGE_SIGNAL
+int32 D4_INPORT_STATUS
+int32 D5_OUTPORT_STATUS
+int32 D6_POWER_STATUS
+int32 D7_CHARGER_TERMINAL_STATUS
+int32 D8_TEMPERATURE0
+int32 D9_TEMPERATURE1
+int32 D10_MOBD_INPORT_STATUS
+int32 D11_MOBD_OUTPORT_STATUS
+
+bool command_Result
+

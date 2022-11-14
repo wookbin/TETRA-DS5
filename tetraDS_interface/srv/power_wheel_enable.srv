@@ -1,0 +1,7 @@
+#This message is used to send command to tetra
+#Wheel Power ON/OFF Control command
+
+int32 on
+---
+bool command_Result
+

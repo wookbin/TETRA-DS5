@@ -1,0 +1,15 @@
+#This message is used to send command to tetra
+#Set POWER On/Off command
+
+int8 POWER0
+int8 POWER1
+int8 POWER2
+int8 POWER3
+int8 POWER4
+int8 POWER5
+int8 POWER6
+int8 POWER7
+
+---
+bool command_Result
+
