@@ -122,9 +122,8 @@
 //SONAR Sensor On/Off
 #include "tetraDS_service/power_sonar_cmd.h" //SRV
 
-
-#define LOW_BATTERY 40
-#define MAX_RETRY_CNT 3
+#define LOW_BATTERY 15
+#define MAX_RETRY_CNT 10
 #define BUF_LEN 4096
 using namespace std;
 std::string tf_prefix_;
@@ -154,7 +153,7 @@ string arr_patrol_location[255] = {"", };
 int  m_iTimer_cnt = 0;
 // Active map Check //
 bool m_bActive_map_check = false;
-//add...220608
+
 double m_dTF_Yaw = 0.0;
 double m_dTF_New_Pose_X = 0.0;
 double m_dTF_New_Pose_Y = 0.0;
@@ -169,7 +168,6 @@ bool m_bFlag_nomotion_call = false;
 bool m_flag_clesr_costmap_call = false;
 //Dynamic_reconfigure call flag//
 bool m_flag_Dynamic_reconfigure_call = false;
-
 
 typedef struct HOME_POSE
 {
@@ -517,7 +515,6 @@ tetraDS_service::toggleon turnon_srv;
 actionlib_msgs::GoalID goto_goal_id;
 //Clear costmap Service Client//
 ros::ServiceClient clear_costmap_client;
-
 //robot_localization Service Client//
 ros::ServiceClient SetPose_cmd_client;
 tetraDS_service::SetPose setpose_srv;
@@ -562,9 +559,7 @@ tetraDS_service::pose_velocity_reset pose_velocity_reset_srv;
 ros::ServiceClient reboot_sensor_cmd_client;
 tetraDS_service::reboot_sensor reboot_sensor_srv;
 
-
 //************************************************************************************************************************//
-
 
 void my_handler(sig_atomic_t s)
 {
@@ -573,7 +568,6 @@ void my_handler(sig_atomic_t s)
 }
 
 /** reduce angle to between 0 and 360 degrees. */
-
 double reduceHeading(double a) 
 {
     return remainder(a-180, 360)+180;
@@ -644,7 +638,6 @@ void LaserScanCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
     else
         _pFlag_Value.m_bFlag_Obstacle_Center = false;
 
-
     /**************************************************************************************************************************/
     //Left Check//
     int L_minIndex = 555;
@@ -665,7 +658,6 @@ void LaserScanCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
         _pFlag_Value.m_bFlag_Obstacle_Left = true;
     else
         _pFlag_Value.m_bFlag_Obstacle_Left = false;
-
 
 }
 
@@ -769,7 +761,6 @@ double Quaternion2Yaw_rad(double Quaternion_W, double Quaternion_X, double Quate
     m_dYaw_rad = m_dYaw; 
     
     //m_dYaw_rad = reduceHeading(m_dYaw);
-    
     return m_dYaw_rad;
 }
 
@@ -791,7 +782,6 @@ string GetWIFI_IPAddress()
      
     sprintf(myEth0_addr, "%s", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
     
-
     str_ip = myEth0_addr;
     return str_ip;
 }
@@ -832,13 +822,13 @@ bool SlopTime_Command(tetraDS_service::accelerationslop::Request &req,
 {
 	bool bResult = false;
 
-    AccelerationControl(req.slop_time);
+	AccelerationControl(req.slop_time);
 	/*
 	int32 slop_time
-    ---
-    bool command_Result
+	---
+	bool command_Result
 	*/
-    bResult = true;
+	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -848,13 +838,13 @@ bool Servo_Command(tetraDS_service::servo::Request &req,
 {
 	bool bResult = false;
 
-    servo_request.data = req.data; 
-    servo_pub.publish(servo_request);
-    bResult = true;
+	servo_request.data = req.data; 
+	servo_pub.publish(servo_request);
+	bResult = true;
 	/*
 	int32 data
-    ---
-    bool command_Result
+	---
+	bool command_Result
 	*/
 	res.command_Result = bResult;
 	return true;
@@ -903,11 +893,8 @@ void Dynamic_reconfigure_Costmap_Set_IntParam(string strname, int iValue)
         int_param.name = strname;
         int_param.value = iValue;
         reconf2.ints.push_back(int_param);
-
         srv_req.config = reconf2;
-
         ros::service::call("move_base/local_costmap/set_parameters", srv_req, srv_resp);
-        
     }
 
     DRI_old_strname = strname;
@@ -929,13 +916,9 @@ void Dynamic_reconfigure_Costmap_Set_BoolParam(string strname, bool bValue)
         bool_param.name = strname;
         bool_param.value = bValue;
         reconf3.bools.push_back(bool_param);
-
         srv_req.config = reconf3;
-
         ros::service::call("move_base/global_costmap/virtual_layer", srv_req, srv_resp);
         ros::service::call("move_base/local_costmap/virtual_layer", srv_req, srv_resp);
-
-        
     }
 
     DRB_old_strname = strname;
@@ -977,17 +960,17 @@ bool Setspeed_Command(tetraDS_service::setmaxspeed::Request &req,
 {
 	bool bResult = false;
 
-    Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", (double)req.speed);
-    _pDynamic_param.MAX_Linear_velocity = (double)req.speed;
+	Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", (double)req.speed);
+	_pDynamic_param.MAX_Linear_velocity = (double)req.speed;
 
 	/*
 	float32 speed
-    ---
-    float32 set_vel
-    bool command_Result
+	---
+	float32 set_vel
+	bool command_Result
 	*/
-    res.set_vel = req.speed;
-    bResult = true;
+	res.set_vel = req.speed;
+	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -1215,29 +1198,29 @@ bool GetLocation_Command(tetraDS_service::getlocation::Request  &req,
 {
 	bool bResult = false;
 
-    //Get POSE
-    // res.poseAMCLx = _pAMCL_pose.poseAMCLx;
-    // res.poseAMCLy = _pAMCL_pose.poseAMCLy;
-    // res.poseAMCLqx = _pAMCL_pose.poseAMCLqx;
-    // res.poseAMCLqy = _pAMCL_pose.poseAMCLqy;
-    // res.poseAMCLqz = _pAMCL_pose.poseAMCLqz;
-    // res.poseAMCLqw = _pAMCL_pose.poseAMCLqw;
+	//Get POSE
+	// res.poseAMCLx = _pAMCL_pose.poseAMCLx;
+	// res.poseAMCLy = _pAMCL_pose.poseAMCLy;
+	// res.poseAMCLqx = _pAMCL_pose.poseAMCLqx;
+	// res.poseAMCLqy = _pAMCL_pose.poseAMCLqy;
+	// res.poseAMCLqz = _pAMCL_pose.poseAMCLqz;
+	// res.poseAMCLqw = _pAMCL_pose.poseAMCLqw;
 
-    res.poseAMCLx = _pTF_pose.poseTFx;
-    res.poseAMCLy = _pTF_pose.poseTFy;
-    res.poseAMCLqx = _pTF_pose.poseTFqx;
-    res.poseAMCLqy = _pTF_pose.poseTFqy;
-    res.poseAMCLqz = _pTF_pose.poseTFqz;
-    res.poseAMCLqw = _pTF_pose.poseTFqw;
+	res.poseAMCLx = _pTF_pose.poseTFx;
+	res.poseAMCLy = _pTF_pose.poseTFy;
+	res.poseAMCLqx = _pTF_pose.poseTFqx;
+	res.poseAMCLqy = _pTF_pose.poseTFqy;
+	res.poseAMCLqz = _pTF_pose.poseTFqz;
+	res.poseAMCLqw = _pTF_pose.poseTFqw;
 	/*
-    ---
-    bool   command_Result
-    float  poseAMCLx
-    float  poseAMCLy
-    float  poseAMCLqx
-    float  poseAMCLqy
-    float  poseAMCLqz
-    float  poseAMCLqw
+	---
+	bool   command_Result
+	float  poseAMCLx
+	float  poseAMCLy
+	float  poseAMCLqx
+	float  poseAMCLqy
+	float  poseAMCLqz
+	float  poseAMCLqw
 	*/
 	res.command_Result = bResult;
 	return true;
@@ -1286,33 +1269,32 @@ bool Goto_Command(tetraDS_service::gotolocation::Request &req,
 				  tetraDS_service::gotolocation::Response &res)
 {
 	bool bResult = false;
-    
-    //costmap clear call//
-    m_flag_clesr_costmap_call = clear_costmap_client.call(m_request);
-    while(!m_flag_clesr_costmap_call)
-    {
-        sleep(1);
-    }
-    m_flag_clesr_costmap_call = false;
 
-    LED_Toggle_Control(1,3,100,3,1);
-    if(_pFlag_Value.m_bflag_patrol)
-        LED_Turn_On(100); //blue led
-    else
-        LED_Turn_On(63); //White led
+	//costmap clear call//
+	m_flag_clesr_costmap_call = clear_costmap_client.call(m_request);
+	while(!m_flag_clesr_costmap_call)
+	{
+		sleep(1);
+	}
+    	m_flag_clesr_costmap_call = false;
 
+	LED_Toggle_Control(1,3,100,3,1);
+	if(_pFlag_Value.m_bflag_patrol)
+		LED_Turn_On(100); //blue led
+	else
+		LED_Turn_On(63); //White led
 
-    bResult = OpenLocationFile(req.Location);
-    printf("Goto bResult: %d \n", bResult);
-    res.goal_positionX = _pGoal_pose.goal_positionX;
-    res.goal_positionY = _pGoal_pose.goal_positionY;
-    res.goal_quarterX  = _pGoal_pose.goal_quarterX;
-    res.goal_quarterY  = _pGoal_pose.goal_quarterY;
-    res.goal_quarterZ  = _pGoal_pose.goal_quarterZ;
-    res.goal_quarterW  = _pGoal_pose.goal_quarterW;
-    goto_goal_id.id = req.Location;
+	bResult = OpenLocationFile(req.Location);
+	printf("Goto bResult: %d \n", bResult);
+	res.goal_positionX = _pGoal_pose.goal_positionX;
+	res.goal_positionY = _pGoal_pose.goal_positionY;
+	res.goal_quarterX  = _pGoal_pose.goal_quarterX;
+	res.goal_quarterY  = _pGoal_pose.goal_quarterY;
+	res.goal_quarterZ  = _pGoal_pose.goal_quarterZ;
+	res.goal_quarterW  = _pGoal_pose.goal_quarterW;
+	goto_goal_id.id = req.Location;
 
-    ROS_INFO("goto_id.id: %s", goto_goal_id.id.c_str());
+	ROS_INFO("goto_id.id: %s", goto_goal_id.id.c_str());
 
     if(_pRobot_Status.m_iCallback_Charging_status <= 1 && (_pAR_tag_pose.m_iAR_tag_id == -1 || _pAR_tag_pose.m_transform_pose_x <= 0.5)) //Nomal
     {
@@ -1341,22 +1323,22 @@ bool Goto_Command(tetraDS_service::gotolocation::Request &req,
 
 	/*
 	string Location
-    int32 mark_id
-    int32 movement
-    ---
-    float64 goal_positionX
-    float64 goal_positionY
-    float64 goal_quarterX
-    float64 goal_quarterY
-    float64 goal_quarterZ
-    float64 goal_quarterW
-    bool command_Result
+	int32 mark_id
+	int32 movement
+	---
+	float64 goal_positionX
+	float64 goal_positionY
+	float64 goal_quarterX
+	float64 goal_quarterY
+	float64 goal_quarterZ
+	float64 goal_quarterW
+	bool command_Result
 	*/
 	res.command_Result = bResult;
 
-    //reset flag...
-    _pFlag_Value.m_bFlag_Disable_bumper = false;
-    _pFlag_Value.m_bFlag_Initialpose = false;
+	//reset flag...
+	_pFlag_Value.m_bFlag_Disable_bumper = false;
+	_pFlag_Value.m_bFlag_Initialpose = false;
 
 	return true;
 }
@@ -1417,17 +1399,17 @@ bool GotoCancel_Command(tetraDS_service::gotocancel::Request &req,
 {
 	bool bResult = false;
 
-    goto_goal_id.id = "";
-    ROS_INFO("Goto Cancel call");
-    GotoCancel_pub.publish(goto_goal_id);
+	goto_goal_id.id = "";
+	ROS_INFO("Goto Cancel call");
+	GotoCancel_pub.publish(goto_goal_id);
 	/*
 	string Location_id
-    ---
-    bool command_Result
+	---
+	bool command_Result
 	*/
-    bResult = true;
+	bResult = true;
 	res.command_Result = bResult;
-    ex_iDocking_CommandMode = 0;
+	ex_iDocking_CommandMode = 0;
 	return true;
 }
 
@@ -1468,16 +1450,16 @@ bool SetLocation_Command(tetraDS_service::setlocation::Request  &req,
         res.goal_quarterW  = _pTF_pose.poseTFqw;
     }
 
-    /*
+	/*
 	string Location
-    ---
-    float goal_positionX
-    float goal_positionY
-    float goal_quarterX
-    float goal_quarterY
-    float goal_quarterZ
-    float goal_quarterW
-    bool command_Result
+	---
+	float goal_positionX
+	float goal_positionY
+	float goal_quarterX
+	float goal_quarterY
+	float goal_quarterZ
+	float goal_quarterW
+	bool command_Result
 	*/
 	res.command_Result = bResult;
 
@@ -1501,25 +1483,25 @@ bool SetSavemap_Command(tetraDS_service::setsavemap::Request &req,
 					    tetraDS_service::setsavemap::Response &res)
 {
 	bool bResult = false;
-    
-    ROS_INFO("Save Map Call _ %s", req.map_name.c_str());
 
-    //call rosrun command//
-    string str_command = "gnome-terminal -- /home/tetra/mapsave.sh ";
-    string str_command2 = str_command + req.map_name.c_str();
+	ROS_INFO("Save Map Call _ %s", req.map_name.c_str());
 
-    std::vector<char> writable1(str_command2.begin(), str_command2.end());
-    writable1.push_back('\0');
-    char* ptr1 = &writable1[0];
+	//call rosrun command//
+	string str_command = "gnome-terminal -- /home/tetra/mapsave.sh ";
+	string str_command2 = str_command + req.map_name.c_str();
 
-    int iResult = std::system(ptr1);
-    /*
-    string map_name
-    ---
-    bool command_Result
-    */
+	std::vector<char> writable1(str_command2.begin(), str_command2.end());
+	writable1.push_back('\0');
+	char* ptr1 = &writable1[0];
+
+	int iResult = std::system(ptr1);
+	/*
+	string map_name
+	---
+	bool command_Result
+	*/
 	res.command_Result = bResult;
-    //bResult = true;
+	//bResult = true;
 	return true;
 }
 
@@ -1527,24 +1509,24 @@ bool GetInformation_Command(tetraDS_service::getinformation::Request  &req,
 					        tetraDS_service::getinformation::Response &res)
 {
 	bool bResult = false;
-    res.command_Result = false;
+	res.command_Result = false;
 
-    //Get Data
-    res.battery = _pRobot_Status.m_iCallback_Battery;
-    res.Error_Code = _pRobot_Status.m_iCallback_ErrorCode;
-    res.EMG = _pRobot_Status.m_iCallback_EMG;
-    res.bumper = _pRobot_Status.m_iCallback_Bumper;
-    res.charging = _pRobot_Status.m_iCallback_Charging_status;
-    res.running_mode = ex_ilaunchMode; //0:nomal, 1:mapping, 2:navigation
-    /*
-    ---
-    bool command_Result
-    int32 battery
-    int32 Error_Code
-    bool EMG
-    bool bumper
-    bool charging
-    */
+	//Get Data
+	res.battery = _pRobot_Status.m_iCallback_Battery;
+	res.Error_Code = _pRobot_Status.m_iCallback_ErrorCode;
+	res.EMG = _pRobot_Status.m_iCallback_EMG;
+	res.bumper = _pRobot_Status.m_iCallback_Bumper;
+	res.charging = _pRobot_Status.m_iCallback_Charging_status;
+	res.running_mode = ex_ilaunchMode; //0:nomal, 1:mapping, 2:navigation
+	/*
+	---
+	bool command_Result
+	int32 battery
+	int32 Error_Code
+	bool EMG
+	bool bumper
+	bool charging
+	*/
 
 	res.command_Result = bResult;
 	return true;
@@ -1554,16 +1536,16 @@ bool Docking_Command(tetraDS_service::dockingcontrol::Request  &req,
 					 tetraDS_service::dockingcontrol::Response &res)
 {
 	bool bResult = false;
-    _pAR_tag_pose.m_iSelect_AR_tag_id = req.id;
-    //_pRobot_Status.HOME_ID = _pAR_tag_pose.m_iSelect_AR_tag_id = req.id;
-    ex_iDocking_CommandMode = req.mode;
+	_pAR_tag_pose.m_iSelect_AR_tag_id = req.id;
+	//_pRobot_Status.HOME_ID = _pAR_tag_pose.m_iSelect_AR_tag_id = req.id;
+	ex_iDocking_CommandMode = req.mode;
 
-    /*
-    int32 id
-    int32 mode
-    ---
-    bool command_Result
-    */
+	/*
+	int32 id
+	int32 mode
+	---
+	bool command_Result
+	*/
 
 	res.command_Result = bResult;
 	return true;
@@ -1828,47 +1810,47 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req,
 				              tetraDS_service::virtual_obstacle::Response &res)
 {
 	bool bResult = false;
-    int m_iInt_count = 0;
-    int m_iNext_count = 0;
+	int m_iInt_count = 0;
+	int m_iNext_count = 0;
 
-    if(m_flag_Dynamic_reconfigure_call)
-    {
-        bResult = false;
-        res.command_Result = bResult;
-        printf("!!!! m_flag_Dynamic_reconfigure_call Timing !!!! \n");
-        return true;
-    }
+	if(m_flag_Dynamic_reconfigure_call)
+	{
+		bResult = false;
+		res.command_Result = bResult;
+		printf("!!!! m_flag_Dynamic_reconfigure_call Timing !!!! \n");
+		return true;
+	}
 
-    // msg clear
-    virtual_obstacle.list.clear();
-    //Global_costmap Loop//
-    virtual_obstacle.list.resize(req.list_count.size());
-    for(int i=0; i<req.list_count.size(); i++)
-    {
-        virtual_obstacle.list[i].form.clear();
-        virtual_obstacle.list[i].form.resize(req.list_count[i]);
-        m_iInt_count = req.list_count[i];
-        for(int j=0; j<req.list_count[i]; j++)
-        {
-            virtual_obstacle.list[i].form[j].x = floor(req.form_x[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
-            virtual_obstacle.list[i].form[j].y = floor(req.form_y[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
-            virtual_obstacle.list[i].form[j].z = floor(req.form_z[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
-        }
-        m_iNext_count += m_iInt_count;
-        
-    }
-    
-    virtual_obstacle_pub.publish(virtual_obstacle);
+	// msg clear
+	virtual_obstacle.list.clear();
+	//Global_costmap Loop//
+	virtual_obstacle.list.resize(req.list_count.size());
+	for(int i=0; i<req.list_count.size(); i++)
+	{
+		virtual_obstacle.list[i].form.clear();
+		virtual_obstacle.list[i].form.resize(req.list_count[i]);
+		m_iInt_count = req.list_count[i];
+		for(int j=0; j<req.list_count[i]; j++)
+		{
+		    virtual_obstacle.list[i].form[j].x = floor(req.form_x[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
+		    virtual_obstacle.list[i].form[j].y = floor(req.form_y[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
+		    virtual_obstacle.list[i].form[j].z = floor(req.form_z[m_iNext_count + j] * 1000.f + 0.5) / 1000.f;
+		}
+		m_iNext_count += m_iInt_count;
+
+	}
+
+	virtual_obstacle_pub.publish(virtual_obstacle);
  
 	/*
-    int32[]  list_count
-    float64[] form_x
-    float64[] form_y
-    float64[] form_z
-    ---
-    bool command_Result
+	int32[]  list_count
+	float64[] form_x
+	float64[] form_y
+	float64[] form_z
+	---
+	bool command_Result
 	*/
-    bResult = true;
+	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -1878,26 +1860,25 @@ bool Patrol_Command(tetraDS_service::patrol::Request &req,
 {
 	bool bResult = false;
 
+	_pFlag_Value.m_bflag_patrol = req.on;
+	m_patrol_location_cnt = req.list_count;
+	printf("# m_bflag_patrol: %d  \n", _pFlag_Value.m_bflag_patrol);
+	printf("# m_patrol_location_cnt: %d  \n", m_patrol_location_cnt);
 
-    _pFlag_Value.m_bflag_patrol = req.on;
-    m_patrol_location_cnt = req.list_count;
-    printf("# m_bflag_patrol: %d  \n", _pFlag_Value.m_bflag_patrol);
-    printf("# m_patrol_location_cnt: %d  \n", m_patrol_location_cnt);
-
-    for(int i=0; i<m_patrol_location_cnt; i++)
-    {
-        arr_patrol_location[i] = req.location_name[i];
-        ROS_INFO("# arr_patrol_location[%d]:%s ", i, arr_patrol_location[i].c_str());
-    }
+	for(int i=0; i<m_patrol_location_cnt; i++)
+	{
+		arr_patrol_location[i] = req.location_name[i];
+		ROS_INFO("# arr_patrol_location[%d]:%s ", i, arr_patrol_location[i].c_str());
+	}
    
 	/*
-    bool on
-    int32  list_count
-    string[] location_name
-    ---
-    bool command_Result
+	bool on
+	int32  list_count
+	string[] location_name
+	---
+	bool command_Result
 	*/
-    bResult = true;
+	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -1907,22 +1888,22 @@ bool Patrol_Conveyor_Command(tetraDS_service::patrol_conveyor::Request &req,
 {
 	bool bResult = false;
 
-    _pFlag_Value.m_bflag_patrol2 = req.on;
-    m_iLoading_ID = req.loading_id;
-    m_iUnloading_ID = req.unloading_id;
-    m_strLoading_loacation_name = req.loading_location_name;
-    m_strUnloading_loacation_name = req.unloading_location_name;
+	_pFlag_Value.m_bflag_patrol2 = req.on;
+	m_iLoading_ID = req.loading_id;
+	m_iUnloading_ID = req.unloading_id;
+	m_strLoading_loacation_name = req.loading_location_name;
+	m_strUnloading_loacation_name = req.unloading_location_name;
 
 	/*
-    bool on
-    int32  loading_id
-    int32  unloading_id
-    string loading_location_name
-    string unloading_location_name
-    ---
-    bool command_Result
+	bool on
+	int32  loading_id
+	int32  unloading_id
+	string loading_location_name
+	string unloading_location_name
+	---
+	bool command_Result
 	*/
-    bResult = true;
+	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -1946,32 +1927,32 @@ void Reset_EKF_SetPose()
 	setpose_srv.request.pose.pose.covariance[0] = 0.25;
 	setpose_srv.request.pose.pose.covariance[6 * 1 + 1] = 0.25;
 	setpose_srv.request.pose.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
-    
+
 	SetPose_cmd_client.call(setpose_srv); //Set_pose call//
 	printf("##Set_Pose(EKF)! \n");
 
-    initPose_.header.stamp = ros::Time(0); //ros::Time::now(); 
-    initPose_.header.frame_id = "map";
-    //position
-    initPose_.pose.pose.position.x = 0.0;
-    initPose_.pose.pose.position.y = 0.0;
-    initPose_.pose.pose.position.z = 0.0;
-    //orientation
-    initPose_.pose.pose.orientation.x = 0.0;
-    initPose_.pose.pose.orientation.y = 0.0;
-    initPose_.pose.pose.orientation.z = 0.0;
-    initPose_.pose.pose.orientation.w = 1.0;
+	initPose_.header.stamp = ros::Time(0); //ros::Time::now(); 
+	initPose_.header.frame_id = "map";
+	//position
+	initPose_.pose.pose.position.x = 0.0;
+	initPose_.pose.pose.position.y = 0.0;
+	initPose_.pose.pose.position.z = 0.0;
+	//orientation
+	initPose_.pose.pose.orientation.x = 0.0;
+	initPose_.pose.pose.orientation.y = 0.0;
+	initPose_.pose.pose.orientation.z = 0.0;
+	initPose_.pose.pose.orientation.w = 1.0;
 
-    initPose_.pose.covariance[0] = 0.25;
-    initPose_.pose.covariance[6 * 1 + 1] = 0.25;
-    initPose_.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
+	initPose_.pose.covariance[0] = 0.25;
+	initPose_.pose.covariance[6 * 1 + 1] = 0.25;
+	initPose_.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
 
-    initialpose_pub.publish(initPose_);
-    printf("##Set_initPose(2D Estimate)! \n");
+	initialpose_pub.publish(initPose_);
+	printf("##Set_initPose(2D Estimate)! \n");
 
-    usleep(500000);
+	usleep(500000);
 
-    _pFlag_Value.m_bFlag_nomotion = true;
+	_pFlag_Value.m_bFlag_nomotion = true;
 }
 
 bool Marker_Reset_Robot_Pose()
@@ -3305,15 +3286,15 @@ bool mapping_Command(tetraDS_service::runmapping::Request &req,
 					 tetraDS_service::runmapping::Response &res)
 {
 	bool bResult = false;
-    bResult = req.flag_mapping;
+	bResult = req.flag_mapping;
 
-    rosrun_mapping();
-    /*
-    bool flag_mapping
-    ---
-    bool command_Result
-    */
-    bResult = true;
+	rosrun_mapping();
+	/*
+	bool flag_mapping
+	---
+	bool command_Result
+	*/
+	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -3323,13 +3304,13 @@ bool navigation_Command(tetraDS_service::runnavigation::Request &req,
 {
 	bool bResult = false;
 
-    string str_mapname = req.map_name.c_str();
-    rosrun_navigation(str_mapname);
-    /*
-    string map_name
-    ---
-    bool command_Result
-    */
+	string str_mapname = req.map_name.c_str();
+	rosrun_navigation(str_mapname);
+	/*
+	string map_name
+	---
+	bool command_Result
+	*/
 
 	bResult = true;
 	res.command_Result = bResult;
@@ -3340,18 +3321,18 @@ bool nodekill_Command(tetraDS_service::rosnodekill::Request &req,
 					  tetraDS_service::rosnodekill::Response &res)
 {
 	bool bResult = false;
-    
-    //bResult = req.flag_kill;
 
-    bResult = rosnodekill_all();
-    printf("rosnodekill_all: %d \n", bResult);
-    // sleep(1);
+	//bResult = req.flag_kill;
 
-    /*
-    ---
-    bool command_Result
-    */
-    //throw std::runtime_error("####this will show up");
+	bResult = rosnodekill_all();
+	printf("rosnodekill_all: %d \n", bResult);
+	// sleep(1);
+
+	/*
+	---
+	bool command_Result
+	*/
+	//throw std::runtime_error("####this will show up");
 
 	bResult = true;
 	res.command_Result = bResult;
@@ -3362,44 +3343,44 @@ bool Goto_Conveyor_Command(tetraDS_service::gotoconveyor::Request &req,
 				            tetraDS_service::gotoconveyor::Response &res)
 {
 	bool bResult = false;
-    //costmap clear call//
-    m_flag_clesr_costmap_call = clear_costmap_client.call(m_request);
-    while(!m_flag_clesr_costmap_call)
-    {
-        sleep(1);
-    }
-    m_flag_clesr_costmap_call = false;
+	//costmap clear call//
+	m_flag_clesr_costmap_call = clear_costmap_client.call(m_request);
+	while(!m_flag_clesr_costmap_call)
+	{
+		sleep(1);
+	}
+	m_flag_clesr_costmap_call = false;
 
-    LED_Toggle_Control(1, 3,100,3,1);
-    LED_Turn_On(45); //sky_blue
+	LED_Toggle_Control(1, 3,100,3,1);
+	LED_Turn_On(45); //sky_blue
 
-    bResult = OpenLocationFile(req.Location);
-    //printf("Goto bResult: %d \n", bResult);
+	bResult = OpenLocationFile(req.Location);
+	//printf("Goto bResult: %d \n", bResult);
 
-    goto_goal_id.id = req.Location;
-    _pRobot_Status.CONVEYOR_ID = req.id;
-    _pRobot_Status.CONVEYOR_MOVEMENT = req.movement;
-    _pFlag_Value.m_bflag_Conveyor_docking = true;
+	goto_goal_id.id = req.Location;
+	_pRobot_Status.CONVEYOR_ID = req.id;
+	_pRobot_Status.CONVEYOR_MOVEMENT = req.movement;
+	_pFlag_Value.m_bflag_Conveyor_docking = true;
 
-    ROS_INFO("goto_conveyor_name: %s, id: %d, movement: %d", goto_goal_id.id.c_str(), _pRobot_Status.CONVEYOR_ID, _pRobot_Status.CONVEYOR_MOVEMENT);
+	ROS_INFO("goto_conveyor_name: %s, id: %d, movement: %d", goto_goal_id.id.c_str(), _pRobot_Status.CONVEYOR_ID, _pRobot_Status.CONVEYOR_MOVEMENT);
 
-    if(_pRobot_Status.m_iCallback_Charging_status <= 1 && (_pAR_tag_pose.m_iAR_tag_id == -1 || _pAR_tag_pose.m_transform_pose_x <= 0.5))  //Nomal
-    {
-        LED_Toggle_Control(1, 3,100,3,1);
-        LED_Turn_On(45); //sky_blue
-        setGoal(goal);
-    }
-    else //Docking...
-    {
-        ex_iDocking_CommandMode = 10; //Depart Move
-    }
+	if(_pRobot_Status.m_iCallback_Charging_status <= 1 && (_pAR_tag_pose.m_iAR_tag_id == -1 || _pAR_tag_pose.m_transform_pose_x <= 0.5))  //Nomal
+	{
+		LED_Toggle_Control(1, 3,100,3,1);
+		LED_Turn_On(45); //sky_blue
+		setGoal(goal);
+	}
+	else //Docking...
+	{
+		ex_iDocking_CommandMode = 10; //Depart Move
+	}
 
 	/*
-    string Location
-    int32 id
-    int32 movement
-    ---
-    bool command_Result
+	string Location
+	int32 id
+	int32 movement
+	---
+	bool command_Result
 	*/
 	bResult = true;
 	res.command_Result = bResult;
@@ -3409,18 +3390,18 @@ bool Goto_Conveyor_Command(tetraDS_service::gotoconveyor::Request &req,
 bool Loading_check_Command(tetraDS_service::loadingcheck::Request &req, tetraDS_service::loadingcheck::Response &res)
 {
 	bool bResult = false;
-    //to do Check Loop...
-    if(_pRobot_Status.m_iConveyor_Sensor_info == 0)
-    {
-        bResult = true;
-    }
-    else
-    {
-        bResult = false;
-    }
+	//to do Check Loop...
+	if(_pRobot_Status.m_iConveyor_Sensor_info == 0)
+	{
+		bResult = true;
+	}
+	else
+	{
+		bResult = false;
+	}
 	/*
-    ---
-    int32 command_Result
+	---
+	int32 command_Result
 	*/
 	res.command_Result = bResult;
 	return true;
@@ -3429,18 +3410,18 @@ bool Loading_check_Command(tetraDS_service::loadingcheck::Request &req, tetraDS_
 bool Unloading_check_Command(tetraDS_service::unloadingcheck::Request &req, tetraDS_service::unloadingcheck::Response &res)
 {
 	bool bResult = false;
-    //to do Check Loop...
-    if(_pRobot_Status.m_iConveyor_Sensor_info >= 2)
-    {
-        bResult = true;
-    }
-    else
-    {
-        bResult = false;
-    }
+	//to do Check Loop...
+	if(_pRobot_Status.m_iConveyor_Sensor_info >= 2)
+	{
+		bResult = true;
+	}
+	else
+	{
+		bResult = false;
+	}
 	/*
-    ---
-    int32 command_Result
+	---
+	int32 command_Result
 	*/
 	res.command_Result = bResult;
 	return true;
@@ -4095,17 +4076,17 @@ void RVIZ_GUI_Goto_Callback(const std_msgs::String::ConstPtr& msg)
 
 void Reset_Call_service()
 {
-    _pFlag_Value.m_bFlag_nomotion = false;
+	_pFlag_Value.m_bFlag_nomotion = false;
 
-    //IMU reset//
-    euler_angle_reset_cmd_client.call(euler_angle_reset_srv);
-    printf("## IMU Reset ! \n");
-    //tetra odometry Reset//
-    tetra_PoseRest.data = m_iReset_flag;
-    PoseReset_pub.publish(tetra_PoseRest);
-    usleep(100000);
+	//IMU reset//
+	euler_angle_reset_cmd_client.call(euler_angle_reset_srv);
+	printf("## IMU Reset ! \n");
+	//tetra odometry Reset//
+	tetra_PoseRest.data = m_iReset_flag;
+	PoseReset_pub.publish(tetra_PoseRest);
+	usleep(100000);
 
-    //robot_localization::SetPose ekf_reset;
+    	//robot_localization::SetPose ekf_reset;
 	setpose_srv.request.pose.header.frame_id = tf_prefix_ + "/odom";
 	setpose_srv.request.pose.header.stamp = ros::Time(0); //ros::Time::now();
 
@@ -4121,57 +4102,56 @@ void Reset_Call_service()
 	setpose_srv.request.pose.pose.covariance[0] = 0.25;
 	setpose_srv.request.pose.pose.covariance[6 * 1 + 1] = 0.25;
 	setpose_srv.request.pose.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
-    
+
 	SetPose_cmd_client.call(setpose_srv); //Set_pose call//
 	printf("##Set_Pose(EKF)2! \n");
 
-    initPose_.header.stamp = ros::Time(0); //ros::Time::now(); 
-    initPose_.header.frame_id = "map";
-    //position
-    initPose_.pose.pose.position.x = _pReset_srv.init_position_x;
-    initPose_.pose.pose.position.y = _pReset_srv.init_position_y;
-    initPose_.pose.pose.position.z = _pReset_srv.init_position_z;
-    //orientation
-    initPose_.pose.pose.orientation.x = _pReset_srv.init_orientation_x;
-    initPose_.pose.pose.orientation.y = _pReset_srv.init_orientation_y;
-    initPose_.pose.pose.orientation.z = _pReset_srv.init_orientation_z;
-    initPose_.pose.pose.orientation.w = _pReset_srv.init_orientation_w;
+	initPose_.header.stamp = ros::Time(0); //ros::Time::now(); 
+	initPose_.header.frame_id = "map";
+	//position
+	initPose_.pose.pose.position.x = _pReset_srv.init_position_x;
+	initPose_.pose.pose.position.y = _pReset_srv.init_position_y;
+	initPose_.pose.pose.position.z = _pReset_srv.init_position_z;
+	//orientation
+	initPose_.pose.pose.orientation.x = _pReset_srv.init_orientation_x;
+	initPose_.pose.pose.orientation.y = _pReset_srv.init_orientation_y;
+	initPose_.pose.pose.orientation.z = _pReset_srv.init_orientation_z;
+	initPose_.pose.pose.orientation.w = _pReset_srv.init_orientation_w;
 
-    initPose_.pose.covariance[0] = 0.25;
-    initPose_.pose.covariance[6 * 1 + 1] = 0.25;
-    initPose_.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
+	initPose_.pose.covariance[0] = 0.25;
+	initPose_.pose.covariance[6 * 1 + 1] = 0.25;
+	initPose_.pose.covariance[6 * 5 + 5] = 0.06853892326654787;
 
-    initialpose_pub.publish(initPose_);
-    printf("##Set_initPose(2D Estimate)2! \n");
+	initialpose_pub.publish(initPose_);
+	printf("##Set_initPose(2D Estimate)2! \n");
 
     //usleep(500000);
 
-    _pFlag_Value.m_bFlag_nomotion = true;
-
+	_pFlag_Value.m_bFlag_nomotion = true;
 }
 
 bool SetEKF_Command(tetraDS_service::setekf::Request &req, 
 				    tetraDS_service::setekf::Response &res)
 {   
-    bool bResult = false;
+	bool bResult = false;
 
-    _pReset_srv.init_position_x = req.init_position_x;
-    _pReset_srv.init_position_y = req.init_position_y;
-    _pReset_srv.init_position_z = req.init_position_z;
+	_pReset_srv.init_position_x = req.init_position_x;
+	_pReset_srv.init_position_y = req.init_position_y;
+	_pReset_srv.init_position_z = req.init_position_z;
 
-    _pReset_srv.init_orientation_x = req.init_orientation_x;
-    _pReset_srv.init_orientation_y = req.init_orientation_y;
-    _pReset_srv.init_orientation_z = req.init_orientation_z;
-    _pReset_srv.init_orientation_w = req.init_orientation_w;
+	_pReset_srv.init_orientation_x = req.init_orientation_x;
+	_pReset_srv.init_orientation_y = req.init_orientation_y;
+	_pReset_srv.init_orientation_z = req.init_orientation_z;
+	_pReset_srv.init_orientation_w = req.init_orientation_w;
 
-    _pReset_srv.bflag_reset = true;
+	_pReset_srv.bflag_reset = true;
 
-    printf("[SetEKF_Command]: %.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f \n", _pReset_srv.init_position_x,_pReset_srv.init_position_y,_pReset_srv.init_position_z,
-    _pReset_srv.init_orientation_x, _pReset_srv.init_orientation_y, _pReset_srv.init_orientation_z, _pReset_srv.init_orientation_w);
+	printf("[SetEKF_Command]: %.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f \n", _pReset_srv.init_position_x,_pReset_srv.init_position_y,_pReset_srv.init_position_z,
+	_pReset_srv.init_orientation_x, _pReset_srv.init_orientation_y, _pReset_srv.init_orientation_z, _pReset_srv.init_orientation_w);
 
-    //Reset_Call_service();
+	//Reset_Call_service();
 
-    bResult = true;
+	bResult = true;
 	res.command_Result = bResult;
 	return true;
 }
@@ -4190,7 +4170,6 @@ int main (int argc, char** argv)
     signal(SIGINT,my_handler);
 
     ros::init(argc, argv, "tetraDS_service", ros::init_options::NoSigintHandler);
-
     ros::NodeHandle nh;
     cmdpub_ = nh.advertise<geometry_msgs::Twist>("cmd_vel",100);
     ros::Subscriber cmdsub_ = nh.subscribe<geometry_msgs::Twist>("cmd_vel", 100, cmd_vel_Callback);
@@ -4226,11 +4205,9 @@ int main (int argc, char** argv)
     initialpose_pub = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 100);
     //Initialpose Subscribe
     ros::Subscriber sub_initialpose = nh.subscribe<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 100 ,InitialposeCallback);
-
     //Joystick//
     ros::NodeHandle njoy;
     ros::Subscriber joy_sub = njoy.subscribe<sensor_msgs::Joy>("joy", 10, joyCallback);
-
     //Read HOME Docking ID Param Read//
     nh.getParam("HOME_ID", _pRobot_Status.HOME_ID);
     printf("##HOME_ID: %d \n", _pRobot_Status.HOME_ID);
@@ -4240,7 +4217,6 @@ int main (int argc, char** argv)
     //Read Max_linear_Velocity
     nh.getParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
     printf("##max_vel_x: %f \n", _pDynamic_param.MAX_Linear_velocity);
-	
     ros::param::get("tf_prefix", tf_prefix_);
 
     //add GUI...
@@ -4359,7 +4335,6 @@ int main (int argc, char** argv)
     }
     pointcloud_.point_step = offset;
     pointcloud_.row_step   = pointcloud_.point_step * pointcloud_.width;
-
     pointcloud_.data.resize(3 * pointcloud_.point_step);
     pointcloud_.is_bigendian = false;
     pointcloud_.is_dense     = true;
@@ -4440,7 +4415,6 @@ int main (int argc, char** argv)
         {
 	    //costmap clear call//
             clear_costmap_client.call(m_request);
-		
             m_iTimer_cnt = 0;
             Reset_Robot_Pose();
             //ROS_INFO("Reset_Robot_Pose Call !");
@@ -4487,14 +4461,12 @@ int main (int argc, char** argv)
                     _pTF_pose.poseTFqz = ts_msg.transform.rotation.z;
                     _pTF_pose.poseTFqw = ts_msg.transform.rotation.w;
 
-                    
                 }
                 catch (tf::TransformException ex)
                 {
                     ROS_ERROR("[TF_Transform_Error(map to base_footprint)]: %s", ex.what());
                     continue;
                 }
-
 
                 //map to odom TF Pose////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 tf::StampedTransform transform2;
@@ -4569,12 +4541,9 @@ int main (int argc, char** argv)
                     printf("[Error]listener2.waitForTransform Fail & lookupTransform Fail!! \n");
                 }
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
             }
         }
-
         loop_rate.sleep();
     }
-
     return 0;
 }
