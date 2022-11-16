@@ -229,7 +229,7 @@ typedef struct FALG_VALUE
     bool m_bCorneringFlag = true;
     //no motion service call flag//
     bool m_bFlag_nomotion = true;
-
+    bool m_bFlag_Initialpose = false;
 
 }FALG_VALUE;
 FALG_VALUE _pFlag_Value;
@@ -1002,7 +1002,7 @@ void cmd_vel_Callback(const geometry_msgs::Twist::ConstPtr& msg)
 void Particle_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
 {
     m_iParticleCloud_size = msg->poses.size();
-    if(m_iParticleCloud_size > 501 && _pDynamic_param.m_linear_vel == 0.0 && _pDynamic_param.m_angular_vel == 0.0 && _pRobot_Status.m_iCallback_Charging_status != 1)
+    if(m_iParticleCloud_size > 501 && _pDynamic_param.m_linear_vel == 0.0 && _pDynamic_param.m_angular_vel == 0.0 && _pFlag_Value.m_bFlag_Initialpose)
     {
         if(_pFlag_Value.m_bFlag_nomotion)
         {
@@ -1013,6 +1013,7 @@ void Particle_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
     else
     {
             m_bFlag_nomotion_call = false;
+	    _pFlag_Value.m_bFlag_Initialpose = false;
     }
     
 }
@@ -1355,6 +1356,7 @@ bool Goto_Command(tetraDS_service::gotolocation::Request &req,
 
     //reset flag...
     _pFlag_Value.m_bFlag_Disable_bumper = false;
+    _pFlag_Value.m_bFlag_Initialpose = false;
 
 	return true;
 }
@@ -1364,48 +1366,49 @@ bool Goto_Command2(tetraDS_service::gotolocation2::Request &req,
 {
 	bool bResult = false;
 
-    //costmap clear call//
-    m_flag_clesr_costmap_call = clear_costmap_client.call(m_request);
-    while(!m_flag_clesr_costmap_call)
-    {
-        sleep(1);
-    }
-    m_flag_clesr_costmap_call = false;
+	//costmap clear call//
+	m_flag_clesr_costmap_call = clear_costmap_client.call(m_request);
+	while(!m_flag_clesr_costmap_call)
+	{
+		sleep(1);
+	}
+	m_flag_clesr_costmap_call = false;
 
-    _pGoal_pose.goal_positionX = req.goal_positionX;
-    _pGoal_pose.goal_positionY = req.goal_positionY;
-    _pGoal_pose.goal_quarterX = req.goal_quarterX;
-    _pGoal_pose.goal_quarterY = req.goal_quarterY;
-    _pGoal_pose.goal_quarterZ = req.goal_quarterZ;
-    _pGoal_pose.goal_quarterW = req.goal_quarterW;
-    //goto_goal_id.id = "1";
+	_pGoal_pose.goal_positionX = req.goal_positionX;
+	_pGoal_pose.goal_positionY = req.goal_positionY;
+	_pGoal_pose.goal_quarterX = req.goal_quarterX;
+	_pGoal_pose.goal_quarterY = req.goal_quarterY;
+	_pGoal_pose.goal_quarterZ = req.goal_quarterZ;
+	_pGoal_pose.goal_quarterW = req.goal_quarterW;
+	//goto_goal_id.id = "1";
 
-    LED_Toggle_Control(1, 3,100,3,1);
-    LED_Turn_On(63);
+	LED_Toggle_Control(1, 3,100,3,1);
+	LED_Turn_On(63);
 
-    if(_pRobot_Status.m_iCallback_Charging_status <= 1 && (_pAR_tag_pose.m_iAR_tag_id == -1 || _pAR_tag_pose.m_transform_pose_x <= 0.5)) //Nomal
-    {
-        setGoal(goal);
-        bResult = true;
-    }
-    else //Docking...
-    {
-        ex_iDocking_CommandMode = 10; //Depart Move
-        bResult = true;//false;
-    }
+	if(_pRobot_Status.m_iCallback_Charging_status <= 1 && (_pAR_tag_pose.m_iAR_tag_id == -1 || _pAR_tag_pose.m_transform_pose_x <= 0.5)) //Nomal
+	{
+		setGoal(goal);
+		bResult = true;
+	}
+	else //Docking...
+	{
+		ex_iDocking_CommandMode = 10; //Depart Move
+		bResult = true;//false;
+	}
 	/*
-    float goal_positionX
-    float goal_positionY
-    float goal_quarterX
-    float goal_quarterY
-    float goal_quarterZ
-    float goal_quarterW
-    ---
-    bool command_Result
+	float goal_positionX
+	float goal_positionY
+	float goal_quarterX
+	float goal_quarterY
+	float goal_quarterZ
+	float goal_quarterW
+	---
+	bool command_Result
 	*/
 	res.command_Result = bResult;
-    //reset flag...
-    _pFlag_Value.m_bFlag_Disable_bumper = false;
+    	//reset flag...
+    	_pFlag_Value.m_bFlag_Disable_bumper = false;
+	_pFlag_Value.m_bFlag_Initialpose = false;
 	return true;
 }
 
@@ -2091,6 +2094,8 @@ void Reset_Robot_Pose()
 
     virtual_obstacle2.list.clear();
     virtual_obstacle2_pub.publish(virtual_obstacle2);
+
+    _pFlag_Value.m_bFlag_Initialpose = true;
     
 }
 
@@ -4171,6 +4176,13 @@ bool SetEKF_Command(tetraDS_service::setekf::Request &req,
 	return true;
 }
 
+//InitialposeCallback
+void InitialposeCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msgInitialpose)
+{
+    //printf("## InitialposeCallback ## \n");
+    _pFlag_Value.m_bFlag_Initialpose = true;
+}
+
 /////*******************************************************************************//////
 
 int main (int argc, char** argv)
@@ -4212,7 +4224,8 @@ int main (int argc, char** argv)
     ros::Subscriber teblocalplan_sub = nh.subscribe<geometry_msgs::PoseArray>("move_base/TebLocalPlannerROS/teb_poses", 100, Teblocalplan_Callback);
     //Initialpose publish//
     initialpose_pub = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 100);
-
+    //Initialpose Subscribe
+    ros::Subscriber sub_initialpose = nh.subscribe<geometry_msgs::PoseWithCovarianceStamped>("initialpose", 100 ,InitialposeCallback);
 
     //Joystick//
     ros::NodeHandle njoy;
