@@ -2507,14 +2507,14 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
 
 
   }
+/*
   else if(msgResult->status.status == PREEMPTED) //bumper On Check...
   {
-    // if(_pFlag_Value.BUMPER_BT)
-    //     ex_iDocking_CommandMode = 100;
     goto_goal_id.id = "";
     ROS_INFO("Goto Cancel call");
     GotoCancel_pub.publish(goto_goal_id);
   }
+*/
   else
   {
     _pFlag_Value.m_bflag_NextStep = false;
