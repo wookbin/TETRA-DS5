@@ -168,6 +168,8 @@ bool m_bFlag_nomotion_call = false;
 bool m_flag_clesr_costmap_call = false;
 //Dynamic_reconfigure call flag//
 bool m_flag_Dynamic_reconfigure_call = false;
+//Set Goal flag//
+bool m_flag_setgoal = false;
 
 typedef struct HOME_POSE
 {
@@ -1269,6 +1271,7 @@ bool Goto_Command(tetraDS_service::gotolocation::Request &req,
 				  tetraDS_service::gotolocation::Response &res)
 {
 	bool bResult = false;
+	m_flag_setgoal = true;
 
 	//costmap clear call//
 	m_flag_clesr_costmap_call = clear_costmap_client.call(m_request);
@@ -1339,6 +1342,8 @@ bool Goto_Command(tetraDS_service::gotolocation::Request &req,
 	//reset flag...
 	_pFlag_Value.m_bFlag_Disable_bumper = false;
 	_pFlag_Value.m_bFlag_Initialpose = false;
+	
+	m_flag_setgoal = false;
 
 	return true;
 }
@@ -1347,6 +1352,8 @@ bool Goto_Command2(tetraDS_service::gotolocation2::Request &req,
 				   tetraDS_service::gotolocation2::Response &res)
 {
 	bool bResult = false;
+	
+	m_flag_setgoal = true;
 
 	//costmap clear call//
 	m_flag_clesr_costmap_call = clear_costmap_client.call(m_request);
@@ -1391,6 +1398,9 @@ bool Goto_Command2(tetraDS_service::gotolocation2::Request &req,
     	//reset flag...
     	_pFlag_Value.m_bFlag_Disable_bumper = false;
 	_pFlag_Value.m_bFlag_Initialpose = false;
+	
+	m_flag_setgoal = false;
+	
 	return true;
 }
 
@@ -1398,6 +1408,8 @@ bool GotoCancel_Command(tetraDS_service::gotocancel::Request &req,
 				        tetraDS_service::gotocancel::Response &res)
 {
 	bool bResult = false;
+	
+	m_flag_setgoal = true;
 
 	goto_goal_id.id = "";
 	ROS_INFO("Goto Cancel call");
@@ -1410,6 +1422,8 @@ bool GotoCancel_Command(tetraDS_service::gotocancel::Request &req,
 	bResult = true;
 	res.command_Result = bResult;
 	ex_iDocking_CommandMode = 0;
+	
+	m_flag_setgoal = false;
 	return true;
 }
 
@@ -1813,7 +1827,7 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req,
 	int m_iInt_count = 0;
 	int m_iNext_count = 0;
 
-	if(m_flag_Dynamic_reconfigure_call)
+	if(m_flag_Dynamic_reconfigure_call || m_flag_setgoal)
 	{
 		bResult = false;
 		res.command_Result = bResult;
@@ -4503,7 +4517,7 @@ int main (int argc, char** argv)
                     m_iList_Count = virtual_obstacle.list.size();
                     if(m_iList_Count > 0)
                     {
-                        if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call)
+                        if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal)
                         {
                             loop_rate.sleep();
                             continue;
