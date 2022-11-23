@@ -8,13 +8,13 @@ TebLocalPlannerROS:
  teb_autosize: true
  dt_ref: 0.3
  dt_hysteresis: 0.03
- min_samples: 5
+ min_samples: 3 #5
  max_samples: 50
  global_plan_overwrite_orientation: true
  global_plan_viapoint_sep: 1.0 #0.5
  max_global_plan_lookahead_dist: 5.0
  force_reinit_new_goal_dist: 1.0
- feasibility_check_no_poses: 10 #3
+ feasibility_check_no_poses: 5 #3
  publish_feedback: false
  shrink_horizon_backup: true
  allow_init_with_backwards_motion: false #true
