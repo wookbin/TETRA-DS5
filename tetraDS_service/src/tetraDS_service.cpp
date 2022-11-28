@@ -2497,6 +2497,8 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
     printf("[ERROR]resultCallback _ RED LED On \n");
     _pFlag_Value.m_bflag_NextStep = false;
     ROS_INFO("[ERROR]resultCallback: %d ",msgResult->status.status);
+	  
+    m_flag_setgoal = true;
     //costmap clear call//
     //clear_costmap_client.call(m_request);
 
