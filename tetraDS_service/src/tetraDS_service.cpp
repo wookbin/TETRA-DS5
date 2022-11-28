@@ -4545,6 +4545,11 @@ int main (int argc, char** argv)
                                     }
                                 }
                             }
+                            if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal)
+                            {
+                                loop_rate.sleep();
+                                continue;
+                            }
                             virtual_obstacle2_pub.publish(virtual_obstacle2);
                         }
 
