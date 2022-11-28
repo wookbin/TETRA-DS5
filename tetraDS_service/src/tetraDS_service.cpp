@@ -170,6 +170,9 @@ bool m_flag_clesr_costmap_call = false;
 bool m_flag_Dynamic_reconfigure_call = false;
 //Set Goal flag//
 bool m_flag_setgoal = false;
+//flag
+bool m_flag_PREEMPTED = false;
+
 
 typedef struct HOME_POSE
 {
@@ -2518,17 +2521,19 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
     //     setGoal(goal);
     //     m_iRetry_cnt++;
     // }
-
+    m_flag_setgoal = false;
+    m_flag_PREEMPTED = false;
 
   }
-/*
+
   else if(msgResult->status.status == PREEMPTED) //bumper On Check...
   {
-    goto_goal_id.id = "";
-    ROS_INFO("Goto Cancel call");
+    //goto_goal_id.id = "";
+    //ROS_INFO("Goto Cancel call");
     GotoCancel_pub.publish(goto_goal_id);
+    m_flag_PREEMPTED = true;
   }
-*/
+
   else
   {
     _pFlag_Value.m_bflag_NextStep = false;
@@ -4517,7 +4522,7 @@ int main (int argc, char** argv)
                     m_iList_Count = virtual_obstacle.list.size();
                     if(m_iList_Count > 0)
                     {
-                        if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal)
+                        if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || m_flag_PREEMPTED)
                         {
                             loop_rate.sleep();
                             continue;
@@ -4545,7 +4550,7 @@ int main (int argc, char** argv)
                                     }
                                 }
                             }
-                            if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal)
+                            if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || m_flag_PREEMPTED)
                             {
                                 loop_rate.sleep();
                                 continue;
