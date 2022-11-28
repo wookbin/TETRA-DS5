@@ -2486,7 +2486,7 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
         _pFlag_Value.m_bflag_Conveyor_docking = false;
     }
 
-
+    m_flag_PREEMPTED = false;
     //Dynamic_reconfigure_Teb_Set_DoubleParam("weight_kinematics_forward_drive", _pDynamic_param.m_dweight_kinematics_forward_drive_default);
 
   }
