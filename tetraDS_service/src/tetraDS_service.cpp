@@ -2530,7 +2530,7 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
   {
     //goto_goal_id.id = "";
     //ROS_INFO("Goto Cancel call");
-    GotoCancel_pub.publish(goto_goal_id);
+    //GotoCancel_pub.publish(goto_goal_id);
     m_flag_PREEMPTED = true;
   }
 
