@@ -2500,30 +2500,32 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
 	  
     m_flag_setgoal = true;
     //costmap clear call//
-    //clear_costmap_client.call(m_request);
+    clear_costmap_client.call(m_request);
+    sleep(1);
 
     //Dynamic_reconfigure_Teb_Set_DoubleParam("weight_kinematics_forward_drive", _pDynamic_param.m_dweight_kinematics_forward_drive_backward);
     goto_goal_id.id = "";
     ROS_INFO("Goto Cancel call");
     GotoCancel_pub.publish(goto_goal_id);
-    // if(m_iRetry_cnt >= MAX_RETRY_CNT)
-    // {
-    //     m_iRetry_cnt = 0;
-    //     ROS_INFO("[RETRY Behavior]: FAIL !");
-    // }
-    // else
-    // {
-    //     LED_Toggle_Control(1, 3,100,3,1);
-    //     if(_pFlag_Value.m_bflag_Conveyor_docking)
-    //         LED_Turn_On(45); //sky_blue
-    //     else
-    //         LED_Turn_On(63);
 
-    //     ROS_INFO("[RETRY Behavior]: goto_ %s", goal.goal_id.id.c_str());
-    //     setGoal(goal);
-    //     m_iRetry_cnt++;
-    //     sleep(1);
-    // }
+    if(m_iRetry_cnt >= MAX_RETRY_CNT)
+    {
+        m_iRetry_cnt = 0;
+        ROS_INFO("[RETRY Behavior]: FAIL !");
+    }
+    else
+    {
+        LED_Toggle_Control(1, 3,100,3,1);
+        if(_pFlag_Value.m_bflag_Conveyor_docking)
+            LED_Turn_On(45); //sky_blue
+        else
+            LED_Turn_On(63);
+        
+        ROS_INFO("[RETRY Behavior]: goto_ %s", goal.goal_id.id.c_str());
+        setGoal(goal);
+        m_iRetry_cnt++;
+    }
+
     m_flag_setgoal = false;
     m_flag_PREEMPTED = false;
 
