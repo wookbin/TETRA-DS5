@@ -2522,6 +2522,7 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
     //     ROS_INFO("[RETRY Behavior]: goto_ %s", goal.goal_id.id.c_str());
     //     setGoal(goal);
     //     m_iRetry_cnt++;
+    //     sleep(1);
     // }
     m_flag_setgoal = false;
     m_flag_PREEMPTED = false;
