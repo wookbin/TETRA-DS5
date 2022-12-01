@@ -565,11 +565,14 @@ int main(int argc, char * argv[])
 			m_bForwardCheck = false;
 
 		
-		if(m_bForwardCheck)
+		if(input_linear >= 0)
 		{
 			if(input_linear > control_linear)
 			{
 				control_linear = min(input_linear, control_linear + 0.01);  //10mm++
+				if(!m_bForwardCheck)
+					control_linear = min(input_linear, control_linear + 0.05);
+				
 			}
 			else if(input_linear < control_linear)
 			{
