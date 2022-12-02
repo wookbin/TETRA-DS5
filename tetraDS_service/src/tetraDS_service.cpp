@@ -2499,9 +2499,6 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
     ROS_INFO("[ERROR]resultCallback: %d ",msgResult->status.status);
 	  
     m_flag_setgoal = true;
-    //costmap clear call//
-    clear_costmap_client.call(m_request);
-    sleep(1);
 
     //Dynamic_reconfigure_Teb_Set_DoubleParam("weight_kinematics_forward_drive", _pDynamic_param.m_dweight_kinematics_forward_drive_backward);
     goto_goal_id.id = "";
@@ -2515,6 +2512,9 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
     }
     else
     {
+	//costmap clear call//
+    	clear_costmap_client.call(m_request);
+	    
         LED_Toggle_Control(1, 3,100,3,1);
         if(_pFlag_Value.m_bflag_Conveyor_docking)
             LED_Turn_On(45); //sky_blue
