@@ -168,6 +168,11 @@ bool m_bFlag_nomotion_call = false;
 bool m_flag_clesr_costmap_call = false;
 //Dynamic_reconfigure call flag//
 bool m_flag_Dynamic_reconfigure_call = false;
+bool m_flag_Dynamic_TebMarkers_major_update = false;
+bool m_flag_Dynamic_Teblocalplan_major_update = false;
+bool m_flag_Dynamic_Teblocalplan_minor_update = false;
+bool m_flag_Dynamic_Linear_velocity_major_update = false;
+bool m_flag_Dynamic_Linear_velocity_minor_update = false;
 //Set Goal flag//
 bool m_flag_setgoal = false;
 //flag
@@ -1019,7 +1024,11 @@ void TebMarkers_Callback(const visualization_msgs::Marker::ConstPtr& msg)
             {
                 if(_pDynamic_param.m_linear_vel >= 0.3)
                 {
-                    Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", 0.3);
+                    if(!m_flag_Dynamic_TebMarkers_major_update)
+                    {
+                        Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", 0.3);
+                        m_flag_Dynamic_TebMarkers_major_update = true;
+                    }
                 }
                 _pFlag_Value.m_bTebMarker_reconfigure_flag = true;
             }
@@ -1027,6 +1036,7 @@ void TebMarkers_Callback(const visualization_msgs::Marker::ConstPtr& msg)
         else
         {
             _pFlag_Value.m_bTebMarker_reconfigure_flag = false;
+            m_flag_Dynamic_TebMarkers_major_update = false;
         }
         _pFlag_Value.m_bflagGo = true;
     }
@@ -1034,7 +1044,6 @@ void TebMarkers_Callback(const visualization_msgs::Marker::ConstPtr& msg)
     {
         _pFlag_Value.m_bflagGo = false;
     }
-
 }
 
 void Teblocalplan_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
@@ -1056,21 +1065,28 @@ void Teblocalplan_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
     {
         m_dDelta_Value = -1.0 * m_dDelta_Value;
     }
-
     if(_pFlag_Value.m_bCorneringFlag)
     {
         if(m_dDelta_Value >= 3.5)
         {
-            Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_theta", 0.5); //0.35
-            //printf("[1] max_vel_theta: 0.5!!! \n");
+            if(!m_flag_Dynamic_Teblocalplan_major_update)
+            {
+                Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_theta", 0.5); //0.35
+                m_flag_Dynamic_Teblocalplan_major_update = true;
+                m_flag_Dynamic_Teblocalplan_minor_update = false;
+            }
+            
         }
         else
         {
-            Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_theta", 0.15);
-            //printf("[2] max_vel_theta: 0.15!!! \n");
+            if(!m_flag_Dynamic_Teblocalplan_minor_update)
+            {
+                Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_theta", 0.15);
+                m_flag_Dynamic_Teblocalplan_minor_update = true;
+                m_flag_Dynamic_Teblocalplan_major_update = false;
+            }
         }
     }
-
 }
 
 void setGoal(move_base_msgs::MoveBaseActionGoal& goal)
@@ -4424,18 +4440,28 @@ int main (int argc, char** argv)
 
         if(_pFlag_Value.m_bFlag_Obstacle_Center || m_iViaPoint_Index <= 1)
         {
-            Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity / 2.5);
+            if(!m_flag_Dynamic_Linear_velocity_major_update)
+            {
+                Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity / 2.0);
+                m_flag_Dynamic_Linear_velocity_major_update = true;
+                m_flag_Dynamic_Linear_velocity_minor_update = false;
+            }
         }
         else
         {
             if(!_pFlag_Value.m_bTebMarker_reconfigure_flag)
             {
-                Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
+                if(!m_flag_Dynamic_Linear_velocity_minor_update)
+                {
+                    Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
+                    m_flag_Dynamic_Linear_velocity_minor_update = true;
+                    m_flag_Dynamic_Linear_velocity_major_update = false;
+                }
             }
         }
 
         //IMU Reset Loop//
-        if(m_iTimer_cnt >= 1500) //30 sec_polling
+        if(m_iTimer_cnt >= 500) //10 sec_polling
         {
 	    //costmap clear call//
             clear_costmap_client.call(m_request);
