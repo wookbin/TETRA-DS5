@@ -289,9 +289,11 @@ void VirtualLayer2::updateCosts(costmap_2d::Costmap2D &master_grid, int min_i, i
     std::lock_guard<std::mutex> l(_data_mutex);
 
     // set costs of zone polygons
+    /*
     for (int i = 0; i < _zone_polygons.size(); ++i) {
         setPolygonCost(master_grid, _zone_polygons[i], costmap_2d::LETHAL_OBSTACLE, min_i, min_j, max_i, max_j, false);
     }
+    */
 
     // set costs of obstacle polygons
     for (int i = 0; i < _obstacle_polygons.size(); ++i) {
