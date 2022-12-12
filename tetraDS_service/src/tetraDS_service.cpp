@@ -1846,14 +1846,6 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req,
 	int m_iInt_count = 0;
 	int m_iNext_count = 0;
 
-	if(m_flag_Dynamic_reconfigure_call || m_flag_setgoal)
-	{
-		bResult = false;
-		res.command_Result = bResult;
-		printf("!!!! m_flag_Dynamic_reconfigure_call Timing !!!! \n");
-		return true;
-	}
-
 	// msg clear
 	virtual_obstacle.list.clear();
 	//Global_costmap Loop//
@@ -1873,6 +1865,13 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req,
 
 	}
 
+	if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || m_flag_PREEMPTED)
+	{
+		bResult = false;
+		res.command_Result = bResult;
+		printf("!!!! m_flag_Dynamic_reconfigure_call Timing !!!! \n");
+		return true;
+	}
 	virtual_obstacle_pub.publish(virtual_obstacle);
  
 	/*
