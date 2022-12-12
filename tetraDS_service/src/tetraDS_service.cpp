@@ -1028,9 +1028,9 @@ void TebMarkers_Callback(const visualization_msgs::Marker::ConstPtr& msg)
                     {
                         Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", 0.3);
                         m_flag_Dynamic_TebMarkers_major_update = true;
+			_pFlag_Value.m_bTebMarker_reconfigure_flag = true;
                     }
                 }
-                _pFlag_Value.m_bTebMarker_reconfigure_flag = true;
             }
         }
         else
