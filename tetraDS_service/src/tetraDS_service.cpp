@@ -1869,7 +1869,7 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req,
 	{
 		bResult = false;
 		res.command_Result = bResult;
-		printf("!!!! m_flag_Dynamic_reconfigure_call Timing !!!! \n");
+		//printf("!!!! m_flag_Dynamic_reconfigure_call Timing !!!! \n");
 		return true;
 	}
 	virtual_obstacle_pub.publish(virtual_obstacle);
