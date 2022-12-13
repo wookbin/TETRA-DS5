@@ -1028,7 +1028,7 @@ void TebMarkers_Callback(const visualization_msgs::Marker::ConstPtr& msg)
                     {
                         Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", 0.3);
                         m_flag_Dynamic_TebMarkers_major_update = true;
-			_pFlag_Value.m_bTebMarker_reconfigure_flag = true;
+                        _pFlag_Value.m_bTebMarker_reconfigure_flag = true;
                     }
                 }
             }
@@ -1074,6 +1074,11 @@ void Teblocalplan_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
                 Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_theta", 0.5); //0.35
                 m_flag_Dynamic_Teblocalplan_major_update = true;
                 m_flag_Dynamic_Teblocalplan_minor_update = false;
+                _pFlag_Value.m_bTebMarker_reconfigure_flag = true;
+            }
+            else
+            {
+                _pFlag_Value.m_bTebMarker_reconfigure_flag = false;
             }
             
         }
@@ -1084,6 +1089,11 @@ void Teblocalplan_Callback(const geometry_msgs::PoseArray::ConstPtr& msg)
                 Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_theta", 0.15);
                 m_flag_Dynamic_Teblocalplan_minor_update = true;
                 m_flag_Dynamic_Teblocalplan_major_update = false;
+                _pFlag_Value.m_bTebMarker_reconfigure_flag = true;
+            }
+            else
+            {
+                _pFlag_Value.m_bTebMarker_reconfigure_flag = false;
             }
         }
     }
@@ -1865,7 +1875,7 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req,
 
 	}
 
-	if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || m_flag_PREEMPTED)
+	if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || m_flag_PREEMPTED || _pFlag_Value.m_bTebMarker_reconfigure_flag)
 	{
 		bResult = false;
 		res.command_Result = bResult;
@@ -4444,6 +4454,11 @@ int main (int argc, char** argv)
                 Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity / 2.0);
                 m_flag_Dynamic_Linear_velocity_major_update = true;
                 m_flag_Dynamic_Linear_velocity_minor_update = false;
+                _pFlag_Value.m_bTebMarker_reconfigure_flag = true;
+            }
+            else
+            {
+                _pFlag_Value.m_bTebMarker_reconfigure_flag = false;
             }
         }
         else
@@ -4455,7 +4470,12 @@ int main (int argc, char** argv)
                     Dynamic_reconfigure_Teb_Set_DoubleParam("max_vel_x", _pDynamic_param.MAX_Linear_velocity);
                     m_flag_Dynamic_Linear_velocity_minor_update = true;
                     m_flag_Dynamic_Linear_velocity_major_update = false;
+                    _pFlag_Value.m_bTebMarker_reconfigure_flag = true;
                 }
+            }
+            else
+            {
+                _pFlag_Value.m_bTebMarker_reconfigure_flag = false;
             }
         }
 
@@ -4552,7 +4572,7 @@ int main (int argc, char** argv)
                     m_iList_Count = virtual_obstacle.list.size();
                     if(m_iList_Count > 0)
                     {
-                        if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || m_flag_PREEMPTED)
+                        if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || m_flag_PREEMPTED || _pFlag_Value.m_bTebMarker_reconfigure_flag)
                         {
                             loop_rate.sleep();
                             continue;
@@ -4580,7 +4600,7 @@ int main (int argc, char** argv)
                                     }
                                 }
                             }
-                            if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || m_flag_PREEMPTED)
+                            if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || m_flag_PREEMPTED || _pFlag_Value.m_bTebMarker_reconfigure_flag)
                             {
                                 loop_rate.sleep();
                                 continue;
