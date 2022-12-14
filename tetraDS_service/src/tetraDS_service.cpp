@@ -3696,7 +3696,8 @@ void *DockingThread_function(void *data)
                 LED_Turn_On(18);
                 docking_progress.data = 10;
                 docking_progress_pub.publish(docking_progress);
-                ex_iDocking_CommandMode = 0;
+                //ex_iDocking_CommandMode = 0;
+                ex_iDocking_CommandMode = 119;
                 break;
             case 10:
                 Sonar_On(1); //add_sonar_on/off
@@ -3781,6 +3782,23 @@ void *DockingThread_function(void *data)
                 break;
             case 100: //Check Bumper
                 BumperCollision_Behavior();
+                break;
+            case 119: //Retry Goto Home...
+                printf(" Retry Goto Home ! \n");
+                //costmap clear call//
+                clear_costmap_client.call(m_request);
+                _pGoal_pose.goal_positionX = _pHomePose.HOME_dPOSITION_X;
+                _pGoal_pose.goal_positionY = _pHomePose.HOME_dPOSITION_Y;
+                _pGoal_pose.goal_positionZ = _pHomePose.HOME_dPOSITION_Z;
+                _pGoal_pose.goal_quarterX = _pHomePose.HOME_dQUATERNION_X;
+                _pGoal_pose.goal_quarterY = _pHomePose.HOME_dQUATERNION_Y;
+                _pGoal_pose.goal_quarterZ = _pHomePose.HOME_dQUATERNION_Z;
+                _pGoal_pose.goal_quarterW = _pHomePose.HOME_dQUATERNION_W;
+
+                goto_goal_id.id = "HOME";
+                setGoal(goal);
+                _pFlag_Value.m_bflag_ComebackHome = true;
+                ex_iDocking_CommandMode = 0;
                 break;
             default:
                 break;
