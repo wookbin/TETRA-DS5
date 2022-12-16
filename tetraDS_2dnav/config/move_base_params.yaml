@@ -11,7 +11,7 @@ oscillation_distance: 0.5
 
 max_planning_retries: 3
 
-recovery_behavior_enabled: true
+recovery_behavior_enabled: false #true
 clearing_rotation_allowed: false
 
 recovery_behaviors:
