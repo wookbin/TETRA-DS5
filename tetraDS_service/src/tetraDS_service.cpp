@@ -14,6 +14,7 @@
 #include <message_filters/subscriber.h>
 #include <geometry_msgs/Twist.h>
 #include <move_base_msgs/MoveBaseAction.h>
+#include <actionlib_msgs/GoalStatusArray.h> //move_base check...
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <geometry_msgs/AccelWithCovarianceStamped.h>
 #include <serial/serial.h>
@@ -238,6 +239,8 @@ typedef struct FALG_VALUE
     //no motion service call flag//
     bool m_bFlag_nomotion = true;
     bool m_bFlag_Initialpose = false;
+    //Setgoal_pub flag//
+    bool m_bFlag_pub = false;
 
 }FALG_VALUE;
 FALG_VALUE _pFlag_Value;
@@ -1118,6 +1121,7 @@ void setGoal(move_base_msgs::MoveBaseActionGoal& goal)
 
     service_pub.publish(goal);
     printf("setGoal call: %.5f, %.5f !!\n", _pGoal_pose.goal_positionX, _pGoal_pose.goal_positionY);
+    _pFlag_Value.m_bFlag_pub = true;
 }
 
 bool SaveLocation(string str_location, 
@@ -1453,6 +1457,7 @@ bool GotoCancel_Command(tetraDS_service::gotocancel::Request &req,
 	ex_iDocking_CommandMode = 0;
 	
 	m_flag_setgoal = false;
+    	_pFlag_Value.m_bFlag_pub = false;
 	return true;
 }
 
@@ -2512,7 +2517,7 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
     }
 
     m_flag_PREEMPTED = false;
-    //Dynamic_reconfigure_Teb_Set_DoubleParam("weight_kinematics_forward_drive", _pDynamic_param.m_dweight_kinematics_forward_drive_default);
+    _pFlag_Value.m_bFlag_pub = false;
 
   }
   else if( msgResult->status.status == ABORTED)
@@ -2525,10 +2530,10 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
 	  
     m_flag_setgoal = true;
 
-    //Dynamic_reconfigure_Teb_Set_DoubleParam("weight_kinematics_forward_drive", _pDynamic_param.m_dweight_kinematics_forward_drive_backward);
     goto_goal_id.id = "";
     ROS_INFO("Goto Cancel call");
     GotoCancel_pub.publish(goto_goal_id);
+    _pFlag_Value.m_bFlag_pub = false;
 
     if(m_iRetry_cnt >= MAX_RETRY_CNT)
     {
@@ -2572,7 +2577,43 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
     //costmap clear call//
     //clear_costmap_client.call(m_request);
   }
+}
 
+void statusCallback(const actionlib_msgs::GoalStatusArray::ConstPtr &msgStatus)
+{
+    geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
+    int status_id = 0;
+    //uint8 PENDING         = 0  
+    //uint8 ACTIVE          = 1 
+    //uint8 PREEMPTED       = 2
+    //uint8 SUCCEEDED       = 3
+    //uint8 ABORTED         = 4
+    //uint8 REJECTED        = 5
+    //uint8 PREEMPTING      = 6
+    //uint8 RECALLING       = 7
+    //uint8 RECALLED        = 8
+    //uint8 LOST            = 9
+    if(!msgStatus->status_list.empty())
+    {
+        actionlib_msgs::GoalStatus goalStatus = msgStatus->status_list[0];
+        status_id = goalStatus.status;
+        //ROS_INFO("[move_base]StatusCallback: %d ",status_id);
+    }
+    else
+    {
+        if(_pFlag_Value.m_bFlag_pub)
+        {
+            ROS_INFO("move_base die Catch !! ");
+            //Stop
+            cmd->linear.x =  0.0; 
+            cmd->angular.z = 0.0;
+            cmdpub_.publish(cmd);
+            //Retry setGoal..
+            setGoal(goal);
+            printf("setGoal call: %.5f, %.5f !!\n", _pGoal_pose.goal_positionX, _pGoal_pose.goal_positionY);
+            _pFlag_Value.m_bFlag_pub = false;
+        }
+    }
 }
 
 constexpr unsigned int HashCode(const char* str)
@@ -4246,6 +4287,7 @@ int main (int argc, char** argv)
     ros::Subscriber sub_amcl = nh.subscribe<geometry_msgs::PoseWithCovarianceStamped>("amcl_pose", 100 ,poseAMCLCallback);
     //Navigation Result//
     ros::Subscriber result_sub = nh.subscribe<move_base_msgs::MoveBaseActionResult>("move_base/result", 10, resultCallback);
+    ros::Subscriber status_sub = nh.subscribe<actionlib_msgs::GoalStatusArray>("move_base/status", 10, statusCallback); //add...
     //Navigation Cancel//
     GotoCancel_pub = nh.advertise<actionlib_msgs::GoalID>("move_base/cancel",10);
     //PoseReset//
