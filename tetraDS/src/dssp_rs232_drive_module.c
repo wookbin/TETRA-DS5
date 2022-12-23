@@ -37,7 +37,7 @@ int  dssp_rs232_drv_module_read_encoder(int *encoder_l, int *encoder_r)
 	return ret;
 }
 
-int  dssp_rs232_drv_module_read_odometry(double *Xpos_mm, double *Ypos_mm, double *deg) //add_wbjin
+int  dssp_rs232_drv_module_read_odometry(double *Xpos_mm, double *Ypos_mm, double *deg)
 {
 	int ret;
 
@@ -46,11 +46,11 @@ int  dssp_rs232_drv_module_read_odometry(double *Xpos_mm, double *Ypos_mm, doubl
 	return ret;
 }
 	
-int  dssp_rs232_drv_module_read_bumper_emg(int *bumper_data, int *emg_state)
+int  dssp_rs232_drv_module_read_bumper_emg(int *bumper_data, int *emg_state, int *left_error_code, int *right_error_code)
 {
 	int ret;
 
-	ret = drvm_read_bumper_emg(_drv, bumper_data, emg_state);
+	ret = drvm_read_bumper_emg(_drv, bumper_data, emg_state, left_error_code, right_error_code);
 
 	return ret;
 }
