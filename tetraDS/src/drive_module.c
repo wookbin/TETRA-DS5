@@ -252,7 +252,7 @@ int drvm_set_position(int fd, int type, int pass, int data)
 	return ret;
 }
 
-int drvm_read_bumper_emg(int fd, int *bumper, int *emg_state)
+int drvm_read_bumper_emg(int fd, int *bumper, int *emg_state, int *left_error_code, int *right_error_code)
 {
 	int ret;
 	unsigned char packet_buf[255] = {STX, 'A', 'A', ETX};
@@ -272,17 +272,19 @@ int drvm_read_bumper_emg(int fd, int *bumper, int *emg_state)
 	ret = get_response(fd, packet_buf);
 	if(ret !=0 ) return ret;
 
+	//Error Code add...
+	memset(binary, 0, sizeof(int)*16);
+	*left_error_code = packet_buf[3];
+	memset(binary, 0, sizeof(int)*16);
+	*right_error_code = packet_buf[5];
+
 	memset(binary, 0, sizeof(int)*16);
 	bumper_val1 = packet_buf[7] & 0x0f;
 	
 	memset(binary, 0, sizeof(int)*16);
 	bumper_val2 = packet_buf[6] & 0x0f;
 
-	//printf("BUM1: %d \n", bumper_val1);
-	//printf("BUM2: %d \n", bumper_val2);
-
 	*bumper = (bumper_val1) + (bumper_val2 << 4);
-	//printf("Sum: %d \n", *bumper );
 
 	memset(binary, 0, sizeof(int)*16);
 	emg_val = packet_buf[8];
