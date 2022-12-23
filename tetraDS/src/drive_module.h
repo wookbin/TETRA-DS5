@@ -17,7 +17,7 @@ int drvm_set_odometry(int fd, int x, int y, int theta);
 int drvm_set_velocity(int fd, int left, int right);
 int drvm_set_position(int fd, int type, int pass, int data);
 int drvm_set_parameter(int fd, int param, int value);
-int drvm_read_bumper_emg(int fd, int *bumper, int *emg_state);
+int drvm_read_bumper_emg(int fd, int *bumper, int *emg_state, int *left_error_code, int *right_error_code);
 int drvm_read_drive_err(int fd, unsigned char *left_wheel_err, unsigned char *right_wheel_err);
 int drvm_read_encoder(int fd, int *left, int *right);
 int drvm_read_parameter(int fd, int param, int *value);
