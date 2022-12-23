@@ -49,6 +49,9 @@ double m_dTheta = 0.0;
 //bumper & emg
 int m_bumper_data = 0;
 int m_emg_state = 0;
+//Error Code
+int m_left_error_code = 0;
+int m_right_error_code = 0;
 //Position move
 int m_iPOS_Y = 0;
 int m_iPOS_Theta = 0;
@@ -502,6 +505,14 @@ int main(int argc, char * argv[])
 	ros::Publisher emg_publisher;
 	emg_publisher = nemg.advertise<std_msgs::Int32>("emg_state", 10);
 	std_msgs::Int32 emg_state;
+	//Left Motor Error Code
+	ros::Publisher left_error_code_publisher;
+	left_error_code_publisher = nemg.advertise<std_msgs::Int32>("left_error_code", 1);
+	std_msgs::Int32 left_error_code;
+	//Right Motor Error Code
+	ros::Publisher right_error_code_publisher;
+	right_error_code_publisher = nemg.advertise<std_msgs::Int32>("right_error_code", 1);
+	std_msgs::Int32 right_error_code;
 
 	//tetraDS_service
 	parameter_read_service  = param.advertiseService("param_read_cmd", Parameter_Read_Command);
@@ -550,7 +561,7 @@ int main(int argc, char * argv[])
 	printf("□□□□■□□□□■□□□□□□□□□□■□□□□■□□□□□■□□■□□□□□■□\n");
 	printf("□□□□■□□□□■■■■■■□□□□□■□□□□■□□□□□■□□■□□□□□■□\n");
 
-    while(ros::ok())
+        while(ros::ok())
 	{
         	ros::spinOnce();
 		
@@ -616,6 +627,12 @@ int main(int argc, char * argv[])
 		//Bumper Check Loop
 		bumper_data.data = m_bumper_data;
 		bumper_publisher.publish(bumper_data);
+		
+		//Error Code Check Loop
+		left_error_code.data = m_left_error_code;
+		left_error_code_publisher.publish(left_error_code);
+		right_error_code.data = m_right_error_code;
+		right_error_code_publisher.publish(right_error_code);
 
 		//odometry calback//
 		dssp_rs232_drv_module_read_odometry(&m_dX_pos, &m_dY_pos, &m_dTheta);
@@ -626,7 +643,17 @@ int main(int argc, char * argv[])
 		if(!bPosition_mode_flag) //Velocity mode only
 		{
 			SetMoveCommand(control_linear, control_angular);
-			dssp_rs232_drv_module_read_bumper_emg(&m_bumper_data, &m_emg_state);
+			dssp_rs232_drv_module_read_bumper_emg(&m_bumper_data, &m_emg_state, &m_left_error_code, &m_right_error_code);
+		}
+
+		//Error Code Check -> Reset & servo On Loop
+		if(m_left_error_code != 48 || m_right_error_code != 48)
+		{
+			printf("[Motor Driver Error] Left Error Code: %d \n", m_left_error_code);
+			printf("[Motor Driver Error] Right Error Code: %d \n", m_right_error_code);
+			dssp_rs232_drv_module_set_drive_err_reset();
+			usleep(1000);
+			dssp_rs232_drv_module_set_servo(1); //Servo On
 		}
 
 		if(m_emg_state)
