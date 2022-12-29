@@ -3873,6 +3873,12 @@ void *AutoThread_function(void *data)
                 else //Docking check...
                 {
                     ex_iDocking_CommandMode = 10; //Depart Move
+                    while(ex_iDocking_CommandMode != 0)
+                    {
+                        sleep(1); //1 sec
+                        ROS_INFO("Depart_Station2Move....");
+                    }
+
                 }
 
                 ROS_INFO("[patrol]: goto_ %s", arr_patrol_location[i].c_str());
