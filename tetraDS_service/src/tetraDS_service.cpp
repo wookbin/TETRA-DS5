@@ -3868,6 +3868,7 @@ void *AutoThread_function(void *data)
                 OpenLocationFile(arr_patrol_location[i]);
                 if(_pRobot_Status.m_iCallback_Charging_status <= 1) //Nomal
                 {
+                    clear_costmap_client.call(m_request);
                     setGoal(goal);
                 }
                 else //Docking check...
