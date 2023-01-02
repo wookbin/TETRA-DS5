@@ -30,7 +30,7 @@ extern "C"
 #include <unistd.h>
 using namespace std;
 
-#define WHEEL_RADIUS 0.1015 //m
+#define WHEEL_RADIUS 0.1018 //m
 #define WHEEL_DISTANCE 0.438 //m
 #define TREAD_WIDTH 0.04 //m
 
