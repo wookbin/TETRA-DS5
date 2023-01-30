@@ -2632,7 +2632,10 @@ void statusCallback(const actionlib_msgs::GoalStatusArray::ConstPtr &msgStatus)
             cmd->angular.z = 0.0;
             cmdpub_.publish(cmd);
             //Retry setGoal..
-            setGoal(goal);
+            if(_pGoal_pose.goal_positionX != 0.0 && _pGoal_pose.goal_positionY != 0.0)
+            {
+                setGoal(goal);
+            }
             printf("setGoal call: %.5f, %.5f !!\n", _pGoal_pose.goal_positionX, _pGoal_pose.goal_positionY);
             _pFlag_Value.m_bFlag_pub = false;
         }
@@ -4538,15 +4541,19 @@ int main (int argc, char** argv)
     {
         ros::spinOnce();
 	    
-	// add move_base Die Check Loop
-	if(checkNode(node_name) == true)
-	{
-		// ROS_ERROR("move_base alive");
-	}   
-	else
-	{
-		// ROS_ERROR("move_base die");
-	}
+        // add move_base Die Check Loop
+        nh.getParam("active_map", m_bActive_map_check);
+        if(m_bActive_map_check)
+        {
+            if(checkNode(node_name) == true)
+            {
+                // ROS_ERROR("move_base alive");
+            }   
+            else
+            {
+                // ROS_ERROR("move_base die");
+            }
+        }
 
         if(_pFlag_Value.m_bFlag_Obstacle_Center || m_iViaPoint_Index <= 1)
         {
