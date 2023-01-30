@@ -4533,6 +4533,7 @@ int main (int argc, char** argv)
     printf("HOME_dQUATERNION_Z: %f \n", _pHomePose.HOME_dQUATERNION_Z);
     printf("HOME_dQUATERNION_W: %f \n", _pHomePose.HOME_dQUATERNION_W);
     
+    std::string node_name = "/" + tf_prefix_ + "/move_base"; // add move_base Die Check node_name
     while(ros::ok())
     {
         ros::spinOnce();
