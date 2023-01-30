@@ -1,5 +1,7 @@
 ////TETRA_DS Service ROS Package_Ver 0.1
 #include <ros/ros.h>
+#include <ros/master.h> // add_move_base die check
+#include <ros/this_node.h> // add_move_base die check
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
@@ -2579,6 +2581,27 @@ void resultCallback(const move_base_msgs::MoveBaseActionResult::ConstPtr& msgRes
   }
 }
 
+// add Move_base Die Check
+bool checkNode(std::string& node_name)
+{
+    geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
+    std::vector<std::string> node_list;
+    ros::master::getNodes(node_list);
+
+    for (unsigned int node_list_idx = 0; node_list_idx < node_list.size(); node_list_idx++)
+    {
+        if (node_list[node_list_idx] == node_name)
+        return true;
+    }
+
+    ROS_ERROR("move_base error");
+    cmd->linear.x = 0.0;
+    cmd->angular.z = 0.0;
+    cmdpub_.publish(cmd);
+    _pFlag_Value.m_bFlag_pub = true;
+    return false;
+}
+
 void statusCallback(const actionlib_msgs::GoalStatusArray::ConstPtr &msgStatus)
 {
     geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
@@ -4513,6 +4536,16 @@ int main (int argc, char** argv)
     while(ros::ok())
     {
         ros::spinOnce();
+	    
+	// add move_base Die Check Loop
+	if(checkNode(node_name) == true)
+	{
+		// ROS_ERROR("move_base alive");
+	}   
+	else
+	{
+		// ROS_ERROR("move_base die");
+	}
 
         if(_pFlag_Value.m_bFlag_Obstacle_Center || m_iViaPoint_Index <= 1)
         {
