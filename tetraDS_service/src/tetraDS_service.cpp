@@ -1882,7 +1882,7 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req,
 
 	}
 
-	if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || m_flag_PREEMPTED || _pFlag_Value.m_bTebMarker_reconfigure_flag)
+	if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || _pFlag_Value.m_bTebMarker_reconfigure_flag)
 	{
 		bResult = false;
 		res.command_Result = bResult;
@@ -4680,7 +4680,7 @@ int main (int argc, char** argv)
                     m_iList_Count = virtual_obstacle.list.size();
                     if(m_iList_Count > 0)
                     {
-                        if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || m_flag_PREEMPTED || _pFlag_Value.m_bTebMarker_reconfigure_flag)
+                        if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || _pFlag_Value.m_bTebMarker_reconfigure_flag)
                         {
                             loop_rate.sleep();
                             continue;
@@ -4708,7 +4708,7 @@ int main (int argc, char** argv)
                                     }
                                 }
                             }
-                            if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || m_flag_PREEMPTED || _pFlag_Value.m_bTebMarker_reconfigure_flag)
+                            if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || _pFlag_Value.m_bTebMarker_reconfigure_flag)
                             {
                                 loop_rate.sleep();
                                 continue;
