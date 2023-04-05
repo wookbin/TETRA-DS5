@@ -65,6 +65,8 @@
 #include "tetraDS_TCP/dockingcontrol.h" //SRV
 #include "tetraDS_TCP/setOutput.h" //SRV
 #include "tetraDS_TCP/get_gpio_status.h" //SRV
+//add...230405_wbjin
+#include "tetraDS_TCP/power_set_single_outport.h" //SRV
 
 #define BUF_LEN 4096
 using namespace std;
@@ -133,6 +135,10 @@ ros::ServiceClient output_cmd_client;
 tetraDS_TCP::setOutput output_cmd_service;
 ros::ServiceClient gpio_status_cmd_client;
 tetraDS_TCP::get_gpio_status gpio_status_cmd_service;
+
+//add_230405
+ros::ServiceClient single_output_cmd_client;
+tetraDS_TCP::power_set_single_outport single_output_cmd_service;
 
 
 //***************************************************************************************************************************************/
@@ -470,6 +476,20 @@ bool Set_Output(int Output0, int Output1, int Output2, int Output3, int Output4,
 
 }
 
+//add_230405_wbjin
+bool Set_Single_Output(int Output_id, int iValue)
+{
+    bool bResult = false;
+    
+    single_output_cmd_service.request.ID = Output_id;
+    single_output_cmd_service.request.VALUE = iValue;
+    single_output_cmd_client.call(single_output_cmd_service);
+
+    bResult = true;
+    return bResult;
+
+}
+
 bool Get_GPIO_Status()
 {
     bool bResult = false;
@@ -645,6 +665,9 @@ bool DoParsing(char* data)
                 Set_Output(atoi(m_cPARAM[0]),atoi(m_cPARAM[1]),atoi(m_cPARAM[2]),atoi(m_cPARAM[3]),
                             atoi(m_cPARAM[4]),atoi(m_cPARAM[5]),atoi(m_cPARAM[6]),atoi(m_cPARAM[7]));
                 break;
+            case HashCode("SOUT"): // GPIO_Sigle Output command
+                Set_Single_Output(atoi(m_cPARAM[0]),atoi(m_cPARAM[1]));
+                break;
             case HashCode("GPIO"): // GPIO Status Check command
                 Get_GPIO_Status();
                 break;
@@ -771,6 +794,8 @@ int main(int argc, char* argv[])
     dockingcontrol_cmd_client = client_h.serviceClient<tetraDS_TCP::dockingcontrol>("docking_cmd");
     output_cmd_client = client_h.serviceClient<tetraDS_TCP::setOutput>("output_cmd");
     gpio_status_cmd_client = client_h.serviceClient<tetraDS_TCP::get_gpio_status>("gpio_status_cmd");
+    //add
+    ingle_output_cmd_client = client_h.serviceClient<tetraDS_TCP::power_set_single_outport>("Power_single_outport_cmd");
 
     //***************************************************************************************************************************************/
     //TCP/IP Socket Loop...///
