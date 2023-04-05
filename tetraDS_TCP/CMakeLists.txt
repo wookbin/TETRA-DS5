@@ -33,6 +33,7 @@ add_service_files(
   setmaxspeed.srv
   setOutput.srv
   get_gpio_status.srv
+  power_set_single_outport.srv
 )
 
 generate_messages(   
