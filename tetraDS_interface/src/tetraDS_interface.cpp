@@ -204,7 +204,7 @@ std::string tf_prefix_;
 bool has_prefix;
 
 bool Log_Command(tetraDS_interface::Integrallog::Request  &req, 
-				 tetraDS_interface::Integrallog::Response &res)
+		tetraDS_interface::Integrallog::Response &res)
 {
 	bool bResult = false;
 
@@ -285,7 +285,7 @@ void Error_Log_write(string log_data)
 }
 
 bool LEDcontrol_Command(tetraDS_interface::ledcontrol::Request  &req, 
-					    tetraDS_interface::ledcontrol::Response &res)
+			tetraDS_interface::ledcontrol::Response &res)
 {
 	bool bResult = false;
     
@@ -302,7 +302,7 @@ bool LEDcontrol_Command(tetraDS_interface::ledcontrol::Request  &req,
 }
 
 bool LEDtoggle_Command(tetraDS_interface::ledtogglecontrol::Request  &req, 
-					   tetraDS_interface::ledtogglecontrol::Response &res)
+			tetraDS_interface::ledtogglecontrol::Response &res)
 {
 	bool bResult = false;
 
@@ -324,7 +324,7 @@ bool LEDtoggle_Command(tetraDS_interface::ledtogglecontrol::Request  &req,
 }
 
 bool TurnOn_Command(tetraDS_interface::toggleon::Request  &req, 
-					tetraDS_interface::toggleon::Response &res)
+			tetraDS_interface::toggleon::Response &res)
 {
 	bool bResult = false;
     
@@ -352,7 +352,7 @@ bool ChargingPortOff(std_srvs::Empty::Request  &req, std_srvs::Empty::Response &
 }
 
 bool OutportOnOff(tetraDS_interface::power_set_outport::Request  &req, 
-				 tetraDS_interface::power_set_outport::Response &res)
+			tetraDS_interface::power_set_outport::Response &res)
 {
 	bool bResult = false;
     
@@ -375,7 +375,7 @@ bool OutportOnOff(tetraDS_interface::power_set_outport::Request  &req,
 }
 
 bool SingleOutportOnOff(tetraDS_interface::power_set_single_outport::Request  &req, 
-				 tetraDS_interface::power_set_single_outport::Response &res)
+			tetraDS_interface::power_set_single_outport::Response &res)
 {
 	bool bResult = false;
     
@@ -436,7 +436,7 @@ bool Power_get_IO_Status(tetraDS_interface::power_get_io_status::Request  &req,
 }
 
 bool Loadcell_Callibration_Command(tetraDS_interface::loadcell_callibration::Request  &req, 
-					   			   tetraDS_interface::loadcell_callibration::Response &res)
+					tetraDS_interface::loadcell_callibration::Response &res)
 {
 	bool bResult = false;
 
@@ -452,7 +452,7 @@ bool Loadcell_Callibration_Command(tetraDS_interface::loadcell_callibration::Req
 }
 
 bool Conveyor_Auto_Move_Command(tetraDS_interface::conveyor_auto_movement::Request  &req, 
-								tetraDS_interface::conveyor_auto_movement::Response &res)
+					tetraDS_interface::conveyor_auto_movement::Response &res)
 {
 	bool bResult = false;
     
@@ -468,7 +468,7 @@ bool Conveyor_Auto_Move_Command(tetraDS_interface::conveyor_auto_movement::Reque
 }
 
 bool Conveyor_Manual_Move_Command(tetraDS_interface::conveyor_manual_movement::Request  &req, 
-								  tetraDS_interface::conveyor_manual_movement::Response &res)
+					tetraDS_interface::conveyor_manual_movement::Response &res)
 {
 	bool bResult = false;
     
@@ -594,7 +594,7 @@ void RangeToCloud_D_R(const sensor_msgs::Range::ConstPtr& range_msg)
 }
 
 bool PowerEnableOnOff(tetraDS_interface::power_set_enable::Request  &req, 
-				 tetraDS_interface::power_set_enable::Response &res)
+			tetraDS_interface::power_set_enable::Response &res)
 {
 	bool bResult = false;
     
@@ -630,7 +630,7 @@ bool PowerSingleEnableOnOff(tetraDS_interface::power_set_single_enable::Request 
 }
 
 bool PowerWheelEnableOnOff(tetraDS_interface::power_wheel_enable::Request  &req, 
-								tetraDS_interface::power_wheel_enable::Response &res)
+				tetraDS_interface::power_wheel_enable::Response &res)
 {
 	bool bResult = false;
     
@@ -646,7 +646,7 @@ bool PowerWheelEnableOnOff(tetraDS_interface::power_wheel_enable::Request  &req,
 }
 
 bool Power_parameter_Read_Command(tetraDS_interface::power_parameter_read::Request  &req, 
-							tetraDS_interface::power_parameter_read::Response &res)
+					tetraDS_interface::power_parameter_read::Response &res)
 {
 	bool bResult = false;
     
@@ -695,7 +695,7 @@ bool Power_parameter_Read_Command(tetraDS_interface::power_parameter_read::Reque
 }
 
 bool Conveyor_parameter_Read_Command(tetraDS_interface::conveyor_parameter_read::Request  &req, 
-							tetraDS_interface::conveyor_parameter_read::Response &res)
+					tetraDS_interface::conveyor_parameter_read::Response &res)
 {
 	bool bResult = false;
     
@@ -734,7 +734,7 @@ bool Conveyor_parameter_Read_Command(tetraDS_interface::conveyor_parameter_read:
 }
 
 bool Conveyor_data_Read_Command(tetraDS_interface::conveyor_data_read::Request  &req, 
-							tetraDS_interface::conveyor_data_read::Response &res)
+				tetraDS_interface::conveyor_data_read::Response &res)
 {
 	bool bResult = false;
     
@@ -766,7 +766,7 @@ bool Conveyor_data_Read_Command(tetraDS_interface::conveyor_data_read::Request  
 }
 
 bool Power_data_Read_Command(tetraDS_interface::power_data_read::Request  &req, 
-							tetraDS_interface::power_data_read::Response &res)
+				tetraDS_interface::power_data_read::Response &res)
 {
 	bool bResult = false;
     
@@ -790,7 +790,7 @@ bool Power_data_Read_Command(tetraDS_interface::power_data_read::Request  &req,
 }
 
 bool Power_version_Read_Command(tetraDS_interface::power_version_read::Request  &req, 
-							tetraDS_interface::power_version_read::Response &res)
+				tetraDS_interface::power_version_read::Response &res)
 {
 	bool bResult = false;
     
@@ -810,7 +810,7 @@ bool Power_version_Read_Command(tetraDS_interface::power_version_read::Request  
 }
 
 bool Power_sonar_Read_Command(tetraDS_interface::power_sonar_read::Request  &req, 
-							tetraDS_interface::power_sonar_read::Response &res)
+				tetraDS_interface::power_sonar_read::Response &res)
 {
 	bool bResult = false;
     
@@ -828,7 +828,7 @@ bool Power_sonar_Read_Command(tetraDS_interface::power_sonar_read::Request  &req
 }
 
 bool Power_adc_Read_Command(tetraDS_interface::power_adc_read::Request  &req, 
-							tetraDS_interface::power_adc_read::Response &res)
+				tetraDS_interface::power_adc_read::Response &res)
 {
 	bool bResult = false;
     
@@ -854,7 +854,7 @@ bool Power_adc_Read_Command(tetraDS_interface::power_adc_read::Request  &req,
 }
 
 bool Power_parameter_Write_Command(tetraDS_interface::power_parameter_write::Request  &req, 
-							 tetraDS_interface::power_parameter_write::Response &res)
+					tetraDS_interface::power_parameter_write::Response &res)
 {
 	bool bResult = false;
     
@@ -871,7 +871,7 @@ bool Power_parameter_Write_Command(tetraDS_interface::power_parameter_write::Req
 }
 
 bool Conveyor_parameter_Write_Command(tetraDS_interface::conveyor_parameter_write::Request  &req, 
-							 tetraDS_interface::conveyor_parameter_write::Response &res)
+					tetraDS_interface::conveyor_parameter_write::Response &res)
 {
 	bool bResult = false;
     
@@ -890,7 +890,7 @@ bool Conveyor_parameter_Write_Command(tetraDS_interface::conveyor_parameter_writ
 
 
 bool Power_sonar_start_Command(tetraDS_interface::power_sonar_cmd::Request  &req, 
-								tetraDS_interface::power_sonar_cmd::Response &res)
+				tetraDS_interface::power_sonar_cmd::Response &res)
 {
 	bool bResult = false;
 	dssp_rs232_power_module_set_Ultrasonic(req.start);
@@ -923,17 +923,17 @@ int main(int argc, char * argv[])
 	std_msgs::Int32 servo;
 
 	ros::NodeHandle private_node_handle("~");
-    private_node_handle.param<double>("time_offset_in_seconds", time_offset_in_seconds, 0.0);
+    	private_node_handle.param<double>("time_offset_in_seconds", time_offset_in_seconds, 0.0);
 	has_prefix=ros::param::get("tf_prefix", tf_prefix_); //tf_prefix add
 
 	//I/O Control Service
-    ros::NodeHandle IOS_h;
-    led_service = IOS_h.advertiseService("led_cmd", LEDcontrol_Command);
-    ledtoggle_service = IOS_h.advertiseService("ledtoggle_cmd", LEDtoggle_Command);
+    	ros::NodeHandle IOS_h;
+    	led_service = IOS_h.advertiseService("led_cmd", LEDcontrol_Command);
+    	ledtoggle_service = IOS_h.advertiseService("ledtoggle_cmd", LEDtoggle_Command);
 	turnon_service = IOS_h.advertiseService("turnon_cmd", TurnOn_Command);
 	// Charging Port Control Services
-    chargeport_service_on  = IOS_h.advertiseService("charging_port_on", ChargingPortOn);
-    chargeport_service_off = IOS_h.advertiseService("charging_port_off", ChargingPortOff);
+    	chargeport_service_on  = IOS_h.advertiseService("charging_port_on", ChargingPortOn);
+    	chargeport_service_off = IOS_h.advertiseService("charging_port_off", ChargingPortOff);
 	//GPIO_Output service
 	power_outport_service = IOS_h.advertiseService("Power_outport_cmd", OutportOnOff);
 	power_single_outport_service = IOS_h.advertiseService("Power_single_outport_cmd", SingleOutportOnOff);
@@ -960,13 +960,13 @@ int main(int argc, char * argv[])
 	
 	// PowerSensor parameter read Services
 	ros::NodeHandle param;
-    power_parameter_read_service  = param.advertiseService("Power_parameter_read_cmd", Power_parameter_Read_Command);
+    	power_parameter_read_service  = param.advertiseService("Power_parameter_read_cmd", Power_parameter_Read_Command);
 	conveyor_parameter_read_service  = param.advertiseService("Conveyor_parameter_read_cmd", Conveyor_parameter_Read_Command);
 	power_parameter_write_service  = param.advertiseService("Power_parameter_write_cmd", Power_parameter_Write_Command);
 	conveyor_parameter_write_service  = param.advertiseService("Conveyor_parameter_write_cmd", Conveyor_parameter_Write_Command);
 	//system data read
 	ros::NodeHandle data;
-    conveyor_data_read_service  = data.advertiseService("Conveyor_data_read_cmd", Conveyor_data_Read_Command);
+    	conveyor_data_read_service  = data.advertiseService("Conveyor_data_read_cmd", Conveyor_data_Read_Command);
 	power_data_read_service  = data.advertiseService("Power_data_read_cmd", Power_data_Read_Command);
 	power_adc_read_service  = data.advertiseService("Power_adc_read_cmd", Power_adc_Read_Command);
 	power_version_read_service  = data.advertiseService("Power_version_read_cmd", Power_version_Read_Command);
@@ -999,7 +999,7 @@ int main(int argc, char * argv[])
 	std_msgs::Int32 conveyor_movement;
 
 	//Servo On/Off publish
-    servo_pub = n.advertise<std_msgs::Int32>("Servo_ON",10);
+    	servo_pub = n.advertise<std_msgs::Int32>("Servo_ON",10);
 
 	//POWER Enable service
 	power_enable_service = IOS_h.advertiseService("Power_enable_cmd", PowerEnableOnOff);
@@ -1071,9 +1071,9 @@ int main(int argc, char * argv[])
 	//Ultrasonic On//
 	// dssp_rs232_power_module_set_Ultrasonic(1);
 
-    while(ros::ok())
+    	while(ros::ok())
 	{
-        ros::spinOnce();
+        	ros::spinOnce();
 		// calculate measurement time
 		ros::Time measurement_time = ros::Time(0) + ros::Duration(time_offset_in_seconds);
 	//	m_iPowerCheck = dssp_rs232_power_module_read_battery(&m_dbattery, &m_dVoltage, &m_dCurrent, &m_imode_status, m_iInput, m_iOutput);
@@ -1195,7 +1195,7 @@ int main(int argc, char * argv[])
 		}
 
 		loop_rate.sleep();
-    }
+    	}
 
 	//Ultrasonic Off//
 	dssp_rs232_power_module_set_Ultrasonic(0);
