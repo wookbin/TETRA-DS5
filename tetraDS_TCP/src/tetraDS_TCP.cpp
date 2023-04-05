@@ -795,7 +795,7 @@ int main(int argc, char* argv[])
     output_cmd_client = client_h.serviceClient<tetraDS_TCP::setOutput>("output_cmd");
     gpio_status_cmd_client = client_h.serviceClient<tetraDS_TCP::get_gpio_status>("gpio_status_cmd");
     //add
-    ingle_output_cmd_client = client_h.serviceClient<tetraDS_TCP::power_set_single_outport>("Power_single_outport_cmd");
+    single_output_cmd_client = client_h.serviceClient<tetraDS_TCP::power_set_single_outport>("Power_single_outport_cmd");
 
     //***************************************************************************************************************************************/
     //TCP/IP Socket Loop...///
