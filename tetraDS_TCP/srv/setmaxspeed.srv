@@ -1,0 +1,7 @@
+#This message is used to send command to tetra
+# Set max_speed Command
+
+float64 speed
+---
+float64 set_vel
+bool command_Result

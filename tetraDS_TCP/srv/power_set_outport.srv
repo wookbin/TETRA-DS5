@@ -1,0 +1,15 @@
+#This message is used to send command to tetra
+#Set GPIO Output On/Off command
+
+int8 Output0
+int8 Output1
+int8 Output2
+int8 Output3
+int8 Output4
+int8 Output5
+int8 Output6
+int8 Output7
+
+---
+bool command_Result
+
