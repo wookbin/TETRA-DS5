@@ -1,0 +1,16 @@
+#This message is used to send command to tetra
+#PowerSensor BD version data read command
+
+int32 num
+---
+int32 D0_BOARD_TYPE
+int32 D1_YEAR2
+int32 D2_YEAR1
+int32 D3_MONTH2
+int32 D4_MONTH1
+int32 D5_DAY2
+int32 D6_DAY1
+int32 D7_VER
+
+bool command_Result
+

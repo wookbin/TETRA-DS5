@@ -1,0 +1,14 @@
+#This message is used to send command to tetra
+#PowerSensor BD Sonar data read command
+
+int32 num
+---
+int32 D0_SONAR0
+int32 D1_SONAR1
+int32 D2_SONAR2
+int32 D3_SONAR3
+int32 D4_SONAR4
+int32 D5_SONAR5
+
+bool command_Result
+
