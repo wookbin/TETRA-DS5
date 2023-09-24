@@ -1,7 +1,7 @@
 # TETRA-DS5
 TETRA-DS5_(beta version) _ ROS1-melodic
 # 현장에 적용하여 업데이트 중인 TETRA-DS5 ROS Package입니다. (가제보 X)
-# 종족성 패키지들이 많이 있습니다...(업데이트 중...)
+# 종족성 패키지들이 많이 있습니다...
 
 - tetraDS : TETRA구동 보드와의 Serial통신을 통하여 Motor의 구동을 담당하는 패키지
 - tetraDS_description: TETRA-DS5의 URDF가 포함된 패키지.
@@ -14,5 +14,3 @@ TETRA-DS5_(beta version) _ ROS1-melodic
 - virtual_costmap_layer: GMahmoud가 만든 가상 레이어 패키지 (Global costmap에 활용)
 - virtual_costmap_layer2: GMahmoud가 만든 가상 레이어 패키지에서 플러그인 이름만 수정한 버전 (local costmap에 활용)
 
-
-//It will be continuously updated...
