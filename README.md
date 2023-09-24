@@ -3,6 +3,8 @@ TETRA-DS5_(beta version) _ ROS1-melodic
 # 현장에 적용하여 업데이트 중인 TETRA-DS5 ROS Package입니다. (가제보 X)
 # 종족성 패키지들이 많이 있습니다...
 
+![2ND 448](https://github.com/wookbin/TETRA-DS5/assets/58063370/ec097f8e-8ed6-4cc5-a851-9ff7c611c660)
+
 - tetraDS : TETRA구동 보드와의 Serial통신을 통하여 Motor의 구동을 담당하는 패키지
 - tetraDS_description: TETRA-DS5의 URDF가 포함된 패키지.
 - tetraDS_interface: TETRA의 전원/초음파센서/GPIO 제어를 제공하는 보드 사용 패키지(Serial통신 사용)
