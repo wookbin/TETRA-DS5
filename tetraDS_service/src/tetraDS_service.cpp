@@ -1268,7 +1268,7 @@ bool Depart_Station2Move()
     bool bResult = false;
     geometry_msgs::TwistPtr cmd(new geometry_msgs::Twist());
     
-    if(_pAR_tag_pose.m_transform_pose_x <= 0.7) //700mm depart move
+    if(_pAR_tag_pose.m_transform_pose_x <= 0.7 && _pAR_tag_pose.m_iAR_tag_id != -1) //700mm depart move
     {
         if(_pFlag_Value.m_bFlag_Obstacle_Center)
         {
