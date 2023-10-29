@@ -1,6 +1,6 @@
 # TETRA-DS5
-TETRA-DS5_(beta version) _ ROS1-melodic
-# 현장에 적용하여 업데이트 중인 TETRA-DS5 ROS Package입니다. (가제보 X)
+TETRA-DS5 _ ROS1-melodic
+# 현장 적용 TETRA-DS5 ROS Package. (가제보 X)
 # 종족성 패키지들이 많이 있습니다...
 
 ![2ND 448](https://github.com/wookbin/TETRA-DS5/assets/58063370/ec097f8e-8ed6-4cc5-a851-9ff7c611c660)
