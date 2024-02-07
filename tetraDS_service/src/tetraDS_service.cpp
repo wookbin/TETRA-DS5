@@ -180,6 +180,7 @@ bool m_flag_Dynamic_Linear_velocity_minor_update = false;
 bool m_flag_setgoal = false;
 //flag
 bool m_flag_PREEMPTED = false;
+bool m_bFlag_virtualWallCheck = true;
 
 
 typedef struct HOME_POSE
@@ -1890,7 +1891,11 @@ bool Virtual_Obstacle_Command(tetraDS_service::virtual_obstacle::Request &req,
 		return true;
 	}
 	virtual_obstacle_pub.publish(virtual_obstacle);
- 
+
+	if(virtual_obstacle.list.size() != 0 )
+    	{
+        	m_bFlag_virtualWallCheck = true;
+    	}
 	/*
 	int32[]  list_count
 	float64[] form_x
@@ -4678,7 +4683,7 @@ int main (int argc, char** argv)
                 if(bCheck_waitForTransform)
                 {
                     m_iList_Count = virtual_obstacle.list.size();
-                    if(m_iList_Count > 0)
+                    if(m_iList_Count > 0 || m_bFlag_virtualWallCheck)
                     {
                         if(m_bFlag_nomotion_call || !_pFlag_Value.m_bFlag_nomotion || m_flag_Dynamic_reconfigure_call || m_flag_setgoal || _pFlag_Value.m_bTebMarker_reconfigure_flag)
                         {
@@ -4714,6 +4719,10 @@ int main (int argc, char** argv)
                                 continue;
                             }
                             virtual_obstacle2_pub.publish(virtual_obstacle2);
+			    if(m_iList_Count2 == 0)
+                            {
+                                m_bFlag_virtualWallCheck = false;
+                            }
                         }
 
                     }
