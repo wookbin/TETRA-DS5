@@ -194,7 +194,7 @@ class TETRA
 		odom.pose.pose.position.z= 0.0;
 		odom.pose.pose.orientation= odom_quat;
 		odom.twist.twist.linear.x = velocity[0];
-		odom.twist.twist.linear.y = velocity[1];
+		odom.twist.twist.linear.y = 0; //velocity[1];
 		odom.twist.twist.linear.z = 0.0;
 		odom.twist.twist.angular.z = velocity[2];
 		odom_publisher.publish(odom);
